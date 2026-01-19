@@ -3,7 +3,7 @@ package tests
 import (
 	"testing"
 
-	"github.com/ClickHouse/clickhouse-go/v2"
+	"github.com/hanzoai/datastore-go"
 	"github.com/stretchr/testify/assert"
 )
 

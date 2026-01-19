@@ -2,13 +2,13 @@ package issues
 
 import (
 	"context"
-	"github.com/ClickHouse/clickhouse-go/v2"
+	"github.com/hanzoai/datastore-go"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
 func TestIssue592(t *testing.T) {
-	conn, err := clickhouse.Open(&clickhouse.Options{})
+	conn, err := datastore.Open(&datastore.Options{})
 	assert.NoError(t, err)
 
 	ctx := context.Background()

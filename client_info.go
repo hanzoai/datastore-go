@@ -1,4 +1,4 @@
-package clickhouse
+package datastore
 
 import (
 	"fmt"
@@ -6,10 +6,10 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/ClickHouse/clickhouse-go/v2/lib/proto"
+	"github.com/hanzoai/datastore-go/lib/proto"
 )
 
-const ClientName = "clickhouse-go"
+const ClientName = "datastore-go"
 
 const (
 	ClientVersionMajor       = 2

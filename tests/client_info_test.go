@@ -6,8 +6,8 @@ import (
 	"runtime"
 	"testing"
 
-	"github.com/ClickHouse/clickhouse-go/v2"
-	"github.com/ClickHouse/clickhouse-go/v2/lib/driver"
+	"github.com/hanzoai/datastore-go"
+	"github.com/hanzoai/datastore-go/lib/driver"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -105,7 +105,7 @@ func TestClientInfo(t *testing.T) {
 			opts := ClientOptionsFromEnv(env, clickhouse.Settings{}, false)
 			opts.ClientInfo = testCase.clientInfo
 
-			conn, err := clickhouse.Open(&opts)
+			conn, err := datastore.Open(&opts)
 			require.NoError(t, err)
 
 			actualClientInfo := getConnectedClientInfo(t, conn, testCase.ctx)

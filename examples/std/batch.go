@@ -1,10 +1,10 @@
 package std
 
 import (
-	"github.com/ClickHouse/clickhouse-go/v2"
+	"github.com/hanzoai/datastore-go"
 	"time"
 
-	_ "github.com/ClickHouse/clickhouse-go/v2"
+	_ "github.com/hanzoai/datastore-go"
 	"github.com/google/uuid"
 )
 

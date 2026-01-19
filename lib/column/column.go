@@ -47,7 +47,7 @@ func (e *ColumnConverterError) Error() string {
 	if len(e.Hint) != 0 {
 		hint += ". " + e.Hint
 	}
-	return fmt.Sprintf("clickhouse [%s]: converting %s to %s is unsupported%s", e.Op, e.From, e.To, hint)
+	return fmt.Sprintf("datastore [%s]: converting %s to %s is unsupported%s", e.Op, e.From, e.To, hint)
 }
 
 type UnsupportedColumnTypeError struct {

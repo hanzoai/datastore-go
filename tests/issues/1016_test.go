@@ -5,14 +5,14 @@ import (
 	"testing"
 	"time"
 
-	clickhouse_tests "github.com/ClickHouse/clickhouse-go/v2/tests"
+	datastore_tests "github.com/hanzoai/datastore-go/tests"
 	"github.com/stretchr/testify/require"
 )
 
 func Test1016(t *testing.T) {
-	testEnv, err := clickhouse_tests.GetTestEnvironment("issues")
+	testEnv, err := datastore_tests.GetTestEnvironment("issues")
 	require.NoError(t, err)
-	conn, err := clickhouse_tests.TestClientWithDefaultSettings(testEnv)
+	conn, err := datastore_tests.TestClientWithDefaultSettings(testEnv)
 	require.NoError(t, err)
 
 	rows, err := conn.Query(context.Background(), "SELECT ?;", time.Unix(0, 0).UTC())

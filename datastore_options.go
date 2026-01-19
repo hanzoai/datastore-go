@@ -1,4 +1,4 @@
-package clickhouse
+package datastore
 
 import (
 	"context"
@@ -230,7 +230,7 @@ func (o *Options) fromDSN(in string) error {
 		case "dial_timeout":
 			duration, err := time.ParseDuration(params.Get(v))
 			if err != nil {
-				return fmt.Errorf("clickhouse [dsn parse]: dial timeout: %s", err)
+				return fmt.Errorf("datastore [dsn parse]: dial timeout: %s", err)
 			}
 			o.DialTimeout = duration
 		case "block_buffer_size":
@@ -245,7 +245,7 @@ func (o *Options) fromDSN(in string) error {
 		case "read_timeout":
 			duration, err := time.ParseDuration(params.Get(v))
 			if err != nil {
-				return fmt.Errorf("clickhouse [dsn parse]:read timeout: %s", err)
+				return fmt.Errorf("datastore [dsn parse]:read timeout: %s", err)
 			}
 			o.ReadTimeout = duration
 		case "secure":
@@ -255,7 +255,7 @@ func (o *Options) fromDSN(in string) error {
 			} else {
 				secure, err = strconv.ParseBool(secureParam)
 				if err != nil {
-					return fmt.Errorf("clickhouse [dsn parse]:secure: %s", err)
+					return fmt.Errorf("datastore [dsn parse]:secure: %s", err)
 				}
 			}
 		case "skip_verify":
@@ -265,7 +265,7 @@ func (o *Options) fromDSN(in string) error {
 			} else {
 				skipVerify, err = strconv.ParseBool(skipVerifyParam)
 				if err != nil {
-					return fmt.Errorf("clickhouse [dsn parse]:verify: %s", err)
+					return fmt.Errorf("datastore [dsn parse]:verify: %s", err)
 				}
 			}
 		case "connection_open_strategy":
@@ -315,7 +315,7 @@ func (o *Options) fromDSN(in string) error {
 		case "http_proxy":
 			proxyURL, err := url.Parse(params.Get(v))
 			if err != nil {
-				return fmt.Errorf("clickhouse [dsn parse]: http_proxy: %s", err)
+				return fmt.Errorf("datastore [dsn parse]: http_proxy: %s", err)
 			}
 			o.HTTPProxyURL = proxyURL
 		case "http_path":
@@ -348,12 +348,12 @@ func (o *Options) fromDSN(in string) error {
 	switch dsn.Scheme {
 	case "http":
 		if secure {
-			return fmt.Errorf("clickhouse [dsn parse]: http with TLS specify")
+			return fmt.Errorf("datastore [dsn parse]: http with TLS specify")
 		}
 		o.Protocol = HTTP
 	case "https":
 		if !secure {
-			return fmt.Errorf("clickhouse [dsn parse]: https without TLS")
+			return fmt.Errorf("datastore [dsn parse]: https without TLS")
 		}
 		o.Protocol = HTTP
 	default:

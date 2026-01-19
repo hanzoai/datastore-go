@@ -5,17 +5,17 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"github.com/ClickHouse/clickhouse-go/v2"
-	"github.com/ClickHouse/clickhouse-go/v2/lib/proto"
-	clickhouse_tests "github.com/ClickHouse/clickhouse-go/v2/tests"
+	"github.com/hanzoai/datastore-go"
+	"github.com/hanzoai/datastore-go/lib/proto"
+	datastore_tests "github.com/hanzoai/datastore-go/tests"
 	"net/url"
 	"strconv"
 	"strings"
 	"time"
 )
 
-func GetStdTestEnvironment() (clickhouse_tests.ClickHouseTestEnvironment, error) {
-	return clickhouse_tests.GetTestEnvironment("std")
+func GetStdTestEnvironment() (datastore_tests.ClickHouseTestEnvironment, error) {
+	return datastore_tests.GetTestEnvironment("std")
 }
 
 func CheckMinServerVersion(conn *sql.DB, major, minor, patch uint64) bool {
@@ -42,11 +42,11 @@ func CheckMinServerVersion(conn *sql.DB, major, minor, patch uint64) bool {
 }
 
 func GetDSNConnection(environment string, protocol clickhouse.Protocol, secure bool, opts url.Values) (*sql.DB, error) {
-	env, err := clickhouse_tests.GetTestEnvironment(environment)
+	env, err := datastore_tests.GetTestEnvironment(environment)
 	if err != nil {
 		return nil, err
 	}
-	insertQuorum := clickhouse_tests.GetEnv("CLICKHOUSE_QUORUM_INSERT", "1")
+	insertQuorum := datastore_tests.GetEnv("CLICKHOUSE_QUORUM_INSERT", "1")
 
 	scheme := "clickhouse"
 	port := env.Port
@@ -96,7 +96,7 @@ func GetDSNConnection(environment string, protocol clickhouse.Protocol, secure b
 		RawQuery: query.Encode(),
 	}
 
-	return sql.Open("clickhouse", dsn.String())
+	return sql.Open("datastore", dsn.String())
 }
 
 func GetConnectionFromDSN(dsn string) (*sql.DB, error) {
@@ -104,7 +104,7 @@ func GetConnectionFromDSN(dsn string) (*sql.DB, error) {
 }
 
 func GetConnectionFromDSNWithSessionID(dsn string, sessionID string) (*sql.DB, error) {
-	conn, err := sql.Open("clickhouse", dsn)
+	conn, err := sql.Open("datastore", dsn)
 	if err != nil {
 		return conn, err
 	}
@@ -116,7 +116,7 @@ func GetConnectionFromDSNWithSessionID(dsn string, sessionID string) (*sql.DB, e
 		return conn, err
 	}
 
-	insertQuorum := clickhouse_tests.GetEnv("CLICKHOUSE_QUORUM_INSERT", "1")
+	insertQuorum := datastore_tests.GetEnv("CLICKHOUSE_QUORUM_INSERT", "1")
 	dsn = fmt.Sprintf("%s&insert_quorum=%s&insert_quorum_parallel=0&select_sequential_consistency=1", dsn, insertQuorum)
 	if strings.HasPrefix(dsn, "http") {
 		dsn = fmt.Sprintf("%s&wait_end_of_query=1", dsn)
@@ -127,29 +127,29 @@ func GetConnectionFromDSNWithSessionID(dsn string, sessionID string) (*sql.DB, e
 		}
 	}
 
-	return sql.Open("clickhouse", dsn)
+	return sql.Open("datastore", dsn)
 }
 
-func GetConnectionWithOptions(options *clickhouse.Options) *sql.DB {
+func GetConnectionWithOptions(options *datastore.Options) *sql.DB {
 	if options.Settings == nil {
 		options.Settings = clickhouse.Settings{}
 	}
-	conn := clickhouse.OpenDB(options)
+	conn := datastore.OpenDB(options)
 	if CheckMinServerVersion(conn, 22, 8, 0) {
 		options.Settings["database_replicated_enforce_synchronous_settings"] = "1"
 	}
 	var err error
-	options.Settings["insert_quorum"], err = strconv.Atoi(clickhouse_tests.GetEnv("CLICKHOUSE_QUORUM_INSERT", "1"))
+	options.Settings["insert_quorum"], err = strconv.Atoi(datastore_tests.GetEnv("CLICKHOUSE_QUORUM_INSERT", "1"))
 	options.Settings["insert_quorum_parallel"] = 0
 	options.Settings["select_sequential_consistency"] = 1
 	if err != nil {
 		return nil
 	}
-	return clickhouse.OpenDB(options)
+	return datastore.OpenDB(options)
 }
 
 func GetOpenDBConnection(environment string, protocol clickhouse.Protocol, settings clickhouse.Settings, tlsConfig *tls.Config, compression *clickhouse.Compression) (*sql.DB, error) {
-	env, err := clickhouse_tests.GetTestEnvironment(environment)
+	env, err := datastore_tests.GetTestEnvironment(environment)
 	if err != nil {
 		return nil, err
 	}
@@ -172,7 +172,7 @@ func GetOpenDBConnection(environment string, protocol clickhouse.Protocol, setti
 	if protocol == clickhouse.HTTP {
 		settings["wait_end_of_query"] = 1
 	}
-	settings["insert_quorum"], err = strconv.Atoi(clickhouse_tests.GetEnv("CLICKHOUSE_QUORUM_INSERT", "1"))
+	settings["insert_quorum"], err = strconv.Atoi(datastore_tests.GetEnv("CLICKHOUSE_QUORUM_INSERT", "1"))
 	settings["insert_quorum_parallel"] = 0
 	settings["select_sequential_consistency"] = 1
 	if proto.CheckMinVersion(proto.Version{
@@ -186,7 +186,7 @@ func GetOpenDBConnection(environment string, protocol clickhouse.Protocol, setti
 		return nil, err
 	}
 
-	return clickhouse.OpenDB(&clickhouse.Options{
+	return datastore.OpenDB(&datastore.Options{
 		Addr: []string{fmt.Sprintf("%s:%d", env.Host, port)},
 		Auth: clickhouse.Auth{
 			Database: env.Database,
@@ -202,7 +202,7 @@ func GetOpenDBConnection(environment string, protocol clickhouse.Protocol, setti
 }
 
 func GetOpenDBConnectionJWT(environment string, protocol clickhouse.Protocol, settings clickhouse.Settings, tlsConfig *tls.Config, jwtFunc clickhouse.GetJWTFunc) (*sql.DB, error) {
-	env, err := clickhouse_tests.GetTestEnvironment(environment)
+	env, err := datastore_tests.GetTestEnvironment(environment)
 	if err != nil {
 		return nil, err
 	}
@@ -225,7 +225,7 @@ func GetOpenDBConnectionJWT(environment string, protocol clickhouse.Protocol, se
 	if protocol == clickhouse.HTTP {
 		settings["wait_end_of_query"] = 1
 	}
-	settings["insert_quorum"], err = strconv.Atoi(clickhouse_tests.GetEnv("CLICKHOUSE_QUORUM_INSERT", "1"))
+	settings["insert_quorum"], err = strconv.Atoi(datastore_tests.GetEnv("CLICKHOUSE_QUORUM_INSERT", "1"))
 	settings["insert_quorum_parallel"] = 0
 	settings["select_sequential_consistency"] = 1
 	if proto.CheckMinVersion(proto.Version{
@@ -239,7 +239,7 @@ func GetOpenDBConnectionJWT(environment string, protocol clickhouse.Protocol, se
 		return nil, err
 	}
 
-	return clickhouse.OpenDB(&clickhouse.Options{
+	return datastore.OpenDB(&datastore.Options{
 		Addr: []string{fmt.Sprintf("%s:%d", env.Host, port)},
 		Auth: clickhouse.Auth{
 			Database: env.Database,

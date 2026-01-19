@@ -6,7 +6,7 @@ import (
 	"log"
 	"time"
 
-	_ "github.com/ClickHouse/clickhouse-go/v2"
+	_ "github.com/hanzoai/datastore-go"
 )
 
 func benchmarkRead(conn *sql.DB) error {
@@ -52,7 +52,7 @@ func benchmarkString(conn *sql.DB) error {
 }
 
 func main() {
-	conn, err := sql.Open("clickhouse", "clickhouse://127.0.0.1:9000")
+	conn, err := sql.Open("datastore", "datastore://127.0.0.1:9000")
 	if err != nil {
 		log.Fatal(err)
 	}

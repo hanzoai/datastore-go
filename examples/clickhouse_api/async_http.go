@@ -3,8 +3,8 @@ package clickhouse_api
 import (
 	"context"
 
-	"github.com/ClickHouse/clickhouse-go/v2"
-	clickhouse_tests "github.com/ClickHouse/clickhouse-go/v2/tests"
+	"github.com/hanzoai/datastore-go"
+	datastore_tests "github.com/hanzoai/datastore-go/tests"
 )
 
 func AsyncInsertHTTP() error {
@@ -13,7 +13,7 @@ func AsyncInsertHTTP() error {
 		return err
 	}
 	ctx := context.Background()
-	if !clickhouse_tests.CheckMinServerServerVersion(conn, 21, 12, 0) {
+	if !datastore_tests.CheckMinServerServerVersion(conn, 21, 12, 0) {
 		return nil
 	}
 	defer func() {

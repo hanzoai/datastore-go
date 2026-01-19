@@ -4,15 +4,15 @@ import (
 	"os"
 	"testing"
 
-	clickhouse_tests "github.com/ClickHouse/clickhouse-go/v2/tests"
+	datastore_tests "github.com/hanzoai/datastore-go/tests"
 )
 
 const testSet string = "issues"
 
 func TestMain(m *testing.M) {
-	os.Exit(clickhouse_tests.Runtime(m, testSet))
+	os.Exit(datastore_tests.Runtime(m, testSet))
 }
 
-func GetIssuesTestEnvironment() (clickhouse_tests.ClickHouseTestEnvironment, error) {
-	return clickhouse_tests.GetTestEnvironment(testSet)
+func GetIssuesTestEnvironment() (datastore_tests.ClickHouseTestEnvironment, error) {
+	return datastore_tests.GetTestEnvironment(testSet)
 }

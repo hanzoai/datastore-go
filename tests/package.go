@@ -1,7 +1,7 @@
 package tests
 
 import (
-	"github.com/ClickHouse/clickhouse-go/v2"
+	"github.com/hanzoai/datastore-go"
 	"os"
 	"strings"
 	"testing"

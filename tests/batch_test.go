@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ClickHouse/clickhouse-go/v2"
+	"github.com/hanzoai/datastore-go"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/net/context"
 )

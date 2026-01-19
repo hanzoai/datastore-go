@@ -3,11 +3,11 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	clickhouse_tests "github.com/ClickHouse/clickhouse-go/v2/tests/std"
+	datastore_tests "github.com/hanzoai/datastore-go/tests/std"
 	"log"
 	"reflect"
 
-	_ "github.com/ClickHouse/clickhouse-go/v2"
+	_ "github.com/hanzoai/datastore-go"
 )
 
 type DatabaseFrame struct {
@@ -57,7 +57,7 @@ func (f DatabaseFrame) Next() ([]any, bool, error) {
 
 func NewNativeClient(host string, port uint16, username string, password string) (*sql.DB, error) {
 	// debug output ?debug=true
-	connection, err := clickhouse_tests.GetConnectionFromDSN(fmt.Sprintf("clickhouse://%s:%s@%s:%d/", username, password, host, port))
+	connection, err := datastore_tests.GetConnectionFromDSN(fmt.Sprintf("datastore://%s:%s@%s:%d/", username, password, host, port))
 	if err != nil {
 		return nil, err
 	}

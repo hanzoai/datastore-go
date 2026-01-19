@@ -2,7 +2,7 @@ package clickhouse_api
 
 import (
 	"fmt"
-	"github.com/ClickHouse/clickhouse-go/v2"
+	"github.com/hanzoai/datastore-go"
 )
 
 func Connect() error {
@@ -10,7 +10,7 @@ func Connect() error {
 	if err != nil {
 		return err
 	}
-	conn, err := clickhouse.Open(&clickhouse.Options{
+	conn, err := datastore.Open(&datastore.Options{
 		Addr: []string{fmt.Sprintf("%s:%d", env.Host, env.Port)},
 		Auth: clickhouse.Auth{
 			Database: env.Database,

@@ -2,11 +2,11 @@ package clickhouse_api
 
 import (
 	"context"
-	"github.com/ClickHouse/clickhouse-go/v2"
+	"github.com/hanzoai/datastore-go"
 )
 
 func ClientInfo() error {
-	conn, err := clickhouse.Open(&clickhouse.Options{
+	conn, err := datastore.Open(&datastore.Options{
 		ClientInfo: clickhouse.ClientInfo{
 			Products: []struct {
 				Name    string

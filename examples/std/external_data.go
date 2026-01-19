@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/ClickHouse/clickhouse-go/v2"
-	"github.com/ClickHouse/clickhouse-go/v2/ext"
+	"github.com/hanzoai/datastore-go"
+	"github.com/hanzoai/datastore-go/ext"
 )
 
 func ExternalData() error {

@@ -5,15 +5,15 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/ClickHouse/clickhouse-go/v2"
-	"github.com/ClickHouse/clickhouse-go/v2/lib/column"
-	clickhouse_tests "github.com/ClickHouse/clickhouse-go/v2/tests"
+	"github.com/hanzoai/datastore-go"
+	"github.com/hanzoai/datastore-go/lib/column"
+	datastore_tests "github.com/hanzoai/datastore-go/tests"
 	"github.com/stretchr/testify/require"
 )
 
 func TestIssue1164(t *testing.T) {
 	var (
-		conn, err = clickhouse_tests.GetConnectionTCP("issues", clickhouse.Settings{
+		conn, err = datastore_tests.GetConnectionTCP("issues", clickhouse.Settings{
 			"max_execution_time": 60,
 		}, nil, &clickhouse.Compression{
 			Method: clickhouse.CompressionLZ4,
@@ -56,7 +56,7 @@ func BenchmarkIssue1164(b *testing.B) {
 	//BenchmarkIssue1164/preAlloc-50000-8        	      24	  49687163 ns/op	11573934 B/op	  200148 allocs/op
 	b.Run("default-10000", func(b *testing.B) {
 		var (
-			conn, err = clickhouse_tests.GetConnectionTCP("issues", clickhouse.Settings{
+			conn, err = datastore_tests.GetConnectionTCP("issues", clickhouse.Settings{
 				"max_execution_time": 60,
 			}, nil, &clickhouse.Compression{
 				Method: clickhouse.CompressionLZ4,
@@ -88,7 +88,7 @@ func BenchmarkIssue1164(b *testing.B) {
 	})
 	b.Run("preAlloc-10000", func(b *testing.B) {
 		var (
-			conn, err = clickhouse_tests.GetConnectionTCP("issues", clickhouse.Settings{
+			conn, err = datastore_tests.GetConnectionTCP("issues", clickhouse.Settings{
 				"max_execution_time": 60,
 			}, nil, &clickhouse.Compression{
 				Method: clickhouse.CompressionLZ4,
@@ -122,7 +122,7 @@ func BenchmarkIssue1164(b *testing.B) {
 	})
 	b.Run("default-50000", func(b *testing.B) {
 		var (
-			conn, err = clickhouse_tests.GetConnectionTCP("issues", clickhouse.Settings{
+			conn, err = datastore_tests.GetConnectionTCP("issues", clickhouse.Settings{
 				"max_execution_time": 60,
 			}, nil, &clickhouse.Compression{
 				Method: clickhouse.CompressionLZ4,
@@ -154,7 +154,7 @@ func BenchmarkIssue1164(b *testing.B) {
 	})
 	b.Run("preAlloc-50000", func(b *testing.B) {
 		var (
-			conn, err = clickhouse_tests.GetConnectionTCP("issues", clickhouse.Settings{
+			conn, err = datastore_tests.GetConnectionTCP("issues", clickhouse.Settings{
 				"max_execution_time": 60,
 			}, nil, &clickhouse.Compression{
 				Method: clickhouse.CompressionLZ4,

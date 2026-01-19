@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"testing"
 
-	clickhouse_tests "github.com/ClickHouse/clickhouse-go/v2/tests"
+	datastore_tests "github.com/hanzoai/datastore-go/tests"
 	"github.com/stretchr/testify/require"
 )
 
@@ -46,9 +46,9 @@ func (ss SomeStructs) Value() (driver.Value, error) {
 }
 
 func Test1359(t *testing.T) {
-	testEnv, err := clickhouse_tests.GetTestEnvironment("issues")
+	testEnv, err := datastore_tests.GetTestEnvironment("issues")
 	require.NoError(t, err)
-	conn, err := clickhouse_tests.TestDatabaseSQLClientWithDefaultSettings(testEnv)
+	conn, err := datastore_tests.TestDatabaseSQLClientWithDefaultSettings(testEnv)
 	require.NoError(t, err)
 
 	_, err = conn.Exec(`CREATE TABLE test_1359 (

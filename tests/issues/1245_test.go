@@ -4,15 +4,15 @@ import (
 	"context"
 	"testing"
 
-	clickhouse_tests "github.com/ClickHouse/clickhouse-go/v2/tests"
+	datastore_tests "github.com/hanzoai/datastore-go/tests"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func Test1245Native(t *testing.T) {
-	testEnv, err := clickhouse_tests.GetTestEnvironment("issues")
+	testEnv, err := datastore_tests.GetTestEnvironment("issues")
 	require.NoError(t, err)
-	conn, err := clickhouse_tests.TestClientWithDefaultSettings(testEnv)
+	conn, err := datastore_tests.TestClientWithDefaultSettings(testEnv)
 	require.NoError(t, err)
 	ctx := context.Background()
 	const ddl = "CREATE TABLE IF NOT EXISTS test_1245 (`id` Int32, `segment` Tuple(Tuple(UInt16, UInt16), Tuple(UInt16, UInt16))) Engine = Memory"
@@ -34,9 +34,9 @@ func Test1245Native(t *testing.T) {
 }
 
 func Test1245DatabaseSQLDriver(t *testing.T) {
-	testEnv, err := clickhouse_tests.GetTestEnvironment("issues")
+	testEnv, err := datastore_tests.GetTestEnvironment("issues")
 	require.NoError(t, err)
-	conn, err := clickhouse_tests.TestDatabaseSQLClientWithDefaultSettings(testEnv)
+	conn, err := datastore_tests.TestDatabaseSQLClientWithDefaultSettings(testEnv)
 	require.NoError(t, err)
 	const ddl = "CREATE TABLE IF NOT EXISTS test_1245 (`id` Int32, `segment` Tuple(Tuple(UInt16, UInt16), Tuple(UInt16, UInt16))) Engine = Memory"
 	_, err = conn.Exec(ddl)

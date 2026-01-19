@@ -9,8 +9,8 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/ClickHouse/clickhouse-go/v2"
-	clickhouse_tests "github.com/ClickHouse/clickhouse-go/v2/tests"
+	"github.com/hanzoai/datastore-go"
+	datastore_tests "github.com/hanzoai/datastore-go/tests"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -81,7 +81,7 @@ func TestClientInfo(t *testing.T) {
 	}
 
 	dsns := []clickhouse.Protocol{clickhouse.Native, clickhouse.HTTP}
-	useSSL, err := strconv.ParseBool(clickhouse_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
 	require.NoError(t, err)
 	for _, protocol := range dsns {
 		t.Run(fmt.Sprintf("%s protocol", protocol.String()), func(t *testing.T) {

@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ClickHouse/clickhouse-go/v2"
+	"github.com/hanzoai/datastore-go"
 
 	"github.com/stretchr/testify/require"
 
@@ -356,7 +356,7 @@ func TestNamedTupleWithUnexportedStructField(t *testing.T) {
 		)
 		err = batch.Append(col1Data)
 		require.Error(t, err)
-		require.Equal(t, "clickhouse [AppendRow]: (Col1 Tuple(id Int64, code Int64)) invalid size. expected 2 got 1", err.Error())
+		require.Equal(t, "datastore [AppendRow]: (Col1 Tuple(id Int64, code Int64)) invalid size. expected 2 got 1", err.Error())
 	})
 }
 
@@ -392,7 +392,7 @@ func TestNamedTupleWithTooManyFields(t *testing.T) {
 		)
 		err = batch.Append(col1Data)
 		require.Error(t, err)
-		require.Equal(t, "clickhouse [AppendRow]: (Col1 Tuple(id Int64, code Int64)) invalid size. expected 2 got 3", err.Error())
+		require.Equal(t, "datastore [AppendRow]: (Col1 Tuple(id Int64, code Int64)) invalid size. expected 2 got 3", err.Error())
 	})
 }
 
@@ -427,7 +427,7 @@ func TestNamedTupleWithDuplicateTags(t *testing.T) {
 		)
 		err = batch.Append(col1Data)
 		require.Error(t, err)
-		require.Equal(t, "clickhouse [AppendRow]: (Col1 Tuple(id Int64, code Int64)) invalid size. expected 2 got 1", err.Error())
+		require.Equal(t, "datastore [AppendRow]: (Col1 Tuple(id Int64, code Int64)) invalid size. expected 2 got 1", err.Error())
 	})
 }
 
@@ -509,7 +509,7 @@ func TestUnNamedTupleWithMap(t *testing.T) {
 		// this will fail - maps can't be used for unnamed tuples
 		err = batch.Append(col1Data)
 		require.Error(t, err)
-		require.Equal(t, "clickhouse [AppendRow]: (Col1 Tuple(String, Int64)) converting from map[string]interface {} is not supported for unnamed tuples - use a slice", err.Error())
+		require.Equal(t, "datastore [AppendRow]: (Col1 Tuple(String, Int64)) converting from map[string]interface {} is not supported for unnamed tuples - use a slice", err.Error())
 		// insert some data properly to test scan - can't reuse batch
 		batch, err = conn.PrepareBatch(ctx, "INSERT INTO test_tuple")
 		require.NoError(t, err)
@@ -519,7 +519,7 @@ func TestUnNamedTupleWithMap(t *testing.T) {
 		var col1 map[string]any
 		err = conn.QueryRow(ctx, "SELECT * FROM test_tuple").Scan(&col1)
 		require.Error(t, err)
-		require.Equal(t, "clickhouse [ScanRow]: (Col1) converting Tuple(String, Int64) to map[string]interface {} is unsupported. cannot use maps for unnamed tuples, use slice", err.Error())
+		require.Equal(t, "datastore [ScanRow]: (Col1) converting Tuple(String, Int64) to map[string]interface {} is unsupported. cannot use maps for unnamed tuples, use slice", err.Error())
 	})
 }
 
@@ -554,7 +554,7 @@ func TestUnNamedTupleWithStruct(t *testing.T) {
 		// this will fail - struct can't be used for unnamed tuples
 		err = batch.Append(col1Data)
 		require.Error(t, err)
-		require.Equal(t, "clickhouse [AppendRow]: (Col1 Tuple(String, Int64)) converting from struct { Name string; Id int64 } is not supported for unnamed tuples - use a slice", err.Error())
+		require.Equal(t, "datastore [AppendRow]: (Col1 Tuple(String, Int64)) converting from struct { Name string; Id int64 } is not supported for unnamed tuples - use a slice", err.Error())
 	})
 }
 

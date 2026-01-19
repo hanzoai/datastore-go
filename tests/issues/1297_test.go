@@ -4,15 +4,15 @@ import (
 	"context"
 	"testing"
 
-	"github.com/ClickHouse/clickhouse-go/v2"
-	clickhouse_tests "github.com/ClickHouse/clickhouse-go/v2/tests"
+	"github.com/hanzoai/datastore-go"
+	datastore_tests "github.com/hanzoai/datastore-go/tests"
 	"github.com/stretchr/testify/require"
 )
 
 func Test1297(t *testing.T) {
-	testEnv, err := clickhouse_tests.GetTestEnvironment("issues")
+	testEnv, err := datastore_tests.GetTestEnvironment("issues")
 	require.NoError(t, err)
-	conn, err := clickhouse_tests.TestClientWithDefaultOptions(testEnv, clickhouse.Settings{
+	conn, err := datastore_tests.TestClientWithDefaultOptions(testEnv, clickhouse.Settings{
 		"flatten_nested": "0",
 	})
 	require.NoError(t, err)

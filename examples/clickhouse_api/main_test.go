@@ -3,7 +3,7 @@ package clickhouse_api
 import (
 	"context"
 	"fmt"
-	clickhouse_tests "github.com/ClickHouse/clickhouse-go/v2/tests"
+	datastore_tests "github.com/hanzoai/datastore-go/tests"
 	"github.com/stretchr/testify/require"
 	"os"
 	"strconv"
@@ -14,14 +14,14 @@ func TestMain(m *testing.M) {
 	ResetRandSeed()
 	fmt.Printf("using random seed %d for %s tests\n", randSeed, TestSet)
 
-	useDocker, err := strconv.ParseBool(clickhouse_tests.GetEnv("CLICKHOUSE_USE_DOCKER", "true"))
+	useDocker, err := strconv.ParseBool(datastore_tests.GetEnv("CLICKHOUSE_USE_DOCKER", "true"))
 	if err != nil {
 		panic(err)
 	}
-	var env clickhouse_tests.ClickHouseTestEnvironment
+	var env datastore_tests.ClickHouseTestEnvironment
 	switch useDocker {
 	case true:
-		env, err = clickhouse_tests.CreateClickHouseTestEnvironment(TestSet)
+		env, err = datastore_tests.CreateClickHouseTestEnvironment(TestSet)
 		if err != nil {
 			panic(err)
 		}
@@ -30,8 +30,8 @@ func TestMain(m *testing.M) {
 		fmt.Printf("skipping %s tests as docker only\n", TestSet)
 		os.Exit(0)
 	}
-	clickhouse_tests.SetTestEnvironment(TestSet, env)
-	if err := clickhouse_tests.CreateDatabase(TestSet); err != nil {
+	datastore_tests.SetTestEnvironment(TestSet, env)
+	if err := datastore_tests.CreateDatabase(TestSet); err != nil {
 		panic(err)
 	}
 	os.Exit(m.Run())
@@ -210,31 +210,31 @@ func TestSSLNoVerify(t *testing.T) {
 }
 
 func TestVariantExample(t *testing.T) {
-	clickhouse_tests.SkipOnCloud(t, "cannot modify Variant settings on cloud")
+	datastore_tests.SkipOnCloud(t, "cannot modify Variant settings on cloud")
 	require.NoError(t, VariantExample())
 }
 
 func TestDynamicExample(t *testing.T) {
-	clickhouse_tests.SkipOnCloud(t, "cannot modify Dynamic settings on cloud")
+	datastore_tests.SkipOnCloud(t, "cannot modify Dynamic settings on cloud")
 	require.NoError(t, DynamicExample())
 }
 
 func TestJSONPathsExample(t *testing.T) {
-	clickhouse_tests.SkipOnCloud(t, "cannot modify JSON settings on cloud")
+	datastore_tests.SkipOnCloud(t, "cannot modify JSON settings on cloud")
 	require.NoError(t, JSONPathsExample())
 }
 
 func TestJSONStructExample(t *testing.T) {
-	clickhouse_tests.SkipOnCloud(t, "cannot modify JSON settings on cloud")
+	datastore_tests.SkipOnCloud(t, "cannot modify JSON settings on cloud")
 	require.NoError(t, JSONStructExample())
 }
 
 func TestJSONFastStructExample(t *testing.T) {
-	clickhouse_tests.SkipOnCloud(t, "cannot modify JSON settings on cloud")
+	datastore_tests.SkipOnCloud(t, "cannot modify JSON settings on cloud")
 	require.NoError(t, JSONFastStructExample())
 }
 
 func TestJSONStringExample(t *testing.T) {
-	clickhouse_tests.SkipOnCloud(t, "cannot modify JSON settings on cloud")
+	datastore_tests.SkipOnCloud(t, "cannot modify JSON settings on cloud")
 	require.NoError(t, JSONStringExample())
 }

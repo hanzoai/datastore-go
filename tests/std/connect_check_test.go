@@ -3,8 +3,8 @@ package std
 import (
 	"context"
 	"fmt"
-	"github.com/ClickHouse/clickhouse-go/v2"
-	clickhouse_tests "github.com/ClickHouse/clickhouse-go/v2/tests"
+	"github.com/hanzoai/datastore-go"
+	datastore_tests "github.com/hanzoai/datastore-go/tests"
 	"github.com/stretchr/testify/require"
 	"strconv"
 	"testing"
@@ -26,12 +26,12 @@ func TestStdConnCheck(t *testing.T) {
 	env, err := GetStdTestEnvironment()
 	require.NoError(t, err)
 
-	dsns := map[clickhouse.Protocol]string{clickhouse.Native: fmt.Sprintf("clickhouse://%s:%d?username=%s&password=%s", env.Host, env.Port, env.Username, env.Password),
+	dsns := map[clickhouse.Protocol]string{clickhouse.Native: fmt.Sprintf("datastore://%s:%d?username=%s&password=%s", env.Host, env.Port, env.Username, env.Password),
 		clickhouse.HTTP: fmt.Sprintf("http://%s:%d?username=%s&password=%s", env.Host, env.HttpPort, env.Username, env.Password)}
-	useSSL, err := strconv.ParseBool(clickhouse_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
 	require.NoError(t, err)
 	if useSSL {
-		dsns = map[clickhouse.Protocol]string{clickhouse.Native: fmt.Sprintf("clickhouse://%s:%d?username=%s&password=%s&secure=true", env.Host, env.SslPort, env.Username, env.Password),
+		dsns = map[clickhouse.Protocol]string{clickhouse.Native: fmt.Sprintf("datastore://%s:%d?username=%s&password=%s&secure=true", env.Host, env.SslPort, env.Username, env.Password),
 			clickhouse.HTTP: fmt.Sprintf("https://%s:%d?username=%s&password=%s&secure=true", env.Host, env.HttpsPort, env.Username, env.Password)}
 	}
 	for name, dsn := range dsns {

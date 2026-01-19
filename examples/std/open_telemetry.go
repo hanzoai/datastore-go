@@ -3,7 +3,7 @@ package std
 import (
 	"context"
 	"fmt"
-	"github.com/ClickHouse/clickhouse-go/v2"
+	"github.com/hanzoai/datastore-go"
 	"go.opentelemetry.io/otel/trace"
 )
 

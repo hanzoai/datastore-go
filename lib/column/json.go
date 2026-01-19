@@ -8,8 +8,8 @@ import (
 	"strings"
 
 	"github.com/ClickHouse/ch-go/proto"
-	"github.com/ClickHouse/clickhouse-go/v2/lib/binary"
-	"github.com/ClickHouse/clickhouse-go/v2/lib/chcol"
+	"github.com/hanzoai/datastore-go/lib/binary"
+	"github.com/hanzoai/datastore-go/lib/chcol"
 )
 
 const JSONDeprecatedObjectSerializationVersion uint64 = 0

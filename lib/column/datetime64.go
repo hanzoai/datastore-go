@@ -12,7 +12,7 @@ import (
 
 	"github.com/ClickHouse/ch-go/proto"
 
-	"github.com/ClickHouse/clickhouse-go/v2/lib/timezone"
+	"github.com/hanzoai/datastore-go/lib/timezone"
 )
 
 var (

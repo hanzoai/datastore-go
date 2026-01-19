@@ -1,4 +1,4 @@
-module github.com/ClickHouse/clickhouse-go/v2
+module github.com/hanzoai/datastore-go
 
 go 1.24.0
 

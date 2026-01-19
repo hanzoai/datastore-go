@@ -6,8 +6,8 @@ import (
 	"net"
 	"time"
 
-	"github.com/ClickHouse/clickhouse-go/v2"
-	clickhouse_tests "github.com/ClickHouse/clickhouse-go/v2/tests"
+	"github.com/hanzoai/datastore-go"
+	datastore_tests "github.com/hanzoai/datastore-go/tests"
 	"github.com/google/uuid"
 )
 
@@ -17,7 +17,7 @@ func UseContext() error {
 		return err
 	}
 	dialCount := 0
-	conn, err := clickhouse.Open(&clickhouse.Options{
+	conn, err := datastore.Open(&datastore.Options{
 		Addr: []string{fmt.Sprintf("%s:%d", env.Host, env.Port)},
 		Auth: clickhouse.Auth{
 			Database: env.Database,
@@ -33,7 +33,7 @@ func UseContext() error {
 	if err != nil {
 		return err
 	}
-	if !clickhouse_tests.CheckMinServerServerVersion(conn, 22, 6, 1) {
+	if !datastore_tests.CheckMinServerServerVersion(conn, 22, 6, 1) {
 		return nil
 	}
 	// we can use context to pass settings to a specific API call

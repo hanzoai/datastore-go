@@ -3,7 +3,7 @@ package clickhouse_api
 import (
 	"context"
 	"fmt"
-	"github.com/ClickHouse/clickhouse-go/v2"
+	"github.com/hanzoai/datastore-go"
 	"net"
 	"time"
 )
@@ -14,7 +14,7 @@ func PingWithSettings() error {
 	if err != nil {
 		return err
 	}
-	conn, err := clickhouse.Open(&clickhouse.Options{
+	conn, err := datastore.Open(&datastore.Options{
 		Addr: []string{fmt.Sprintf("%s:%d", env.Host, env.Port)},
 		Auth: clickhouse.Auth{
 			Database: env.Database,
@@ -40,7 +40,7 @@ func PingWithSettings() error {
 		MaxOpenConns:     5,
 		MaxIdleConns:     5,
 		ConnMaxLifetime:  time.Duration(10) * time.Minute,
-		ConnOpenStrategy: clickhouse.ConnOpenInOrder,
+		ConnOpenStrategy: datastore.ConnOpenInOrder,
 		BlockBufferSize:  10,
 	})
 	if err != nil {

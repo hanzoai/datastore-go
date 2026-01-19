@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/ClickHouse/ch-go/proto"
-	"github.com/ClickHouse/clickhouse-go/v2/lib/column"
+	"github.com/hanzoai/datastore-go/lib/column"
 	"sort"
 )
 
@@ -42,7 +42,7 @@ func (b *Block) Append(v ...any) (err error) {
 	if len(columns) != len(v) {
 		return &BlockError{
 			Op:  "Append",
-			Err: fmt.Errorf("clickhouse: expected %d arguments, got %d", len(columns), len(v)),
+			Err: fmt.Errorf("datastore: expected %d arguments, got %d", len(columns), len(v)),
 		}
 	}
 	for i, v := range v {
@@ -287,9 +287,9 @@ type BlockError struct {
 func (e *BlockError) Error() string {
 	switch err := e.Err.(type) {
 	case *column.Error:
-		return fmt.Sprintf("clickhouse [%s]: (%s %s) %s", e.Op, e.ColumnName, err.ColumnType, err.Err)
+		return fmt.Sprintf("datastore [%s]: (%s %s) %s", e.Op, e.ColumnName, err.ColumnType, err.Err)
 	}
-	return fmt.Sprintf("clickhouse [%s]: %s %s", e.Op, e.ColumnName, e.Err)
+	return fmt.Sprintf("datastore [%s]: %s %s", e.Op, e.ColumnName, e.Err)
 }
 
 func (e *BlockError) Unwrap() error {

@@ -6,14 +6,14 @@ import (
 	"log"
 	"time"
 
-	"github.com/ClickHouse/clickhouse-go/v2"
-	clickhouse_tests "github.com/ClickHouse/clickhouse-go/v2/tests"
+	"github.com/hanzoai/datastore-go"
+	datastore_tests "github.com/hanzoai/datastore-go/tests"
 )
 
 func example() error {
 	var (
 		ctx       = context.Background()
-		conn, err = clickhouse_tests.GetConnectionWithOptions(&clickhouse.Options{
+		conn, err = datastore_tests.GetConnectionWithOptions(&datastore.Options{
 			Addr: []string{"127.0.0.1:9000"},
 			Auth: clickhouse.Auth{
 				Database: "default",
@@ -75,7 +75,7 @@ func example() error {
 	return err
 }
 
-func examplePrep(ctx context.Context, conn clickhouse.Conn) error {
+func examplePrep(ctx context.Context, conn datastore.Conn) error {
 	batch, err := conn.PrepareBatch(ctx, "INSERT INTO example")
 	if err != nil {
 		return err

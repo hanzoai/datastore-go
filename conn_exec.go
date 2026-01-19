@@ -1,8 +1,8 @@
-package clickhouse
+package datastore
 
 import (
 	"context"
-	"github.com/ClickHouse/clickhouse-go/v2/lib/proto"
+	"github.com/hanzoai/datastore-go/lib/proto"
 	"time"
 )
 

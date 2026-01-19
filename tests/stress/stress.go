@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	clickhouse_tests "github.com/ClickHouse/clickhouse-go/v2/tests"
+	datastore_tests "github.com/hanzoai/datastore-go/tests"
 	"log"
 	"os"
 	"os/signal"
@@ -12,8 +12,8 @@ import (
 	"net/http"
 	_ "net/http/pprof"
 
-	"github.com/ClickHouse/clickhouse-go/v2"
-	"github.com/ClickHouse/clickhouse-go/v2/lib/driver"
+	"github.com/hanzoai/datastore-go"
+	"github.com/hanzoai/datastore-go/lib/driver"
 	"github.com/google/uuid"
 	_ "github.com/mkevac/debugcharts"
 )
@@ -105,7 +105,7 @@ func main() {
 	go func() {
 		log.Fatal(http.ListenAndServe(":8080", nil))
 	}()
-	conn, err := clickhouse_tests.GetConnectionWithOptions(&clickhouse.Options{
+	conn, err := datastore_tests.GetConnectionWithOptions(&datastore.Options{
 		Addr: []string{"127.0.0.1:9000"},
 		Auth: clickhouse.Auth{
 			Database: "default",

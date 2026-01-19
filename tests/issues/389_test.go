@@ -8,20 +8,20 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/ClickHouse/clickhouse-go/v2"
-	clickhouse_tests "github.com/ClickHouse/clickhouse-go/v2/tests"
+	"github.com/hanzoai/datastore-go"
+	datastore_tests "github.com/hanzoai/datastore-go/tests"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestIssue389(t *testing.T) {
 	var (
 		ctx       = context.Background()
-		conn, err = clickhouse_tests.GetConnectionTCP("issues", nil, nil, &clickhouse.Compression{
+		conn, err = datastore_tests.GetConnectionTCP("issues", nil, nil, &clickhouse.Compression{
 			Method: clickhouse.CompressionLZ4,
 		})
 	)
 	require.NoError(t, err)
-	if !clickhouse_tests.CheckMinServerServerVersion(conn, 20, 3, 0) {
+	if !datastore_tests.CheckMinServerServerVersion(conn, 20, 3, 0) {
 		t.Skip(fmt.Errorf("unsupported clickhouse version"))
 		return
 	}

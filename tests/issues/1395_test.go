@@ -7,16 +7,16 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/ClickHouse/clickhouse-go/v2"
-	clickhouse_tests "github.com/ClickHouse/clickhouse-go/v2/tests"
+	"github.com/hanzoai/datastore-go"
+	datastore_tests "github.com/hanzoai/datastore-go/tests"
 	"github.com/stretchr/testify/require"
 )
 
 func Test1395(t *testing.T) {
-	testEnv, err := clickhouse_tests.GetTestEnvironment("issues")
+	testEnv, err := datastore_tests.GetTestEnvironment("issues")
 	require.NoError(t, err)
-	opts := clickhouse_tests.ClientOptionsFromEnv(testEnv, clickhouse.Settings{}, false)
-	conn, err := sql.Open("clickhouse", clickhouse_tests.OptionsToDSN(&opts))
+	opts := datastore_tests.ClientOptionsFromEnv(testEnv, clickhouse.Settings{}, false)
+	conn, err := sql.Open("datastore", datastore_tests.OptionsToDSN(&opts))
 	require.NoError(t, err)
 
 	ctx := context.Background()

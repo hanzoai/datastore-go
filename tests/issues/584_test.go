@@ -4,15 +4,15 @@ import (
 	"context"
 	"testing"
 
-	"github.com/ClickHouse/clickhouse-go/v2"
-	clickhouse_tests "github.com/ClickHouse/clickhouse-go/v2/tests"
+	"github.com/hanzoai/datastore-go"
+	datastore_tests "github.com/hanzoai/datastore-go/tests"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestIssue584(t *testing.T) {
 	var (
-		conn, err = clickhouse_tests.GetConnectionTCP("issues", clickhouse.Settings{
+		conn, err = datastore_tests.GetConnectionTCP("issues", clickhouse.Settings{
 			"max_execution_time": 60,
 		}, nil, &clickhouse.Compression{
 			Method: clickhouse.CompressionLZ4,
@@ -42,7 +42,7 @@ func TestIssue584(t *testing.T) {
 
 func TestIssue584Complex(t *testing.T) {
 	var (
-		conn, err = clickhouse_tests.GetConnectionTCP("issues", clickhouse.Settings{
+		conn, err = datastore_tests.GetConnectionTCP("issues", clickhouse.Settings{
 			"max_execution_time": 60,
 		}, nil, &clickhouse.Compression{
 			Method: clickhouse.CompressionLZ4,

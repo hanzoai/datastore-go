@@ -6,7 +6,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/ClickHouse/clickhouse-go/v2"
+	"github.com/hanzoai/datastore-go"
 )
 
 const ddl = `
@@ -18,7 +18,7 @@ CREATE TABLE benchmark_async (
 ) Engine Null
 `
 
-func benchmark(conn clickhouse.Conn) error {
+func benchmark(conn datastore.Conn) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
@@ -37,7 +37,7 @@ func benchmark(conn clickhouse.Conn) error {
 func main() {
 	var (
 		ctx       = context.Background()
-		conn, err = clickhouse.Open(&clickhouse.Options{
+		conn, err = datastore.Open(&datastore.Options{
 			Addr: []string{"127.0.0.1:9000"},
 			Auth: clickhouse.Auth{
 				Database: "default",

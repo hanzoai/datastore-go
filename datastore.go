@@ -1,4 +1,4 @@
-package clickhouse
+package datastore
 
 import (
 	"context"
@@ -11,10 +11,10 @@ import (
 
 	_ "time/tzdata"
 
-	"github.com/ClickHouse/clickhouse-go/v2/contributors"
-	"github.com/ClickHouse/clickhouse-go/v2/lib/column"
-	"github.com/ClickHouse/clickhouse-go/v2/lib/driver"
-	"github.com/ClickHouse/clickhouse-go/v2/lib/proto"
+	"github.com/hanzoai/datastore-go/contributors"
+	"github.com/hanzoai/datastore-go/lib/column"
+	"github.com/hanzoai/datastore-go/lib/driver"
+	"github.com/hanzoai/datastore-go/lib/proto"
 )
 
 type Conn = driver.Conn
@@ -27,15 +27,15 @@ type (
 )
 
 var (
-	ErrBatchInvalid              = errors.New("clickhouse: batch is invalid. check appended data is correct")
-	ErrBatchAlreadySent          = errors.New("clickhouse: batch has already been sent")
-	ErrBatchNotSent              = errors.New("clickhouse: invalid retry, batch not sent yet")
-	ErrAcquireConnTimeout        = errors.New("clickhouse: acquire conn timeout. you can increase the number of max open conn or the dial timeout")
-	ErrUnsupportedServerRevision = errors.New("clickhouse: unsupported server revision")
-	ErrBindMixedParamsFormats    = errors.New("clickhouse [bind]: mixed named, numeric or positional parameters")
-	ErrAcquireConnNoAddress      = errors.New("clickhouse: no valid address supplied")
+	ErrBatchInvalid              = errors.New("datastore: batch is invalid. check appended data is correct")
+	ErrBatchAlreadySent          = errors.New("datastore: batch has already been sent")
+	ErrBatchNotSent              = errors.New("datastore: invalid retry, batch not sent yet")
+	ErrAcquireConnTimeout        = errors.New("datastore: acquire conn timeout. you can increase the number of max open conn or the dial timeout")
+	ErrUnsupportedServerRevision = errors.New("datastore: unsupported server revision")
+	ErrBindMixedParamsFormats    = errors.New("datastore [bind]: mixed named, numeric or positional parameters")
+	ErrAcquireConnNoAddress      = errors.New("datastore: no valid address supplied")
 	ErrServerUnexpectedData      = errors.New("code: 101, message: Unexpected packet Data received from client")
-	ErrConnectionClosed          = errors.New("clickhouse: connection is closed")
+	ErrConnectionClosed          = errors.New("datastore: connection is closed")
 )
 
 type OpError struct {
@@ -47,19 +47,19 @@ type OpError struct {
 func (e *OpError) Error() string {
 	switch err := e.Err.(type) {
 	case *column.Error:
-		return fmt.Sprintf("clickhouse [%s]: (%s %s) %s", e.Op, e.ColumnName, err.ColumnType, err.Err)
+		return fmt.Sprintf("datastore [%s]: (%s %s) %s", e.Op, e.ColumnName, err.ColumnType, err.Err)
 	case *column.ColumnConverterError:
 		var hint string
 		if len(err.Hint) != 0 {
 			hint += ". " + err.Hint
 		}
-		return fmt.Sprintf("clickhouse [%s]: (%s) converting %s to %s is unsupported%s",
+		return fmt.Sprintf("datastore [%s]: (%s) converting %s to %s is unsupported%s",
 			err.Op, e.ColumnName,
 			err.From, err.To,
 			hint,
 		)
 	}
-	return fmt.Sprintf("clickhouse [%s]: %s", e.Op, e.Err)
+	return fmt.Sprintf("datastore [%s]: %s", e.Op, e.Err)
 }
 
 func Open(opt *Options) (driver.Conn, error) {
@@ -68,7 +68,7 @@ func Open(opt *Options) (driver.Conn, error) {
 	}
 	o := opt.setDefaults()
 
-	conn := &clickhouse{
+	conn := &datastore{
 		opt:       o,
 		idle:      newConnPool(o.ConnMaxLifetime, o.MaxIdleConns),
 		open:      make(chan struct{}, o.MaxOpenConns),
@@ -79,7 +79,7 @@ func Open(opt *Options) (driver.Conn, error) {
 	return conn, nil
 }
 
-// nativeTransport represents an implementation (TCP or HTTP) that can be pooled by the main clickhouse struct.
+// nativeTransport represents an implementation (TCP or HTTP) that can be pooled by the main datastore struct.
 // Implementations are not expected to be thread safe, which is why we provide acquire/release functions.
 type nativeTransport interface {
 	serverVersion() (*ServerVersion, error)
@@ -102,7 +102,7 @@ type nativeTransport interface {
 type nativeTransportAcquire func(context.Context) (nativeTransport, error)
 type nativeTransportRelease func(nativeTransport, error)
 
-type clickhouse struct {
+type datastore struct {
 	opt    *Options
 	connID int64
 
@@ -113,7 +113,7 @@ type clickhouse struct {
 	closed    *atomic.Bool
 }
 
-func (clickhouse) Contributors() []string {
+func (datastore) Contributors() []string {
 	list := contributors.List
 	if len(list[len(list)-1]) == 0 {
 		return list[:len(list)-1]
@@ -121,7 +121,7 @@ func (clickhouse) Contributors() []string {
 	return list
 }
 
-func (ch *clickhouse) ServerVersion() (*driver.ServerVersion, error) {
+func (ch *datastore) ServerVersion() (*driver.ServerVersion, error) {
 	var (
 		ctx, cancel = context.WithTimeout(context.Background(), ch.opt.DialTimeout)
 		conn, err   = ch.acquire(ctx)
@@ -134,7 +134,7 @@ func (ch *clickhouse) ServerVersion() (*driver.ServerVersion, error) {
 	return conn.serverVersion()
 }
 
-func (ch *clickhouse) Query(ctx context.Context, query string, args ...any) (rows driver.Rows, err error) {
+func (ch *datastore) Query(ctx context.Context, query string, args ...any) (rows driver.Rows, err error) {
 	conn, err := ch.acquire(ctx)
 	if err != nil {
 		return nil, err
@@ -143,7 +143,7 @@ func (ch *clickhouse) Query(ctx context.Context, query string, args ...any) (row
 	return conn.query(ctx, ch.release, query, args...)
 }
 
-func (ch *clickhouse) QueryRow(ctx context.Context, query string, args ...any) driver.Row {
+func (ch *datastore) QueryRow(ctx context.Context, query string, args ...any) driver.Row {
 	conn, err := ch.acquire(ctx)
 	if err != nil {
 		return &row{
@@ -155,7 +155,7 @@ func (ch *clickhouse) QueryRow(ctx context.Context, query string, args ...any) d
 	return conn.queryRow(ctx, ch.release, query, args...)
 }
 
-func (ch *clickhouse) Exec(ctx context.Context, query string, args ...any) error {
+func (ch *datastore) Exec(ctx context.Context, query string, args ...any) error {
 	conn, err := ch.acquire(ctx)
 	if err != nil {
 		return err
@@ -177,7 +177,7 @@ func (ch *clickhouse) Exec(ctx context.Context, query string, args ...any) error
 	return nil
 }
 
-func (ch *clickhouse) PrepareBatch(ctx context.Context, query string, opts ...driver.PrepareBatchOption) (driver.Batch, error) {
+func (ch *datastore) PrepareBatch(ctx context.Context, query string, opts ...driver.PrepareBatchOption) (driver.Batch, error) {
 	conn, err := ch.acquire(ctx)
 	if err != nil {
 		return nil, err
@@ -201,7 +201,7 @@ func getPrepareBatchOptions(opts ...driver.PrepareBatchOption) driver.PrepareBat
 }
 
 // Deprecated: use context aware `WithAsync()` for any async operations
-func (ch *clickhouse) AsyncInsert(ctx context.Context, query string, wait bool, args ...any) error {
+func (ch *datastore) AsyncInsert(ctx context.Context, query string, wait bool, args ...any) error {
 	conn, err := ch.acquire(ctx)
 	if err != nil {
 		return err
@@ -215,7 +215,7 @@ func (ch *clickhouse) AsyncInsert(ctx context.Context, query string, wait bool, 
 	return nil
 }
 
-func (ch *clickhouse) Ping(ctx context.Context) (err error) {
+func (ch *datastore) Ping(ctx context.Context) (err error) {
 	conn, err := ch.acquire(ctx)
 	if err != nil {
 		return err
@@ -229,7 +229,7 @@ func (ch *clickhouse) Ping(ctx context.Context) (err error) {
 	return nil
 }
 
-func (ch *clickhouse) Stats() driver.Stats {
+func (ch *datastore) Stats() driver.Stats {
 	return driver.Stats{
 		Open:         len(ch.open),
 		MaxOpenConns: cap(ch.open),
@@ -239,7 +239,7 @@ func (ch *clickhouse) Stats() driver.Stats {
 	}
 }
 
-func (ch *clickhouse) dial(ctx context.Context) (conn nativeTransport, err error) {
+func (ch *datastore) dial(ctx context.Context) (conn nativeTransport, err error) {
 	if err := ctx.Err(); err != nil {
 		return nil, err
 	}
@@ -296,7 +296,7 @@ func DefaultDialStrategy(ctx context.Context, connID int, opt *Options, dial Dia
 	return r, err
 }
 
-func (ch *clickhouse) acquire(ctx context.Context) (conn nativeTransport, err error) {
+func (ch *datastore) acquire(ctx context.Context) (conn nativeTransport, err error) {
 	if ch.closed.Load() {
 		return nil, ErrConnectionClosed
 	}
@@ -339,7 +339,7 @@ func (ch *clickhouse) acquire(ctx context.Context) (conn nativeTransport, err er
 
 }
 
-func (ch *clickhouse) release(conn nativeTransport, err error) {
+func (ch *datastore) release(conn nativeTransport, err error) {
 	if conn.isReleased() {
 		return
 	}
@@ -379,7 +379,7 @@ func (ch *clickhouse) release(conn nativeTransport, err error) {
 	ch.idle.Put(conn)
 }
 
-func (ch *clickhouse) Close() (err error) {
+func (ch *datastore) Close() (err error) {
 	ch.closeOnce.Do(func() {
 		err = ch.idle.Close()
 		ch.closed.Store(true)

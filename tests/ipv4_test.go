@@ -9,10 +9,10 @@ import (
 	"net/netip"
 	"testing"
 
-	"github.com/ClickHouse/clickhouse-go/v2/lib/column"
+	"github.com/hanzoai/datastore-go/lib/column"
 	"github.com/stretchr/testify/require"
 
-	"github.com/ClickHouse/clickhouse-go/v2"
+	"github.com/hanzoai/datastore-go"
 	"github.com/stretchr/testify/assert"
 )
 

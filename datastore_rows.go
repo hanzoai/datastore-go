@@ -1,10 +1,10 @@
-package clickhouse
+package datastore
 
 import (
 	"database/sql"
 	"io"
 
-	"github.com/ClickHouse/clickhouse-go/v2/lib/proto"
+	"github.com/hanzoai/datastore-go/lib/proto"
 )
 
 type rows struct {

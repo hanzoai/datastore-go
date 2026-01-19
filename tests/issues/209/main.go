@@ -6,13 +6,13 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/ClickHouse/clickhouse-go/v2"
-	"github.com/ClickHouse/clickhouse-go/v2/lib/driver"
-	clickhouse_tests "github.com/ClickHouse/clickhouse-go/v2/tests"
+	"github.com/hanzoai/datastore-go"
+	"github.com/hanzoai/datastore-go/lib/driver"
+	datastore_tests "github.com/hanzoai/datastore-go/tests"
 )
 
 func getClickhouseClient() driver.Conn {
-	conn, _ := clickhouse_tests.GetConnectionWithOptions(&clickhouse.Options{
+	conn, _ := datastore_tests.GetConnectionWithOptions(&datastore.Options{
 		Addr: []string{"127.0.0.1:9000"},
 		Auth: clickhouse.Auth{
 			Database: "",

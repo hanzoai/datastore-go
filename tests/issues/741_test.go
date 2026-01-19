@@ -10,16 +10,16 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ClickHouse/clickhouse-go/v2"
-	clickhouse_tests "github.com/ClickHouse/clickhouse-go/v2/tests"
-	clickhouse_std_tests "github.com/ClickHouse/clickhouse-go/v2/tests/std"
+	"github.com/hanzoai/datastore-go"
+	datastore_tests "github.com/hanzoai/datastore-go/tests"
+	clickhouse_std_tests "github.com/hanzoai/datastore-go/tests/std"
 	"github.com/google/uuid"
 	"github.com/shopspring/decimal"
 	"github.com/stretchr/testify/require"
 )
 
 func TestIssue741(t *testing.T) {
-	useSSL, err := strconv.ParseBool(clickhouse_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
 	require.NoError(t, err)
 	protocols := []clickhouse.Protocol{clickhouse.Native, clickhouse.HTTP}
 	for _, protocol := range protocols {
@@ -47,7 +47,7 @@ func TestIssue741(t *testing.T) {
 }
 
 func TestIssue741SingleColumn(t *testing.T) {
-	useSSL, err := strconv.ParseBool(clickhouse_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
 	require.NoError(t, err)
 	protocols := []clickhouse.Protocol{clickhouse.Native, clickhouse.HTTP}
 	for _, protocol := range protocols {
@@ -115,7 +115,7 @@ func generateRandomInsert(tableName string) (string, string, []any) {
 }
 
 func TestIssue741RandomOrder(t *testing.T) {
-	useSSL, err := strconv.ParseBool(clickhouse_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
 	require.NoError(t, err)
 	protocols := []clickhouse.Protocol{clickhouse.Native, clickhouse.HTTP}
 	for _, protocol := range protocols {
@@ -140,7 +140,7 @@ func TestIssue741RandomOrder(t *testing.T) {
 // test Append on native connection
 func TestIssue741NativeAppend(t *testing.T) {
 	var (
-		conn, err = clickhouse_tests.GetConnectionTCP("issues", clickhouse.Settings{
+		conn, err = datastore_tests.GetConnectionTCP("issues", clickhouse.Settings{
 			"max_execution_time": 60,
 		}, nil, &clickhouse.Compression{
 			Method: clickhouse.CompressionLZ4,
@@ -163,7 +163,7 @@ func TestIssue741NativeAppend(t *testing.T) {
 // test Append on native connection
 func TestIssue741StdAppend(t *testing.T) {
 	//test http and native
-	useSSL, err := strconv.ParseBool(clickhouse_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
 	require.NoError(t, err)
 	protocols := []clickhouse.Protocol{clickhouse.Native, clickhouse.HTTP}
 	for _, protocol := range protocols {

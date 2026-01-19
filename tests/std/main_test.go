@@ -7,14 +7,14 @@ import (
 	"os"
 	"testing"
 
-	"github.com/ClickHouse/clickhouse-go/v2"
-	clickhouse_tests "github.com/ClickHouse/clickhouse-go/v2/tests"
+	"github.com/hanzoai/datastore-go"
+	datastore_tests "github.com/hanzoai/datastore-go/tests"
 )
 
 const testSet string = "std"
 
 func TestMain(m *testing.M) {
-	os.Exit(clickhouse_tests.Runtime(m, testSet))
+	os.Exit(datastore_tests.Runtime(m, testSet))
 }
 
 func GetStdDSNConnection(protocol clickhouse.Protocol, secure bool, opts url.Values) (*sql.DB, error) {

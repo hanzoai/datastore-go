@@ -1,4 +1,4 @@
-package clickhouse
+package datastore
 
 import (
 	"context"
@@ -6,10 +6,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ClickHouse/clickhouse-go/v2/internal/circular"
+	"github.com/hanzoai/datastore-go/internal/circular"
 )
 
-var errQueueEmpty = errors.New("clickhouse: connection pool queue is empty")
+var errQueueEmpty = errors.New("datastore: connection pool queue is empty")
 
 type connPool struct {
 	mu    sync.RWMutex

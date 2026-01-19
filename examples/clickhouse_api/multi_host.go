@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 
-	"github.com/ClickHouse/clickhouse-go/v2"
+	"github.com/hanzoai/datastore-go"
 )
 
 func MultiHostVersion() error {
@@ -12,23 +12,23 @@ func MultiHostVersion() error {
 }
 
 func MultiHostRoundRobinVersion() error {
-	connOpenStrategy := clickhouse.ConnOpenRoundRobin
+	connOpenStrategy := datastore.ConnOpenRoundRobin
 	return multiHostVersion(&connOpenStrategy)
 }
 
 func MultiHostRandomVersion() error {
 	rand.Seed(85206178671753424)
 	defer ResetRandSeed()
-	connOpenStrategy := clickhouse.ConnOpenRandom
+	connOpenStrategy := datastore.ConnOpenRandom
 	return multiHostVersion(&connOpenStrategy)
 }
 
-func multiHostVersion(connOpenStrategy *clickhouse.ConnOpenStrategy) error {
+func multiHostVersion(connOpenStrategy *datastore.ConnOpenStrategy) error {
 	env, err := GetNativeTestEnvironment()
 	if err != nil {
 		return err
 	}
-	options := clickhouse.Options{
+	options := datastore.Options{
 		Addr: []string{"127.0.0.1:9001", "127.0.0.1:9002", fmt.Sprintf("%s:%d", env.Host, env.Port)},
 		Auth: clickhouse.Auth{
 			Database: env.Database,
@@ -39,7 +39,7 @@ func multiHostVersion(connOpenStrategy *clickhouse.ConnOpenStrategy) error {
 	if connOpenStrategy != nil {
 		options.ConnOpenStrategy = *connOpenStrategy
 	}
-	conn, err := clickhouse.Open(&options)
+	conn, err := datastore.Open(&options)
 	if err != nil {
 		return err
 	}

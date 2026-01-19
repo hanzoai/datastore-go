@@ -1,13 +1,13 @@
-package clickhouse
+package datastore
 
 import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/ClickHouse/clickhouse-go/v2/lib/driver"
+	"github.com/hanzoai/datastore-go/lib/driver"
 	"reflect"
 
-	"github.com/ClickHouse/clickhouse-go/v2/lib/proto"
+	"github.com/hanzoai/datastore-go/lib/proto"
 )
 
 type scanSelectQueryFunc func(ctx context.Context, query string, args ...any) (driver.Rows, error)
@@ -57,7 +57,7 @@ func scanSelect(queryFunc scanSelectQueryFunc, ctx context.Context, dest any, qu
 	return rows.Err()
 }
 
-func (ch *clickhouse) Select(ctx context.Context, dest any, query string, args ...any) error {
+func (ch *datastore) Select(ctx context.Context, dest any, query string, args ...any) error {
 	return scanSelect(ch.Query, ctx, dest, query, args...)
 }
 

@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/ClickHouse/clickhouse-go/v2/tests"
+	"github.com/hanzoai/datastore-go/tests"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -51,7 +51,7 @@ func TestIssue1446(t *testing.T) {
 
 	failRow := sampleFailRow{}
 	err = conn.QueryRow(ctx, "SELECT * FROM issue_1446 LIMIT 1").ScanStruct(&failRow)
-	assert.EqualError(t, err, "clickhouse [ScanRow]: (my_tuple) converting *string to string is unsupported")
+	assert.EqualError(t, err, "datastore [ScanRow]: (my_tuple) converting *string to string is unsupported")
 
 	okRow := sampleOkRow{}
 	err = conn.QueryRow(ctx, "SELECT * FROM issue_1446 LIMIT 1").ScanStruct(&okRow)

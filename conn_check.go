@@ -1,7 +1,7 @@
 //go:build linux || darwin || dragonfly || freebsd || netbsd || openbsd || solaris || illumos
 // +build linux darwin dragonfly freebsd netbsd openbsd solaris illumos
 
-package clickhouse
+package datastore
 
 import (
 	"crypto/tls"

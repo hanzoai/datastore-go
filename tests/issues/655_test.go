@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
-	"github.com/ClickHouse/clickhouse-go/v2"
-	clickhouse_tests "github.com/ClickHouse/clickhouse-go/v2/tests"
+	"github.com/hanzoai/datastore-go"
+	datastore_tests "github.com/hanzoai/datastore-go/tests"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -13,7 +13,7 @@ import (
 // Test655 confirms an agreed semantic on failing batch append results with entire batch cancellation.
 func Test655(t *testing.T) {
 	var (
-		conn, err = clickhouse_tests.GetConnectionTCP("issues", clickhouse.Settings{
+		conn, err = datastore_tests.GetConnectionTCP("issues", clickhouse.Settings{
 			"max_execution_time": 60,
 		}, nil, &clickhouse.Compression{
 			Method: clickhouse.CompressionLZ4,
@@ -36,6 +36,6 @@ func Test655(t *testing.T) {
 	type request struct {
 		Col1 string
 	}
-	require.Error(t, batch.AppendStruct(&request{Col1: "house"}), "clickhouse [AppendRow]: (Col1 Enum8('Click' = 5, 'House' = 25)) unknown element \"house\"")
+	require.Error(t, batch.AppendStruct(&request{Col1: "house"}), "datastore [AppendRow]: (Col1 Enum8('Click' = 5, 'House' = 25)) unknown element \"house\"")
 	assert.ErrorContains(t, batch.Send(), "clickhouse: batch is invalid. check appended data is correct")
 }

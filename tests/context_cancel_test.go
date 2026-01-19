@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ClickHouse/clickhouse-go/v2"
+	"github.com/hanzoai/datastore-go"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -99,7 +99,7 @@ func TestContextCancellationOfHeavyInsertFromS3(t *testing.T) {
 	})
 }
 
-func SetupTestContextCancellationType1(t *testing.T, protocol clickhouse.Protocol, fillTableWithRandomData bool) (clickhouse.Conn, error) {
+func SetupTestContextCancellationType1(t *testing.T, protocol clickhouse.Protocol, fillTableWithRandomData bool) (datastore.Conn, error) {
 	var (
 		q1 = "CREATE DATABASE IF NOT EXISTS test_query_cancellation"
 		q2 = "DROP TABLE IF EXISTS test_query_cancellation.trips"
@@ -177,7 +177,7 @@ func SetupTestContextCancellationType1(t *testing.T, protocol clickhouse.Protoco
 	return conn, nil
 }
 
-func ExecuteTestContextCancellation(t *testing.T, conn clickhouse.Conn, query string) {
+func ExecuteTestContextCancellation(t *testing.T, conn datastore.Conn, query string) {
 	// prepare context
 	ctx, cancelCtx := context.WithCancel(context.Background())
 	defer cancelCtx()

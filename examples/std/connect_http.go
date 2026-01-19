@@ -3,7 +3,7 @@ package std
 import (
 	"database/sql"
 	"fmt"
-	"github.com/ClickHouse/clickhouse-go/v2"
+	"github.com/hanzoai/datastore-go"
 )
 
 func ConnectHTTP() error {
@@ -11,7 +11,7 @@ func ConnectHTTP() error {
 	if err != nil {
 		return err
 	}
-	conn := clickhouse.OpenDB(&clickhouse.Options{
+	conn := datastore.OpenDB(&datastore.Options{
 		Addr: []string{fmt.Sprintf("%s:%d", env.Host, env.HttpPort)},
 		Auth: clickhouse.Auth{
 			Database: env.Database,
@@ -28,7 +28,7 @@ func ConnectDSNHTTP() error {
 	if err != nil {
 		return err
 	}
-	conn, err := sql.Open("clickhouse", fmt.Sprintf("http://%s:%d?username=%s&password=%s", env.Host, env.HttpPort, env.Username, env.Password))
+	conn, err := sql.Open("datastore", fmt.Sprintf("http://%s:%d?username=%s&password=%s", env.Host, env.HttpPort, env.Username, env.Password))
 	if err != nil {
 		return err
 	}

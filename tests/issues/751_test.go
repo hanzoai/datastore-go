@@ -5,13 +5,13 @@ import (
 	"database/sql"
 	"testing"
 
-	clickhouse_tests "github.com/ClickHouse/clickhouse-go/v2/tests"
+	datastore_tests "github.com/hanzoai/datastore-go/tests"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestIssue751(t *testing.T) {
-	conn, err := clickhouse_tests.GetConnectionTCP("issues", nil, nil, nil)
+	conn, err := datastore_tests.GetConnectionTCP("issues", nil, nil, nil)
 	require.NoError(t, err)
 	ctx := context.Background()
 	conn.Exec(ctx, "DROP TABLE IF EXISTS issue_751")

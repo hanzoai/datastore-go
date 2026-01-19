@@ -1,4 +1,4 @@
-package clickhouse
+package datastore
 
 import (
 	"context"
@@ -6,7 +6,7 @@ import (
 	"slices"
 	"time"
 
-	"github.com/ClickHouse/clickhouse-go/v2/ext"
+	"github.com/hanzoai/datastore-go/ext"
 	"go.opentelemetry.io/otel/trace"
 )
 

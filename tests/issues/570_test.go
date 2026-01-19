@@ -4,9 +4,9 @@ import (
 	"crypto/tls"
 	"database/sql"
 	"fmt"
-	"github.com/ClickHouse/clickhouse-go/v2"
-	clickhouse_tests "github.com/ClickHouse/clickhouse-go/v2/tests"
-	clickhouse_std_tests "github.com/ClickHouse/clickhouse-go/v2/tests/std"
+	"github.com/hanzoai/datastore-go"
+	datastore_tests "github.com/hanzoai/datastore-go/tests"
+	clickhouse_std_tests "github.com/hanzoai/datastore-go/tests/std"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"strconv"
@@ -17,16 +17,16 @@ import (
 func TestIssue570(t *testing.T) {
 	env, err := GetIssuesTestEnvironment()
 	require.NoError(t, err)
-	useSSL, err := strconv.ParseBool(clickhouse_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
 	require.NoError(t, err)
 	var tlsConfig *tls.Config
-	dsn := fmt.Sprintf("clickhouse://%s:%s@%s:%d/default", env.Username, env.Password,
+	dsn := fmt.Sprintf("datastore://%s:%s@%s:%d/default", env.Username, env.Password,
 		env.Host, env.Port)
 	port := env.Port
 	if useSSL {
 		tlsConfig = &tls.Config{}
 		port = env.SslPort
-		dsn = fmt.Sprintf("clickhouse://%s:%s@%s:%d/default?secure=true", env.Username, env.Password,
+		dsn = fmt.Sprintf("datastore://%s:%s@%s:%d/default?secure=true", env.Username, env.Password,
 			env.Host, env.SslPort)
 	}
 	require.NoError(t, err)
@@ -40,7 +40,7 @@ func TestIssue570(t *testing.T) {
 	conn.Close()
 
 	// check we can pass Options
-	options = &clickhouse.Options{
+	options = &datastore.Options{
 		Addr: []string{fmt.Sprintf("%s:%d", env.Host, port)},
 		Auth: clickhouse.Auth{
 			Database: "default",
@@ -57,7 +57,7 @@ func TestIssue570(t *testing.T) {
 	assert.NoError(t, conn.Ping())
 
 	// check we can open with a DSN
-	conn, err = sql.Open("clickhouse", dsn)
+	conn, err = sql.Open("datastore", dsn)
 	require.NoError(t, err)
 	assert.NoError(t, conn.Ping())
 }

@@ -5,15 +5,15 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/ClickHouse/clickhouse-go/v2"
-	clickhouse_tests "github.com/ClickHouse/clickhouse-go/v2/tests"
-	clickhouse_std_tests "github.com/ClickHouse/clickhouse-go/v2/tests/std"
+	"github.com/hanzoai/datastore-go"
+	datastore_tests "github.com/hanzoai/datastore-go/tests"
+	clickhouse_std_tests "github.com/hanzoai/datastore-go/tests/std"
 	"github.com/stretchr/testify/require"
 )
 
 func Test762(t *testing.T) {
 	var (
-		conn, err = clickhouse_tests.GetConnectionTCP("issues", nil, nil, &clickhouse.Compression{
+		conn, err = datastore_tests.GetConnectionTCP("issues", nil, nil, &clickhouse.Compression{
 			Method: clickhouse.CompressionLZ4,
 		})
 	)
@@ -32,7 +32,7 @@ func Test762(t *testing.T) {
 }
 
 func Test762Std(t *testing.T) {
-	useSSL, err := strconv.ParseBool(clickhouse_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
 	require.NoError(t, err)
 	conn, err := clickhouse_std_tests.GetDSNConnection("issues", clickhouse.Native, useSSL, nil)
 	rows, err := conn.Query("SELECT tuple(NULL)")

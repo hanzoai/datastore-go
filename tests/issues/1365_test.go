@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
-	"github.com/ClickHouse/clickhouse-go/v2/lib/column"
-	"github.com/ClickHouse/clickhouse-go/v2/tests"
+	"github.com/hanzoai/datastore-go/lib/column"
+	"github.com/hanzoai/datastore-go/tests"
 	"github.com/stretchr/testify/require"
 )
 

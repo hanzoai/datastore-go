@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	clickhouse_tests "github.com/ClickHouse/clickhouse-go/v2/tests"
+	datastore_tests "github.com/hanzoai/datastore-go/tests"
 	"github.com/stretchr/testify/require"
 
 	"github.com/stretchr/testify/assert"
@@ -14,7 +14,7 @@ import (
 func TestIssue260(t *testing.T) {
 	var (
 		ctx       = context.Background()
-		conn, err = clickhouse_tests.GetConnectionTCP("issues", nil, nil, nil)
+		conn, err = datastore_tests.GetConnectionTCP("issues", nil, nil, nil)
 	)
 	require.NoError(t, err)
 	require.NoError(t, err)

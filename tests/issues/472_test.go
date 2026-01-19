@@ -5,17 +5,17 @@ import (
 	"testing"
 	"time"
 
-	clickhouse_tests "github.com/ClickHouse/clickhouse-go/v2/tests"
+	datastore_tests "github.com/hanzoai/datastore-go/tests"
 	"github.com/stretchr/testify/require"
 
-	"github.com/ClickHouse/clickhouse-go/v2"
+	"github.com/hanzoai/datastore-go"
 	"github.com/google/uuid"
 )
 
 func TestIssue472(t *testing.T) {
 	var (
 		ctx       = context.Background()
-		conn, err = clickhouse_tests.GetConnectionTCP("issues", nil, nil, &clickhouse.Compression{
+		conn, err = datastore_tests.GetConnectionTCP("issues", nil, nil, &clickhouse.Compression{
 			Method: clickhouse.CompressionLZ4,
 		})
 	)

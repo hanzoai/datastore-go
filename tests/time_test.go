@@ -6,12 +6,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ClickHouse/clickhouse-go/v2"
+	"github.com/hanzoai/datastore-go"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
-func setupTimeTest(t *testing.T, protocol clickhouse.Protocol) clickhouse.Conn {
+func setupTimeTest(t *testing.T, protocol clickhouse.Protocol) datastore.Conn {
 	conn, err := GetNativeConnection(t, protocol, nil, nil, nil)
 	require.NoError(t, err)
 	if !CheckMinServerServerVersion(conn, 25, 6, 0) {

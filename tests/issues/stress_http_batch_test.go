@@ -4,8 +4,8 @@ import (
 	"context"
 	"crypto/tls"
 	"fmt"
-	"github.com/ClickHouse/clickhouse-go/v2"
-	"github.com/ClickHouse/clickhouse-go/v2/tests"
+	"github.com/hanzoai/datastore-go"
+	"github.com/hanzoai/datastore-go/tests"
 	"github.com/stretchr/testify/require"
 	"strconv"
 	"strings"
@@ -27,7 +27,7 @@ func TestStressHTTPBatchConcurrency(t *testing.T) {
 		tlsConfig = &tls.Config{}
 		port = env.HttpsPort
 	}
-	conn, err := tests.GetConnectionWithOptions(&clickhouse.Options{
+	conn, err := tests.GetConnectionWithOptions(&datastore.Options{
 		Protocol: clickhouse.HTTP,
 		Addr:     []string{fmt.Sprintf("%s:%d", env.Host, port)},
 		Auth: clickhouse.Auth{
@@ -59,7 +59,7 @@ func TestStressHTTPBatchConcurrency(t *testing.T) {
 
 	var totalCount atomic.Int64
 
-	doBatchInsert := func(id, batchID int, conn clickhouse.Conn) error {
+	doBatchInsert := func(id, batchID int, conn datastore.Conn) error {
 		ctx := context.Background()
 		t.Log(id, "PreparingBatch")
 		batch, err := conn.PrepareBatch(ctx, "INSERT INTO http_batch_issue")

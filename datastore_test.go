@@ -1,6 +1,6 @@
 //go:build go1.25
 
-package clickhouse
+package datastore
 
 import (
 	"context"
@@ -94,7 +94,7 @@ func TestAcquire_NewConnection(t *testing.T) {
 	}
 	defer conn.Close()
 
-	ch := conn.(*clickhouse)
+	ch := conn.(*datastore)
 	transport, err := ch.acquire(context.Background())
 	if err != nil {
 		t.Fatalf("acquire failed: %v", err)
@@ -133,7 +133,7 @@ func TestAcquire_ReuseIdleConnection(t *testing.T) {
 	}
 	defer conn.Close()
 
-	ch := conn.(*clickhouse)
+	ch := conn.(*datastore)
 
 	// Acquire and release a connection
 	conn1, err := ch.acquire(context.Background())
@@ -179,7 +179,7 @@ func TestAcquire_BadConnection(t *testing.T) {
 	}
 	defer conn.Close()
 
-	ch := conn.(*clickhouse)
+	ch := conn.(*datastore)
 
 	// Acquire and release a connection
 	conn1, err := ch.acquire(context.Background())
@@ -230,7 +230,7 @@ func TestAcquire_MaxOpenConnsLimit(t *testing.T) {
 	}
 	defer conn.Close()
 
-	ch := conn.(*clickhouse)
+	ch := conn.(*datastore)
 
 	// Acquire up to max
 	conns := make([]nativeTransport, maxOpen)
@@ -266,7 +266,7 @@ func TestAcquire_ClosedConnection(t *testing.T) {
 		t.Fatalf("Open failed: %v", err)
 	}
 
-	ch := conn.(*clickhouse)
+	ch := conn.(*datastore)
 
 	// Close the connection pool
 	conn.Close()
@@ -296,7 +296,7 @@ func TestAcquire_DialFailure(t *testing.T) {
 	}
 	defer conn.Close()
 
-	ch := conn.(*clickhouse)
+	ch := conn.(*datastore)
 
 	_, err = ch.acquire(context.Background())
 	if !errors.Is(err, expectedErr) {
@@ -326,7 +326,7 @@ func TestAcquire_ContextCancellation(t *testing.T) {
 	}
 	defer conn.Close()
 
-	ch := conn.(*clickhouse)
+	ch := conn.(*datastore)
 
 	// Acquire one connection to fill the pool
 	conn1, err := ch.acquire(context.Background())
@@ -362,7 +362,7 @@ func TestRelease_HealthyConnection(t *testing.T) {
 	}
 	defer conn.Close()
 
-	ch := conn.(*clickhouse)
+	ch := conn.(*datastore)
 
 	transport, err := ch.acquire(context.Background())
 	if err != nil {
@@ -402,7 +402,7 @@ func TestRelease_WithError(t *testing.T) {
 	}
 	defer conn.Close()
 
-	ch := conn.(*clickhouse)
+	ch := conn.(*datastore)
 
 	transport, err := ch.acquire(context.Background())
 	if err != nil {
@@ -441,7 +441,7 @@ func TestRelease_ExpiredConnection(t *testing.T) {
 	}
 	defer conn.Close()
 
-	ch := conn.(*clickhouse)
+	ch := conn.(*datastore)
 
 	transport, err := ch.acquire(context.Background())
 	if err != nil {
@@ -477,7 +477,7 @@ func TestRelease_DoubleRelease(t *testing.T) {
 	}
 	defer conn.Close()
 
-	ch := conn.(*clickhouse)
+	ch := conn.(*datastore)
 
 	transport, err := ch.acquire(context.Background())
 	if err != nil {
@@ -510,7 +510,7 @@ func TestRelease_FreeBufOnConnRelease(t *testing.T) {
 	}
 	defer conn.Close()
 
-	ch := conn.(*clickhouse)
+	ch := conn.(*datastore)
 
 	transport, err := ch.acquire(context.Background())
 	if err != nil {
@@ -541,7 +541,7 @@ func TestRelease_WhenPoolClosed(t *testing.T) {
 		t.Fatalf("Open failed: %v", err)
 	}
 
-	ch := conn.(*clickhouse)
+	ch := conn.(*datastore)
 
 	transport, err := ch.acquire(context.Background())
 	if err != nil {
@@ -579,7 +579,7 @@ func TestAcquireRelease_Cycle(t *testing.T) {
 	}
 	defer conn.Close()
 
-	ch := conn.(*clickhouse)
+	ch := conn.(*datastore)
 
 	// First cycle
 	conn1, err := ch.acquire(context.Background())
@@ -624,7 +624,7 @@ func TestAcquireRelease_Concurrent(t *testing.T) {
 	}
 	defer conn.Close()
 
-	ch := conn.(*clickhouse)
+	ch := conn.(*datastore)
 
 	var wg sync.WaitGroup
 	numGoroutines := 50
@@ -677,7 +677,7 @@ func TestAcquireRelease_PoolSaturation(t *testing.T) {
 	}
 	defer conn.Close()
 
-	ch := conn.(*clickhouse)
+	ch := conn.(*datastore)
 
 	// Saturate the pool
 	conns := make([]nativeTransport, maxOpen)

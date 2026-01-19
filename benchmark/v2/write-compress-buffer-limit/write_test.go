@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/ClickHouse/clickhouse-go/v2"
+	"github.com/hanzoai/datastore-go"
 	"log"
 	"runtime"
 	"testing"
@@ -23,8 +23,8 @@ func PrintMemUsage() {
 	fmt.Printf("\tNumGC = %v\n", m.NumGC)
 }
 
-func getConnection(maxCompressionBuffer int) clickhouse.Conn {
-	conn, err := clickhouse.Open(&clickhouse.Options{
+func getConnection(maxCompressionBuffer int) datastore.Conn {
+	conn, err := datastore.Open(&datastore.Options{
 		Addr: []string{"127.0.0.1:9000"},
 		Auth: clickhouse.Auth{
 			Database: "default",

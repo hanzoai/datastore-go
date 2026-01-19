@@ -5,18 +5,18 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/ClickHouse/clickhouse-go/v2"
-	clickhouse_tests "github.com/ClickHouse/clickhouse-go/v2/tests"
+	"github.com/hanzoai/datastore-go"
+	datastore_tests "github.com/hanzoai/datastore-go/tests"
 	"github.com/stretchr/testify/require"
 )
 
 func TestIssue1638_NullableJSON(t *testing.T) {
 	ctx := context.Background()
 
-	conn, err := clickhouse_tests.GetConnectionTCP("issues", nil, nil, nil)
+	conn, err := datastore_tests.GetConnectionTCP("issues", nil, nil, nil)
 	require.NoError(t, err)
 	require.NoError(t, err, "open clickhouse")
-	if !clickhouse_tests.CheckMinServerServerVersion(conn, 25, 2, 0) {
+	if !datastore_tests.CheckMinServerServerVersion(conn, 25, 2, 0) {
 		// https://clickhouse.com/docs/ru/whats-new/changelog#new-feature-3
 		t.Skip(fmt.Errorf("unsupported clickhouse version. JSON not supported in Nullable"))
 		return

@@ -1,10 +1,10 @@
-package clickhouse
+package datastore
 
 import (
 	"reflect"
 
-	"github.com/ClickHouse/clickhouse-go/v2/lib/column"
-	"github.com/ClickHouse/clickhouse-go/v2/lib/driver"
+	"github.com/hanzoai/datastore-go/lib/column"
+	"github.com/hanzoai/datastore-go/lib/driver"
 )
 
 type columnType struct {

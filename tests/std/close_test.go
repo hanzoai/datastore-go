@@ -3,20 +3,20 @@ package std
 import (
 	"crypto/tls"
 	"fmt"
-	clickhouse_tests "github.com/ClickHouse/clickhouse-go/v2/tests"
+	datastore_tests "github.com/hanzoai/datastore-go/tests"
 	"github.com/stretchr/testify/require"
 	"strconv"
 	"testing"
 	"time"
 
-	"github.com/ClickHouse/clickhouse-go/v2"
+	"github.com/hanzoai/datastore-go"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestStdConnClose(t *testing.T) {
 	env, err := GetStdTestEnvironment()
 	require.NoError(t, err)
-	useSSL, err := strconv.ParseBool(clickhouse_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
 	require.NoError(t, err)
 	port := env.Port
 	var tlsConfig *tls.Config
@@ -24,7 +24,7 @@ func TestStdConnClose(t *testing.T) {
 		port = env.SslPort
 		tlsConfig = &tls.Config{}
 	}
-	conn := GetConnectionWithOptions(&clickhouse.Options{
+	conn := GetConnectionWithOptions(&datastore.Options{
 		Addr: []string{fmt.Sprintf("%s:%d", env.Host, port)},
 		Auth: clickhouse.Auth{
 			Database: "default",

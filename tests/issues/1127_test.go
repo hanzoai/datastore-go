@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/ClickHouse/clickhouse-go/v2"
-	clickhouse_tests "github.com/ClickHouse/clickhouse-go/v2/tests"
+	"github.com/hanzoai/datastore-go"
+	datastore_tests "github.com/hanzoai/datastore-go/tests"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -15,7 +15,7 @@ func Test1127(t *testing.T) {
 	t.Skip("This test is flaky and needs to be fixed")
 
 	var (
-		conn, err = clickhouse_tests.GetConnectionTCP("issues", nil, nil, nil)
+		conn, err = datastore_tests.GetConnectionTCP("issues", nil, nil, nil)
 	)
 	require.NoError(t, err)
 

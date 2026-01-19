@@ -5,19 +5,19 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/ClickHouse/clickhouse-go/v2"
-	clickhouse_tests "github.com/ClickHouse/clickhouse-go/v2/tests"
+	"github.com/hanzoai/datastore-go"
+	datastore_tests "github.com/hanzoai/datastore-go/tests"
 	"github.com/stretchr/testify/require"
 )
 
 func Test1280(t *testing.T) {
 	var (
-		conn, err = clickhouse_tests.GetConnectionTCP(testSet, clickhouse.Settings{
+		conn, err = datastore_tests.GetConnectionTCP(testSet, clickhouse.Settings{
 			"max_execution_time": 60,
 		}, nil, &clickhouse.Compression{
 			Method: clickhouse.CompressionLZ4,
 		})
-		env, errEnv = clickhouse_tests.GetTestEnvironment(testSet)
+		env, errEnv = datastore_tests.GetTestEnvironment(testSet)
 	)
 	ctx := context.Background()
 	require.NoError(t, err)

@@ -1,4 +1,4 @@
-package clickhouse
+package datastore
 
 import (
 	"bytes"
@@ -23,7 +23,7 @@ import (
 
 	"github.com/ClickHouse/ch-go/compress"
 	chproto "github.com/ClickHouse/ch-go/proto"
-	"github.com/ClickHouse/clickhouse-go/v2/lib/proto"
+	"github.com/hanzoai/datastore-go/lib/proto"
 	"github.com/andybalholm/brotli"
 )
 
@@ -150,12 +150,12 @@ func dialHttp(ctx context.Context, addr string, num int, opt *Options) (*httpCon
 		if opt.Debugf != nil {
 			debugf = func(format string, v ...any) {
 				opt.Debugf(
-					"[clickhouse-http][%s][id=%d] "+format,
+					"[datastore-http][%s][id=%d] "+format,
 					append([]interface{}{addr, num}, v...)...,
 				)
 			}
 		} else {
-			debugf = log.New(os.Stdout, fmt.Sprintf("[clickhouse-http][%s][id=%d]", addr, num), 0).Printf
+			debugf = log.New(os.Stdout, fmt.Sprintf("[datastore-http][%s][id=%d]", addr, num), 0).Printf
 		}
 	}
 
@@ -739,7 +739,7 @@ func (h *httpConnect) ping(ctx context.Context) error {
 	if len(column) == 1 && column[0] == "1" {
 		return nil
 	}
-	return errors.New("clickhouse [ping]:: cannot ping clickhouse")
+	return errors.New("datastore [ping]:: cannot ping clickhouse")
 }
 
 func (h *httpConnect) close() error {

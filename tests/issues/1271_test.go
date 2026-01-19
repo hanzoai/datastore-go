@@ -9,18 +9,18 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ClickHouse/clickhouse-go/v2/lib/driver"
+	"github.com/hanzoai/datastore-go/lib/driver"
 	"github.com/google/uuid"
 
-	"github.com/ClickHouse/clickhouse-go/v2"
-	clickhouse_tests "github.com/ClickHouse/clickhouse-go/v2/tests"
+	"github.com/hanzoai/datastore-go"
+	datastore_tests "github.com/hanzoai/datastore-go/tests"
 	"github.com/stretchr/testify/require"
 )
 
 // test for https://github.com/ClickHouse/clickhouse-go/issues/1271
 func Test1271(t *testing.T) {
 	var (
-		conn, err = clickhouse_tests.GetConnectionTCP("issues", clickhouse.Settings{
+		conn, err = datastore_tests.GetConnectionTCP("issues", clickhouse.Settings{
 			"max_execution_time": 60,
 		}, nil, &clickhouse.Compression{
 			Method: clickhouse.CompressionLZ4,

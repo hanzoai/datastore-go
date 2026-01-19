@@ -22,9 +22,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ClickHouse/clickhouse-go/v2"
-	"github.com/ClickHouse/clickhouse-go/v2/lib/driver"
-	"github.com/ClickHouse/clickhouse-go/v2/lib/proto"
+	"github.com/hanzoai/datastore-go"
+	"github.com/hanzoai/datastore-go/lib/driver"
+	"github.com/hanzoai/datastore-go/lib/proto"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/go-units"
 	"github.com/google/uuid"
@@ -74,7 +74,7 @@ func (env *ClickHouseTestEnvironment) setVersion() {
 	if err != nil {
 		panic(err)
 	}
-	conn, err := clickhouse.Open(&clickhouse.Options{
+	conn, err := datastore.Open(&datastore.Options{
 		Addr:     []string{fmt.Sprintf("%s:%d", env.Host, port)},
 		Settings: nil,
 		Auth: clickhouse.Auth{
@@ -267,7 +267,7 @@ func GetExternalTestEnvironment(testSet string) (ClickHouseTestEnvironment, erro
 	return env, nil
 }
 
-func ClientOptionsFromEnv(env ClickHouseTestEnvironment, settings clickhouse.Settings, useHTTP bool) clickhouse.Options {
+func ClientOptionsFromEnv(env ClickHouseTestEnvironment, settings clickhouse.Settings, useHTTP bool) datastore.Options {
 	timeout, err := strconv.Atoi(GetEnv("CLICKHOUSE_DIAL_TIMEOUT", "10"))
 	if err != nil {
 		timeout = 10
@@ -296,7 +296,7 @@ func ClientOptionsFromEnv(env ClickHouseTestEnvironment, settings clickhouse.Set
 		protocol = clickhouse.HTTP
 	}
 
-	return clickhouse.Options{
+	return datastore.Options{
 		Addr:     []string{fmt.Sprintf("%s:%d", env.Host, port)},
 		Protocol: protocol,
 		Settings: settings,
@@ -315,7 +315,7 @@ func ClientOptionsFromEnv(env ClickHouseTestEnvironment, settings clickhouse.Set
 
 func TestClientWithDefaultOptions(env ClickHouseTestEnvironment, settings clickhouse.Settings) (driver.Conn, error) {
 	opts := ClientOptionsFromEnv(env, settings, false)
-	return clickhouse.Open(&opts)
+	return datastore.Open(&opts)
 }
 
 func TestClientDefaultSettings(env ClickHouseTestEnvironment) clickhouse.Settings {
@@ -341,7 +341,7 @@ func TestClientWithDefaultSettings(env ClickHouseTestEnvironment) (driver.Conn, 
 
 func TestDatabaseSQLClientWithDefaultOptions(env ClickHouseTestEnvironment, settings clickhouse.Settings) (*sql.DB, error) {
 	opts := ClientOptionsFromEnv(env, settings, false)
-	return sql.Open("clickhouse", OptionsToDSN(&opts))
+	return sql.Open("datastore", OptionsToDSN(&opts))
 }
 
 func TestDatabaseSQLClientWithDefaultSettings(env ClickHouseTestEnvironment) (*sql.DB, error) {
@@ -390,11 +390,11 @@ func GetJWTConnection(testSet string, settings clickhouse.Settings, tlsConfig *t
 	return getJWTConnection(env, env.Database, settings, tlsConfig, maxConnLifetime, jwtFunc)
 }
 
-func GetConnectionWithOptions(options *clickhouse.Options) (driver.Conn, error) {
+func GetConnectionWithOptions(options *datastore.Options) (driver.Conn, error) {
 	if options.Settings == nil {
 		options.Settings = clickhouse.Settings{}
 	}
-	conn, err := clickhouse.Open(options)
+	conn, err := datastore.Open(options)
 	if err != nil {
 		return nil, err
 	}
@@ -408,7 +408,7 @@ func GetConnectionWithOptions(options *clickhouse.Options) (driver.Conn, error) 
 	if err != nil {
 		return nil, err
 	}
-	return clickhouse.Open(options)
+	return datastore.Open(options)
 }
 
 func getConnection(env ClickHouseTestEnvironment, database string, settings clickhouse.Settings, tlsConfig *tls.Config, compression *clickhouse.Compression) (driver.Conn, error) {
@@ -450,7 +450,7 @@ func getConnection(env ClickHouseTestEnvironment, database string, settings clic
 		return nil, err
 	}
 
-	conn, err := clickhouse.Open(&clickhouse.Options{
+	conn, err := datastore.Open(&datastore.Options{
 		Protocol: clickhouse.Native,
 		Addr:     []string{fmt.Sprintf("%s:%d", env.Host, port)},
 		Settings: settings,
@@ -509,7 +509,7 @@ func getHTTPConnection(env ClickHouseTestEnvironment, sessionName string, databa
 	// This may be problematic on some tests, but overall it is more consistent.
 	settings["session_id"] = sessionName
 
-	conn, err := clickhouse.Open(&clickhouse.Options{
+	conn, err := datastore.Open(&datastore.Options{
 		Protocol: clickhouse.HTTP,
 		Addr:     []string{fmt.Sprintf("%s:%d", env.Host, port)},
 		Settings: settings,
@@ -561,7 +561,7 @@ func getJWTConnection(env ClickHouseTestEnvironment, database string, settings c
 		return nil, err
 	}
 
-	conn, err := clickhouse.Open(&clickhouse.Options{
+	conn, err := datastore.Open(&datastore.Options{
 		Addr:     []string{fmt.Sprintf("%s:%d", env.Host, port)},
 		Settings: settings,
 		Auth: clickhouse.Auth{
@@ -845,7 +845,7 @@ func CleanupNativeConn(t *testing.T, conn driver.Conn) {
 	})
 }
 
-func OptionsToDSN(o *clickhouse.Options) string {
+func OptionsToDSN(o *datastore.Options) string {
 	var u url.URL
 
 	if o.Protocol == clickhouse.Native {
@@ -902,11 +902,11 @@ func OptionsToDSN(o *clickhouse.Options) string {
 	if o.ConnOpenStrategy != 0 {
 		var strategy string
 		switch o.ConnOpenStrategy {
-		case clickhouse.ConnOpenInOrder:
+		case datastore.ConnOpenInOrder:
 			strategy = "in_order"
-		case clickhouse.ConnOpenRoundRobin:
+		case datastore.ConnOpenRoundRobin:
 			strategy = "round_robin"
-		case clickhouse.ConnOpenRandom:
+		case datastore.ConnOpenRandom:
 			strategy = "random"
 		}
 

@@ -3,8 +3,8 @@ package clickhouse_api
 import (
 	"context"
 	"fmt"
-	"github.com/ClickHouse/clickhouse-go/v2"
-	clickhouse_tests "github.com/ClickHouse/clickhouse-go/v2/tests"
+	"github.com/hanzoai/datastore-go"
+	datastore_tests "github.com/hanzoai/datastore-go/tests"
 )
 
 func QueryWithParameters() error {
@@ -13,7 +13,7 @@ func QueryWithParameters() error {
 		return err
 	}
 
-	if !clickhouse_tests.CheckMinServerServerVersion(conn, 22, 8, 0) {
+	if !datastore_tests.CheckMinServerServerVersion(conn, 22, 8, 0) {
 		return nil
 	}
 

@@ -3,10 +3,10 @@ package issues
 import (
 	"context"
 	"fmt"
-	"github.com/ClickHouse/clickhouse-go/v2"
-	"github.com/ClickHouse/clickhouse-go/v2/ext"
-	clickhouse_tests "github.com/ClickHouse/clickhouse-go/v2/tests"
-	clickhouse_std_tests "github.com/ClickHouse/clickhouse-go/v2/tests/std"
+	"github.com/hanzoai/datastore-go"
+	"github.com/hanzoai/datastore-go/ext"
+	datastore_tests "github.com/hanzoai/datastore-go/tests"
+	clickhouse_std_tests "github.com/hanzoai/datastore-go/tests/std"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"strconv"
@@ -15,7 +15,7 @@ import (
 )
 
 func Test990(t *testing.T) {
-	useSSL, err := strconv.ParseBool(clickhouse_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
 	require.NoError(t, err)
 	conn, err := clickhouse_std_tests.GetDSNConnection("issues", clickhouse.HTTP, useSSL, nil)
 

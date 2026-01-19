@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/ClickHouse/clickhouse-go/v2"
+	"github.com/hanzoai/datastore-go"
 )
 
 func OpenDb() error {
@@ -13,7 +13,7 @@ func OpenDb() error {
 	if err != nil {
 		return err
 	}
-	conn := clickhouse.OpenDB(&clickhouse.Options{
+	conn := datastore.OpenDB(&datastore.Options{
 		Addr: []string{fmt.Sprintf("%s:%d", env.Host, env.Port)},
 		Auth: clickhouse.Auth{
 			Database: env.Database,

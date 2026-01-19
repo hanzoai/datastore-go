@@ -4,9 +4,9 @@ import (
 	"context"
 	"crypto/tls"
 	"encoding/json"
-	"github.com/ClickHouse/clickhouse-go/v2"
-	"github.com/ClickHouse/clickhouse-go/v2/lib/driver"
-	clickhouse_tests "github.com/ClickHouse/clickhouse-go/v2/tests"
+	"github.com/hanzoai/datastore-go"
+	"github.com/hanzoai/datastore-go/lib/driver"
+	datastore_tests "github.com/hanzoai/datastore-go/tests"
 	"os"
 	"testing"
 )
@@ -14,11 +14,11 @@ import (
 const testSet string = "json_bench"
 
 func TestMain(m *testing.M) {
-	os.Exit(clickhouse_tests.Runtime(m, testSet))
+	os.Exit(datastore_tests.Runtime(m, testSet))
 }
 
 func GetNativeConnection(settings clickhouse.Settings, tlsConfig *tls.Config, compression *clickhouse.Compression) (driver.Conn, error) {
-	return clickhouse_tests.GetConnectionTCP(testSet, settings, tlsConfig, compression)
+	return datastore_tests.GetConnectionTCP(testSet, settings, tlsConfig, compression)
 }
 
 func prepareJSONTest(ctx context.Context, b *testing.B) driver.Conn {
@@ -32,7 +32,7 @@ func prepareJSONTest(ctx context.Context, b *testing.B) driver.Conn {
 		b.Fatal(err)
 	}
 
-	if !clickhouse_tests.CheckMinServerServerVersion(conn, 24, 9, 0) {
+	if !datastore_tests.CheckMinServerServerVersion(conn, 24, 9, 0) {
 		b.Skip("unsupported clickhouse version for JSON type")
 	}
 
@@ -77,7 +77,7 @@ func prepareJSONReadTest(ctx context.Context, b *testing.B) (driver.Conn, driver
 		b.Fatal(err)
 	}
 
-	jsonRow := clickhouse_tests.BuildFastTestJSONStruct()
+	jsonRow := datastore_tests.BuildFastTestJSONStruct()
 	for i := 0; i < b.N; i++ {
 		if err := batch.Append(jsonRow); err != nil {
 			b.Fatal(err)
@@ -103,7 +103,7 @@ func BenchmarkJSONInsert(b *testing.B) {
 		conn, batch := prepareJSONInsertTest(ctx, b)
 		defer conn.Close()
 
-		jsonRow := clickhouse_tests.BuildTestJSONPaths()
+		jsonRow := datastore_tests.BuildTestJSONPaths()
 
 		b.ReportAllocs()
 		b.ResetTimer()
@@ -120,7 +120,7 @@ func BenchmarkJSONInsert(b *testing.B) {
 		conn, batch := prepareJSONInsertTest(ctx, b)
 		defer conn.Close()
 
-		inputRow := clickhouse_tests.BuildTestJSONStruct()
+		inputRow := datastore_tests.BuildTestJSONStruct()
 
 		b.ReportAllocs()
 		b.ResetTimer()
@@ -137,7 +137,7 @@ func BenchmarkJSONInsert(b *testing.B) {
 		conn, batch := prepareJSONInsertTest(ctx, b)
 		defer conn.Close()
 
-		inputRow := clickhouse_tests.BuildFastTestJSONStruct()
+		inputRow := datastore_tests.BuildFastTestJSONStruct()
 
 		b.ReportAllocs()
 		b.ResetTimer()
@@ -154,7 +154,7 @@ func BenchmarkJSONInsert(b *testing.B) {
 		conn, batch := prepareJSONInsertTest(ctx, b)
 		defer conn.Close()
 
-		inputRow := clickhouse_tests.BuildTestJSONStruct()
+		inputRow := datastore_tests.BuildTestJSONStruct()
 
 		b.ReportAllocs()
 		b.ResetTimer()
@@ -176,7 +176,7 @@ func BenchmarkJSONInsert(b *testing.B) {
 		conn, batch := prepareJSONInsertTest(ctx, b)
 		defer conn.Close()
 
-		inputRow := clickhouse_tests.BuildTestJSONStruct()
+		inputRow := datastore_tests.BuildTestJSONStruct()
 
 		inputRowStr, err := json.Marshal(inputRow)
 		if err != nil {
@@ -225,7 +225,7 @@ func BenchmarkJSONRead(b *testing.B) {
 		for i := 0; i < b.N; i++ {
 			rows.Next()
 
-			var row clickhouse_tests.TestStruct
+			var row datastore_tests.TestStruct
 			err := rows.Scan(&row)
 			if err != nil {
 				b.Fatal(err)
@@ -244,7 +244,7 @@ func BenchmarkJSONRead(b *testing.B) {
 		for i := 0; i < b.N; i++ {
 			rows.Next()
 
-			var row clickhouse_tests.FastTestStruct
+			var row datastore_tests.FastTestStruct
 			err := rows.Scan(&row)
 			if err != nil {
 				b.Fatal(err)
@@ -265,7 +265,7 @@ func BenchmarkJSONRead(b *testing.B) {
 // BenchmarkJSONMarshal compares the different ways to turn JSON data back into a string
 func BenchmarkJSONMarshal(b *testing.B) {
 	b.Run("paths", func(b *testing.B) {
-		pathsRow := clickhouse_tests.BuildTestJSONPaths()
+		pathsRow := datastore_tests.BuildTestJSONPaths()
 
 		b.ReportAllocs()
 		b.ResetTimer()
@@ -278,7 +278,7 @@ func BenchmarkJSONMarshal(b *testing.B) {
 	})
 
 	b.Run("structs", func(b *testing.B) {
-		structRow := clickhouse_tests.BuildTestJSONStruct()
+		structRow := datastore_tests.BuildTestJSONStruct()
 
 		b.ReportAllocs()
 		b.ResetTimer()

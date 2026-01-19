@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/ClickHouse/clickhouse-go/v2"
+	"github.com/hanzoai/datastore-go"
 )
 
 func CompressOpenDB() error {
@@ -13,7 +13,7 @@ func CompressOpenDB() error {
 	if err != nil {
 		return err
 	}
-	conn := clickhouse.OpenDB(&clickhouse.Options{
+	conn := datastore.OpenDB(&datastore.Options{
 		Addr: []string{fmt.Sprintf("%s:%d", env.Host, env.HttpPort)},
 		Auth: clickhouse.Auth{
 			Database: env.Database,
@@ -66,7 +66,7 @@ func CompressOpen() error {
 		return err
 	}
 	// note compress=gzip&compress_level=5
-	conn, err := sql.Open("clickhouse", fmt.Sprintf("http://%s:%d?username=%s&password=%s&compress=gzip&compress_level=5", env.Host, env.HttpPort, env.Username, env.Password))
+	conn, err := sql.Open("datastore", fmt.Sprintf("http://%s:%d?username=%s&password=%s&compress=gzip&compress_level=5", env.Host, env.HttpPort, env.Username, env.Password))
 	defer func() {
 		conn.Exec("DROP TABLE example")
 	}()

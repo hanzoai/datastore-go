@@ -7,7 +7,7 @@ import (
 	"os"
 	"path"
 
-	"github.com/ClickHouse/clickhouse-go/v2"
+	"github.com/hanzoai/datastore-go"
 )
 
 func SSLVersion() error {
@@ -30,7 +30,7 @@ func SSLVersion() error {
 		return err
 	}
 	t.RootCAs = caCertPool
-	conn, err := clickhouse.Open(&clickhouse.Options{
+	conn, err := datastore.Open(&datastore.Options{
 		Addr: []string{fmt.Sprintf("%s:%d", env.Host, env.SslPort)},
 		Auth: clickhouse.Auth{
 			Database: env.Database,

@@ -1,4 +1,4 @@
-package clickhouse
+package datastore
 
 import (
 	"context"
@@ -15,8 +15,8 @@ import (
 	"sync/atomic"
 	"syscall"
 
-	"github.com/ClickHouse/clickhouse-go/v2/lib/column"
-	chdriver "github.com/ClickHouse/clickhouse-go/v2/lib/driver"
+	"github.com/hanzoai/datastore-go/lib/column"
+	chdriver "github.com/hanzoai/datastore-go/lib/driver"
 )
 
 var globalConnID int64

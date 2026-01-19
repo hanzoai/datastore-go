@@ -6,7 +6,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/ClickHouse/clickhouse-go/v2"
+	"github.com/hanzoai/datastore-go"
 )
 
 const ddl = `
@@ -25,7 +25,7 @@ type row struct {
 	Col3 []uint8
 }
 
-func benchmark(conn clickhouse.Conn) error {
+func benchmark(conn datastore.Conn) error {
 	batch, err := conn.PrepareBatch(context.Background(), "INSERT INTO benchmark")
 	if err != nil {
 		return err
@@ -47,7 +47,7 @@ func benchmark(conn clickhouse.Conn) error {
 func main() {
 	var (
 		ctx       = context.Background()
-		conn, err = clickhouse.Open(&clickhouse.Options{
+		conn, err = datastore.Open(&datastore.Options{
 			Addr: []string{"127.0.0.1:9000"},
 			Auth: clickhouse.Auth{
 				Database: "default",

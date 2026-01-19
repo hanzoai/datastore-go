@@ -3,8 +3,8 @@ package std
 import (
 	"database/sql"
 	"fmt"
-	"github.com/ClickHouse/clickhouse-go/v2"
-	clickhouse_tests "github.com/ClickHouse/clickhouse-go/v2/tests/std"
+	"github.com/hanzoai/datastore-go"
+	datastore_tests "github.com/hanzoai/datastore-go/tests/std"
 	"time"
 )
 
@@ -67,7 +67,7 @@ func BindParameters() error {
 	); err != nil {
 		return err
 	}
-	fmt.Println(clickhouse_tests.ToJson(result))
+	fmt.Println(datastore_tests.ToJson(result))
 
 	// named bind
 	if err := conn.QueryRow(`SELECT * FROM example WHERE Col1 = @Col1 AND Col3 = @Col2`,
@@ -80,7 +80,7 @@ func BindParameters() error {
 	); err != nil {
 		return err
 	}
-	fmt.Println(clickhouse_tests.ToJson(result))
+	fmt.Println(datastore_tests.ToJson(result))
 
 	// positional bind
 	if err := conn.QueryRow(`SELECT * FROM example WHERE Col1 = ? AND Col3 = ?`,
@@ -93,7 +93,7 @@ func BindParameters() error {
 	); err != nil {
 		return err
 	}
-	fmt.Println(clickhouse_tests.ToJson(result))
+	fmt.Println(datastore_tests.ToJson(result))
 
 	return nil
 }

@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/ClickHouse/clickhouse-go/v2"
-	clickhouse_tests "github.com/ClickHouse/clickhouse-go/v2/tests/std"
+	"github.com/hanzoai/datastore-go"
+	datastore_tests "github.com/hanzoai/datastore-go/tests/std"
 	"github.com/google/uuid"
 )
 
@@ -16,7 +16,7 @@ func UseContext() error {
 	if err != nil {
 		return err
 	}
-	if !clickhouse_tests.CheckMinServerVersion(conn, 22, 6, 1) {
+	if !datastore_tests.CheckMinServerVersion(conn, 22, 6, 1) {
 		return nil
 	}
 	// we can use context to pass settings to a specific API call

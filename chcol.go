@@ -1,6 +1,6 @@
-package clickhouse
+package datastore
 
-import "github.com/ClickHouse/clickhouse-go/v2/lib/chcol"
+import "github.com/hanzoai/datastore-go/lib/chcol"
 
 // Re-export chcol types/funcs to top level clickhouse package
 

@@ -4,12 +4,12 @@ import (
 	"context"
 	"testing"
 
-	"github.com/ClickHouse/clickhouse-go/v2"
-	"github.com/ClickHouse/clickhouse-go/v2/tests"
+	"github.com/hanzoai/datastore-go"
+	"github.com/hanzoai/datastore-go/tests"
 	"github.com/stretchr/testify/require"
 )
 
-func benchmark1685(ctx context.Context, conn clickhouse.Conn) error {
+func benchmark1685(ctx context.Context, conn datastore.Conn) error {
 	for i := 0; i < 10_000; i++ {
 		err := conn.Exec(ctx,
 			"INSERT INTO test_xxxx VALUES (?, ?, [1, 2, 3, 4, 5, 6, 7, 8, 9], now())",

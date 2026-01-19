@@ -5,15 +5,15 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/ClickHouse/clickhouse-go/v2"
-	clickhouse_tests "github.com/ClickHouse/clickhouse-go/v2/tests"
+	"github.com/hanzoai/datastore-go"
+	datastore_tests "github.com/hanzoai/datastore-go/tests"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func Test870(t *testing.T) {
 	var (
-		conn, err = clickhouse_tests.GetConnectionTCP("issues", clickhouse.Settings{
+		conn, err = datastore_tests.GetConnectionTCP("issues", clickhouse.Settings{
 			"max_execution_time": 60,
 			"flatten_nested":     0,
 		}, nil, &clickhouse.Compression{
@@ -21,14 +21,14 @@ func Test870(t *testing.T) {
 		})
 	)
 
-	if !clickhouse_tests.CheckMinServerServerVersion(conn, 22, 8, 0) {
+	if !datastore_tests.CheckMinServerServerVersion(conn, 22, 8, 0) {
 		t.Skip(fmt.Errorf("unsupported clickhouse version"))
 		return
 	}
 
 	ctx := context.Background()
 	require.NoError(t, err)
-	env, err := clickhouse_tests.GetTestEnvironment(testSet)
+	env, err := datastore_tests.GetTestEnvironment(testSet)
 	require.NoError(t, err)
 	ddl := fmt.Sprintf("CREATE TABLE `%s`.`test_870` (Col1 String, Col2 Int64) Engine MergeTree() ORDER BY tuple()", env.Database)
 	defer func() {

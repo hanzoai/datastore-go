@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/ClickHouse/clickhouse-go/v2"
+	"github.com/hanzoai/datastore-go"
 )
 
 func Connect() error {
@@ -13,7 +13,7 @@ func Connect() error {
 	if err != nil {
 		return err
 	}
-	conn := clickhouse.OpenDB(&clickhouse.Options{
+	conn := datastore.OpenDB(&datastore.Options{
 		Addr: []string{fmt.Sprintf("%s:%d", env.Host, env.Port)},
 		Auth: clickhouse.Auth{
 			Database: env.Database,
@@ -29,7 +29,7 @@ func ConnectDSN() error {
 	if err != nil {
 		return err
 	}
-	conn, err := sql.Open("clickhouse", fmt.Sprintf("clickhouse://%s:%d?username=%s&password=%s", env.Host, env.Port, env.Username, env.Password))
+	conn, err := sql.Open("datastore", fmt.Sprintf("datastore://%s:%d?username=%s&password=%s", env.Host, env.Port, env.Username, env.Password))
 	if err != nil {
 		return err
 	}
@@ -47,7 +47,7 @@ func ConnectUsingHTTPProxy() error {
 		return fmt.Errorf("failed to parse proxy URL: %w", err)
 	}
 
-	conn := clickhouse.OpenDB(&clickhouse.Options{
+	conn := datastore.OpenDB(&datastore.Options{
 		Addr: []string{fmt.Sprintf("%s:%d", env.Host, env.Port)},
 		Auth: clickhouse.Auth{
 			Database: env.Database,
@@ -67,7 +67,7 @@ func ConnectUsingHTTPProxyDSN() error {
 
 	urlEncodedProxyURL := url.QueryEscape("http://proxy.example.com:3128")
 
-	conn, err := sql.Open("clickhouse", fmt.Sprintf("clickhouse://%s:%d?username=%s&password=%s&http_proxy=%s", env.Host, env.Port, env.Username, env.Password, urlEncodedProxyURL))
+	conn, err := sql.Open("datastore", fmt.Sprintf("datastore://%s:%d?username=%s&password=%s&http_proxy=%s", env.Host, env.Port, env.Username, env.Password, urlEncodedProxyURL))
 	if err != nil {
 		return err
 	}

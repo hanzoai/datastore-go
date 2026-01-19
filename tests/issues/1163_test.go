@@ -8,15 +8,15 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/ClickHouse/clickhouse-go/v2"
-	clickhouse_tests "github.com/ClickHouse/clickhouse-go/v2/tests"
+	"github.com/hanzoai/datastore-go"
+	datastore_tests "github.com/hanzoai/datastore-go/tests"
 	"github.com/stretchr/testify/require"
 )
 
 func TestIssue1163(t *testing.T) {
 	env, err := GetIssuesTestEnvironment()
 	require.NoError(t, err)
-	useSSL, err := strconv.ParseBool(clickhouse_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
 	require.NoError(t, err)
 	var tlsConfig *tls.Config
 	port := env.Port
@@ -25,7 +25,7 @@ func TestIssue1163(t *testing.T) {
 		port = env.SslPort
 	}
 	var debugfCalled bool
-	options := &clickhouse.Options{
+	options := &datastore.Options{
 		Addr:  []string{fmt.Sprintf("%s:%d", env.Host, port)},
 		Debug: true,
 		Debugf: func(format string, v ...any) {
@@ -38,7 +38,7 @@ func TestIssue1163(t *testing.T) {
 		},
 		TLS: tlsConfig,
 	}
-	conn := clickhouse.Connector(options)
+	conn := datastore.Connector(options)
 	c, err := conn.Connect(context.TODO())
 	require.NoError(t, err)
 	require.NotNil(t, c)

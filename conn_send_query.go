@@ -1,7 +1,7 @@
-package clickhouse
+package datastore
 
 import (
-	"github.com/ClickHouse/clickhouse-go/v2/lib/proto"
+	"github.com/hanzoai/datastore-go/lib/proto"
 )
 
 // Connection::sendQuery

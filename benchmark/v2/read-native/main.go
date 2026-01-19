@@ -6,10 +6,10 @@ import (
 	"log"
 	"time"
 
-	"github.com/ClickHouse/clickhouse-go/v2"
+	"github.com/hanzoai/datastore-go"
 )
 
-func benchmarkRead(conn clickhouse.Conn) error {
+func benchmarkRead(conn datastore.Conn) error {
 	rows, err := conn.Query(context.Background(), `
 SELECT
 	number
@@ -35,7 +35,7 @@ FROM system.numbers LIMIT 1000000
 	return nil
 }
 
-func benchmarkString(conn clickhouse.Conn) error {
+func benchmarkString(conn datastore.Conn) error {
 	rows, err := conn.Query(context.Background(), `SELECT toString(number) FROM numbers(500000000)`)
 	if err != nil {
 		return err
@@ -52,7 +52,7 @@ func benchmarkString(conn clickhouse.Conn) error {
 }
 
 func main() {
-	conn, err := clickhouse.Open(&clickhouse.Options{
+	conn, err := datastore.Open(&datastore.Options{
 		Addr: []string{"127.0.0.1:9000"},
 		Auth: clickhouse.Auth{
 			Database: "default",

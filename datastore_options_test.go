@@ -1,4 +1,4 @@
-package clickhouse
+package datastore
 
 import (
 	"crypto/tls"
@@ -38,7 +38,7 @@ func TestParseDSN(t *testing.T) {
 		},
 		{
 			"native protocol",
-			"clickhouse://127.0.0.1/",
+			"datastore://127.0.0.1/",
 			&Options{
 				Protocol: Native,
 				TLS:      nil,
@@ -62,7 +62,7 @@ func TestParseDSN(t *testing.T) {
 		},
 		{
 			"native protocol",
-			"clickhouse://127.0.0.1/test_database",
+			"datastore://127.0.0.1/test_database",
 			&Options{
 				Protocol: Native,
 				TLS:      nil,
@@ -92,7 +92,7 @@ func TestParseDSN(t *testing.T) {
 		},
 		{
 			"native protocol with user",
-			"clickhouse://user@127.0.0.1/test_database",
+			"datastore://user@127.0.0.1/test_database",
 			&Options{
 				Protocol: Native,
 				TLS:      nil,
@@ -108,7 +108,7 @@ func TestParseDSN(t *testing.T) {
 		},
 		{
 			"native protocol with authenticated user",
-			"clickhouse://joe:Ys31@127.0.0.1/test_database",
+			"datastore://joe:Ys31@127.0.0.1/test_database",
 			&Options{
 				Protocol: Native,
 				TLS:      nil,
@@ -125,7 +125,7 @@ func TestParseDSN(t *testing.T) {
 		},
 		{
 			"native protocol with debug",
-			"clickhouse://127.0.0.1/test_database?debug=true",
+			"datastore://127.0.0.1/test_database?debug=true",
 			&Options{
 				Protocol: Native,
 				TLS:      nil,
@@ -141,7 +141,7 @@ func TestParseDSN(t *testing.T) {
 		},
 		{
 			"native protocol with secure",
-			"clickhouse://127.0.0.1/test_database?secure=true",
+			"datastore://127.0.0.1/test_database?secure=true",
 			&Options{
 				Protocol: Native,
 				TLS: &tls.Config{
@@ -158,7 +158,7 @@ func TestParseDSN(t *testing.T) {
 		},
 		{
 			"native protocol with skip_verify",
-			"clickhouse://127.0.0.1/test_database?secure=true&skip_verify=true",
+			"datastore://127.0.0.1/test_database?secure=true&skip_verify=true",
 			&Options{
 				Protocol: Native,
 				TLS: &tls.Config{
@@ -175,7 +175,7 @@ func TestParseDSN(t *testing.T) {
 		},
 		{
 			"native protocol with secure (legacy)",
-			"clickhouse://127.0.0.1/test_database?secure",
+			"datastore://127.0.0.1/test_database?secure",
 			&Options{
 				Protocol: Native,
 				TLS: &tls.Config{
@@ -192,7 +192,7 @@ func TestParseDSN(t *testing.T) {
 		},
 		{
 			"native protocol with skip_verify (legacy)",
-			"clickhouse://127.0.0.1/test_database?secure&skip_verify",
+			"datastore://127.0.0.1/test_database?secure&skip_verify",
 			&Options{
 				Protocol: Native,
 				TLS: &tls.Config{
@@ -209,19 +209,19 @@ func TestParseDSN(t *testing.T) {
 		},
 		{
 			"native protocol with secure (bad)",
-			"clickhouse://127.0.0.1/test_database?secure=ture",
+			"datastore://127.0.0.1/test_database?secure=ture",
 			nil,
-			"clickhouse [dsn parse]:secure: strconv.ParseBool: parsing \"ture\": invalid syntax",
+			"datastore [dsn parse]:secure: strconv.ParseBool: parsing \"ture\": invalid syntax",
 		},
 		{
 			"native protocol with skip_verify (bad)",
-			"clickhouse://127.0.0.1/test_database?secure&skip_verify=ture",
+			"datastore://127.0.0.1/test_database?secure&skip_verify=ture",
 			nil,
-			"clickhouse [dsn parse]:verify: strconv.ParseBool: parsing \"ture\": invalid syntax",
+			"datastore [dsn parse]:verify: strconv.ParseBool: parsing \"ture\": invalid syntax",
 		},
 		{
 			"native protocol with default lz4 compression",
-			"clickhouse://127.0.0.1/test_database?compress=true",
+			"datastore://127.0.0.1/test_database?compress=true",
 			&Options{
 				Protocol: Native,
 				TLS:      nil,
@@ -239,7 +239,7 @@ func TestParseDSN(t *testing.T) {
 		},
 		{
 			"native protocol with none compression",
-			"clickhouse://127.0.0.1/test_database?compress=none",
+			"datastore://127.0.0.1/test_database?compress=none",
 			&Options{
 				Protocol: Native,
 				TLS:      nil,
@@ -258,7 +258,7 @@ func TestParseDSN(t *testing.T) {
 		},
 		{
 			"native protocol with zstd compression",
-			"clickhouse://127.0.0.1/test_database?compress=zstd",
+			"datastore://127.0.0.1/test_database?compress=zstd",
 			&Options{
 				Protocol: Native,
 				TLS:      nil,
@@ -277,7 +277,7 @@ func TestParseDSN(t *testing.T) {
 		},
 		{
 			"native protocol with lz4 compression",
-			"clickhouse://127.0.0.1/test_database?compress=lz4",
+			"datastore://127.0.0.1/test_database?compress=lz4",
 			&Options{
 				Protocol: Native,
 				TLS:      nil,
@@ -296,7 +296,7 @@ func TestParseDSN(t *testing.T) {
 		},
 		{
 			"native protocol with gzip compression",
-			"clickhouse://127.0.0.1/test_database?compress=gzip",
+			"datastore://127.0.0.1/test_database?compress=gzip",
 			&Options{
 				Protocol: Native,
 				TLS:      nil,
@@ -315,7 +315,7 @@ func TestParseDSN(t *testing.T) {
 		},
 		{
 			"native protocol with deflate compression",
-			"clickhouse://127.0.0.1/test_database?compress=deflate",
+			"datastore://127.0.0.1/test_database?compress=deflate",
 			&Options{
 				Protocol: Native,
 				TLS:      nil,
@@ -334,7 +334,7 @@ func TestParseDSN(t *testing.T) {
 		},
 		{
 			"native protocol with br compression",
-			"clickhouse://127.0.0.1/test_database?compress=br",
+			"datastore://127.0.0.1/test_database?compress=br",
 			&Options{
 				Protocol: Native,
 				TLS:      nil,
@@ -353,7 +353,7 @@ func TestParseDSN(t *testing.T) {
 		},
 		{
 			"native protocol with default lz4 compression and compression level 5",
-			"clickhouse://127.0.0.1/test_database?compress=true&compress_level=5",
+			"datastore://127.0.0.1/test_database?compress=true&compress_level=5",
 			&Options{
 				Protocol: Native,
 				TLS:      nil,
@@ -372,7 +372,7 @@ func TestParseDSN(t *testing.T) {
 		},
 		{
 			"native protocol with 1KiB max compression buffer",
-			"clickhouse://127.0.0.1/test_database?max_compression_buffer=1024",
+			"datastore://127.0.0.1/test_database?max_compression_buffer=1024",
 			&Options{
 				Protocol:             Native,
 				TLS:                  nil,
@@ -388,19 +388,19 @@ func TestParseDSN(t *testing.T) {
 		},
 		{
 			"native protocol with invalid numeric max compression buffer",
-			"clickhouse://127.0.0.1/test_database?max_compression_buffer=onebyte",
+			"datastore://127.0.0.1/test_database?max_compression_buffer=onebyte",
 			nil,
 			"max_compression_buffer invalid value: strconv.Atoi: parsing \"onebyte\": invalid syntax",
 		},
 		{
 			"native protocol with invalid numeric compress level",
-			"clickhouse://127.0.0.1/test_database?compress_level=first",
+			"datastore://127.0.0.1/test_database?compress_level=first",
 			nil,
 			"compress_level invalid value: strconv.ParseInt: parsing \"first\": invalid syntax",
 		},
 		{
 			"native protocol dial timeout",
-			"clickhouse://127.0.0.1/test_database?max_compression_buffer=1024",
+			"datastore://127.0.0.1/test_database?max_compression_buffer=1024",
 			&Options{
 				Protocol:             Native,
 				TLS:                  nil,
@@ -416,7 +416,7 @@ func TestParseDSN(t *testing.T) {
 		},
 		{
 			"client info",
-			"clickhouse://127.0.0.1/test_database?client_info_product=grafana/6.1,clickhouse-datasource/1.1",
+			"datastore://127.0.0.1/test_database?client_info_product=grafana/6.1,clickhouse-datasource/1.1",
 			&Options{
 				Protocol: Native,
 				ClientInfo: ClientInfo{
@@ -437,7 +437,7 @@ func TestParseDSN(t *testing.T) {
 		},
 		{
 			"client connection pool settings",
-			"clickhouse://127.0.0.1/test_database?max_open_conns=-1&max_idle_conns=0&conn_max_lifetime=1h",
+			"datastore://127.0.0.1/test_database?max_open_conns=-1&max_idle_conns=0&conn_max_lifetime=1h",
 			&Options{
 				Protocol:        Native,
 				MaxOpenConns:    -1,

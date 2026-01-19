@@ -1,11 +1,11 @@
-package clickhouse
+package datastore
 
 import (
 	"context"
 	"reflect"
 	"time"
 
-	"github.com/ClickHouse/clickhouse-go/v2/lib/proto"
+	"github.com/hanzoai/datastore-go/lib/proto"
 )
 
 type ProfileEvent struct {

@@ -3,11 +3,11 @@ package std
 import (
 	"context"
 	"database/sql"
-	clickhouse_tests "github.com/ClickHouse/clickhouse-go/v2/tests"
+	datastore_tests "github.com/hanzoai/datastore-go/tests"
 
 	"fmt"
-	"github.com/ClickHouse/clickhouse-go/v2"
-	"github.com/ClickHouse/clickhouse-go/v2/lib/chcol"
+	"github.com/hanzoai/datastore-go"
+	"github.com/hanzoai/datastore-go/lib/chcol"
 	"github.com/stretchr/testify/require"
 	"testing"
 	"time"
@@ -16,7 +16,7 @@ import (
 var variantTestDate, _ = time.Parse(time.RFC3339, "2024-12-13T02:09:30.123Z")
 
 func setupVariantTest(t *testing.T) *sql.DB {
-	clickhouse_tests.SkipOnCloud(t, "cannot modify Variant settings on cloud")
+	datastore_tests.SkipOnCloud(t, "cannot modify Variant settings on cloud")
 
 	conn, err := GetStdOpenDBConnection(clickhouse.Native, nil, nil, &clickhouse.Compression{
 		Method: clickhouse.CompressionLZ4,

@@ -12,7 +12,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ClickHouse/clickhouse-go/v2"
+	"github.com/hanzoai/datastore-go"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -33,7 +33,7 @@ func TestConn(t *testing.T) {
 func TestBadConn(t *testing.T) {
 	env, err := GetNativeTestEnvironment()
 	require.NoError(t, err)
-	conn, err := clickhouse.Open(&clickhouse.Options{
+	conn, err := datastore.Open(&datastore.Options{
 		Addr: []string{"127.0.0.1:9790"},
 		Auth: clickhouse.Auth{
 			Database: "default",
@@ -51,23 +51,23 @@ func TestBadConn(t *testing.T) {
 }
 
 func TestConnFailover(t *testing.T) {
-	testConnFailover(t, clickhouse.ConnOpenInOrder)
+	testConnFailover(t, datastore.ConnOpenInOrder)
 }
 
 func TestConnFailoverRoundRobin(t *testing.T) {
-	testConnFailover(t, clickhouse.ConnOpenRoundRobin)
+	testConnFailover(t, datastore.ConnOpenRoundRobin)
 }
 
 func TestConnFailoverRandom(t *testing.T) {
 	t.Skip("Go 1.25 math/random changes")
 	//rand.Seed(85206178671753423)
 	//defer ResetRandSeed()
-	testConnFailover(t, clickhouse.ConnOpenRandom)
+	testConnFailover(t, datastore.ConnOpenRandom)
 }
 
-func testConnFailover(t *testing.T, connOpenStrategy clickhouse.ConnOpenStrategy) {
+func testConnFailover(t *testing.T, connOpenStrategy datastore.ConnOpenStrategy) {
 	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
-		if connOpenStrategy == clickhouse.ConnOpenRandom {
+		if connOpenStrategy == datastore.ConnOpenRandom {
 			SkipOnHTTP(t, protocol, "random seed")
 		}
 
@@ -87,7 +87,7 @@ func testConnFailover(t *testing.T, connOpenStrategy clickhouse.ConnOpenStrategy
 				port = env.HttpsPort
 			}
 		}
-		options := clickhouse.Options{
+		options := datastore.Options{
 			Protocol:         protocol,
 			ConnOpenStrategy: connOpenStrategy,
 			Addr: []string{
@@ -139,7 +139,7 @@ func TestReadDeadline(t *testing.T) {
 		port = env.SslPort
 		tlsConfig = &tls.Config{}
 	}
-	conn, err := GetConnectionWithOptions(&clickhouse.Options{
+	conn, err := GetConnectionWithOptions(&datastore.Options{
 		Addr: []string{fmt.Sprintf("%s:%d", env.Host, port)},
 		Auth: clickhouse.Auth{
 			Database: "default",
@@ -174,7 +174,7 @@ func TestQueryDeadline(t *testing.T) {
 		port = env.SslPort
 		tlsConfig = &tls.Config{}
 	}
-	conn, err := GetConnectionWithOptions(&clickhouse.Options{
+	conn, err := GetConnectionWithOptions(&datastore.Options{
 		Addr: []string{fmt.Sprintf("%s:%d", env.Host, port)},
 		Auth: clickhouse.Auth{
 			Database: "default",
@@ -213,7 +213,7 @@ func TestBlockBufferSize(t *testing.T) {
 				port = env.HttpsPort
 			}
 		}
-		conn, err := GetConnectionWithOptions(&clickhouse.Options{
+		conn, err := GetConnectionWithOptions(&datastore.Options{
 			Protocol: protocol,
 			Addr:     []string{fmt.Sprintf("%s:%d", env.Host, port)},
 			Auth: clickhouse.Auth{
@@ -263,7 +263,7 @@ func TestConnAcquireRelease(t *testing.T) {
 				port = env.HttpsPort
 			}
 		}
-		conn, err := GetConnectionWithOptions(&clickhouse.Options{
+		conn, err := GetConnectionWithOptions(&datastore.Options{
 			Protocol: protocol,
 			Addr:     []string{fmt.Sprintf("%s:%d", env.Host, port)},
 			Auth: clickhouse.Auth{
@@ -316,11 +316,11 @@ func TestConnCustomDialStrategy(t *testing.T) {
 	validAddr := opts.Addr[0]
 	opts.Addr = []string{"invalid.host:9001"}
 
-	opts.DialStrategy = func(ctx context.Context, connID int, opts *clickhouse.Options, dial clickhouse.Dial) (clickhouse.DialResult, error) {
+	opts.DialStrategy = func(ctx context.Context, connID int, opts *datastore.Options, dial clickhouse.Dial) (clickhouse.DialResult, error) {
 		return dial(ctx, validAddr, opts)
 	}
 
-	conn, err := clickhouse.Open(&opts)
+	conn, err := datastore.Open(&opts)
 	require.NoError(t, err)
 
 	require.NoError(t, err)
@@ -341,7 +341,7 @@ func TestEmptyDatabaseConfig(t *testing.T) {
 		port = env.SslPort
 		tlsConfig = &tls.Config{}
 	}
-	options := &clickhouse.Options{
+	options := &datastore.Options{
 		Addr: []string{fmt.Sprintf("%s:%d", env.Host, port)},
 		Auth: clickhouse.Auth{
 			Username: env.Username,
@@ -432,7 +432,7 @@ func TestConnectionExpiresIdleConnection(t *testing.T) {
 	opts.MaxIdleConns = 20
 	opts.MaxOpenConns = 20
 	opts.ConnMaxLifetime = time.Second / 10
-	conn, err := clickhouse.Open(&opts)
+	conn, err := datastore.Open(&opts)
 	require.NoError(t, err)
 
 	// run 1000 queries in parallel
@@ -457,7 +457,7 @@ func TestConnectionExpiresIdleConnection(t *testing.T) {
 	}, time.Second*10, opts.ConnMaxLifetime, "expected connections to be reset back to %d", expectedConnections)
 }
 
-func getActiveConnections(t *testing.T, client clickhouse.Conn) (conns int64) {
+func getActiveConnections(t *testing.T, client datastore.Conn) (conns int64) {
 	ctx := context.Background()
 	r := client.QueryRow(ctx, "SELECT sum(value) as conns FROM system.metrics WHERE metric LIKE '%Connection'")
 	require.NoError(t, r.Err())
@@ -499,7 +499,7 @@ func TestFreeBufOnConnRelease(t *testing.T) {
 		port = env.SslPort
 		tlsConfig = &tls.Config{}
 	}
-	conn, err := GetConnectionWithOptions(&clickhouse.Options{
+	conn, err := GetConnectionWithOptions(&datastore.Options{
 		Addr: []string{fmt.Sprintf("%s:%d", env.Host, port)},
 		Auth: clickhouse.Auth{
 			Database: "default",

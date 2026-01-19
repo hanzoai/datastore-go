@@ -4,8 +4,8 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/ClickHouse/clickhouse-go/v2"
-	clickhouse_tests "github.com/ClickHouse/clickhouse-go/v2/tests"
+	"github.com/hanzoai/datastore-go"
+	datastore_tests "github.com/hanzoai/datastore-go/tests"
 	"github.com/stretchr/testify/require"
 
 	"github.com/stretchr/testify/assert"
@@ -20,7 +20,7 @@ func TestStdWithTotals(t *testing.T) {
 		SELECT number FROM system.numbers LIMIT 100
 	) GROUP BY n WITH TOTALS
 	`
-	useSSL, err := strconv.ParseBool(clickhouse_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
 	require.NoError(t, err)
 	conn, err := GetStdDSNConnection(clickhouse.Native, useSSL, nil)
 	require.NoError(t, err)

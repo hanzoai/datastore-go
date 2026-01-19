@@ -5,8 +5,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/ClickHouse/clickhouse-go/v2"
-	"github.com/ClickHouse/clickhouse-go/v2/lib/driver"
+	"github.com/hanzoai/datastore-go"
+	"github.com/hanzoai/datastore-go/lib/driver"
 )
 
 const testSet string = "native"

@@ -1,11 +1,11 @@
-package clickhouse
+package datastore
 
 import (
 	_ "embed"
 	"fmt"
 	"time"
 
-	"github.com/ClickHouse/clickhouse-go/v2/lib/proto"
+	"github.com/hanzoai/datastore-go/lib/proto"
 )
 
 func (c *connect) handshake(auth Auth) error {

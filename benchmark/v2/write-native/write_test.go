@@ -2,14 +2,14 @@ package main
 
 import (
 	"context"
-	"github.com/ClickHouse/clickhouse-go/v2"
+	"github.com/hanzoai/datastore-go"
 	"log"
 	"testing"
 	"time"
 )
 
-func getConnection() clickhouse.Conn {
-	conn, err := clickhouse.Open(&clickhouse.Options{
+func getConnection() datastore.Conn {
+	conn, err := datastore.Open(&datastore.Options{
 		Addr: []string{"127.0.0.1:9000"},
 		Auth: clickhouse.Auth{
 			Database: "default",

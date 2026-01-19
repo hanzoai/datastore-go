@@ -1,4 +1,4 @@
-package clickhouse
+package datastore
 
 import (
 	"bufio"
@@ -9,7 +9,7 @@ import (
 	"io"
 
 	chproto "github.com/ClickHouse/ch-go/proto"
-	"github.com/ClickHouse/clickhouse-go/v2/lib/proto"
+	"github.com/hanzoai/datastore-go/lib/proto"
 )
 
 // capturingReader wraps a reader and captures all data that passes through it

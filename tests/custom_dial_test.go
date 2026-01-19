@@ -12,7 +12,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/ClickHouse/clickhouse-go/v2"
+	"github.com/hanzoai/datastore-go"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -30,7 +30,7 @@ func TestCustomDialContext(t *testing.T) {
 		port = env.SslPort
 		tlsConfig = &tls.Config{}
 	}
-	conn, err := clickhouse.Open(&clickhouse.Options{
+	conn, err := datastore.Open(&datastore.Options{
 		Addr: []string{fmt.Sprintf("%s:%d", env.Host, port)},
 		Auth: clickhouse.Auth{
 			Database: "default",
@@ -80,7 +80,7 @@ func TestCustomHTTPDialContext(t *testing.T) {
 		port = env.HttpsPort
 		tlsConfig = &tls.Config{}
 	}
-	connector := clickhouse.Connector(&clickhouse.Options{
+	connector := datastore.Connector(&datastore.Options{
 		Addr:     []string{fmt.Sprintf("%s:%d", env.Host, port)},
 		Protocol: clickhouse.HTTP,
 		Auth: clickhouse.Auth{
