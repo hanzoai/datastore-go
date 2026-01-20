@@ -58,10 +58,10 @@ type Test struct {
 
 func Test1128(t *testing.T) {
 	var (
-		conn, err = datastore_tests.GetConnectionTCP("issues", clickhouse.Settings{
+		conn, err = datastore_tests.GetConnectionTCP("issues", datastore.Settings{
 			"max_execution_time": 60,
-		}, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+		}, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 	)
 	ctx := context.Background()

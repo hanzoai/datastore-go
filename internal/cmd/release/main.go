@@ -215,7 +215,7 @@ type release struct {
 
 func getLatestDraftReleaseURL() string {
 	// Fetch the latest release from GitHub repository using GitHub API
-	req, err := http.NewRequest(http.MethodGet, "https://api.github.com/repos/clickhouse/clickhouse-go/releases?per_page=100", nil)
+	req, err := http.NewRequest(http.MethodGet, "https://api.github.com/repos/hanzoai/datastore-go/releases?per_page=100", nil)
 	if err != nil {
 		log.Fatalln(err)
 	}

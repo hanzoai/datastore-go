@@ -20,12 +20,12 @@ func TestQueryParameters(t *testing.T) {
 	defer client.Close()
 
 	if !CheckMinServerServerVersion(client, 22, 8, 0) {
-		t.Skip(fmt.Errorf("unsupported clickhouse version"))
+		t.Skip(fmt.Errorf("unsupported datastore version"))
 		return
 	}
 
 	t.Run("with context parameters", func(t *testing.T) {
-		chCtx := clickhouse.Context(ctx, clickhouse.WithParameters(clickhouse.Parameters{
+		chCtx := datastore.Context(ctx, datastore.WithParameters(datastore.Parameters{
 			"num":   "42",
 			"str":   "hello",
 			"array": "['a', 'b', 'c']",
@@ -49,8 +49,8 @@ func TestQueryParameters(t *testing.T) {
 		row := client.QueryRow(
 			ctx,
 			"SELECT {num:UInt64}, {str:String}",
-			clickhouse.Named("num", "42"),
-			clickhouse.Named("str", "hello"),
+			datastore.Named("num", "42"),
+			datastore.Named("str", "hello"),
 		)
 		require.NoError(t, row.Err())
 		require.NoError(t, row.Scan(&actualNum, &actualStr))
@@ -65,9 +65,9 @@ func TestQueryParameters(t *testing.T) {
 		row := client.QueryRow(
 			ctx,
 			"SELECT {column:Identifier} FROM {database:Identifier}.{table:Identifier} LIMIT 1 OFFSET 100;",
-			clickhouse.Named("column", "number"),
-			clickhouse.Named("database", "system"),
-			clickhouse.Named("table", "numbers"),
+			datastore.Named("column", "number"),
+			datastore.Named("database", "system"),
+			datastore.Named("table", "numbers"),
 		)
 		require.NoError(t, row.Err())
 		require.NoError(t, row.Scan(&actualNum))
@@ -81,8 +81,8 @@ func TestQueryParameters(t *testing.T) {
 		row := client.QueryRow(
 			ctx,
 			"SELECT {num:UInt64}, {str:String}",
-			clickhouse.Named("num", 42),
-			clickhouse.Named("str", "hello"),
+			datastore.Named("num", 42),
+			datastore.Named("str", "hello"),
 		)
 		require.NoError(t, row.Scan(&actualNum, &actualStr))
 
@@ -97,24 +97,24 @@ func TestQueryParameters(t *testing.T) {
 			1234,
 			"String",
 		)
-		require.ErrorIs(t, row.Err(), clickhouse.ErrUnsupportedQueryParameter)
+		require.ErrorIs(t, row.Err(), datastore.ErrUnsupportedQueryParameter)
 	})
 
 	t.Run("invalid NamedDateValue", func(t *testing.T) {
 		row := client.QueryRow(
 			ctx,
 			"SELECT {ts:DateTime}",
-			clickhouse.DateNamed("ts", time.Time{}, clickhouse.Seconds), // zero time
+			datastore.DateNamed("ts", time.Time{}, datastore.Seconds), // zero time
 		)
-		require.ErrorIs(t, row.Err(), clickhouse.ErrInvalidValueInNamedDateValue)
+		require.ErrorIs(t, row.Err(), datastore.ErrInvalidValueInNamedDateValue)
 	})
 
 	t.Run("valid named args", func(t *testing.T) {
 		row := client.QueryRow(
 			ctx,
 			"SELECT {str:String}, {ts:DateTime}",
-			clickhouse.Named("str", "hi"),
-			clickhouse.DateNamed("ts", time.Now(), clickhouse.Seconds),
+			datastore.Named("str", "hi"),
+			datastore.DateNamed("ts", time.Now(), datastore.Seconds),
 		)
 		require.NoError(t, row.Err())
 	})
@@ -125,8 +125,8 @@ func TestQueryParameters(t *testing.T) {
 		row := client.QueryRow(
 			ctx,
 			"SELECT @num, @str",
-			clickhouse.Named("num", 42),
-			clickhouse.Named("str", "hello"),
+			datastore.Named("num", 42),
+			datastore.Named("str", "hello"),
 		)
 		require.NoError(t, row.Err())
 		require.NoError(t, row.Scan(&actualNum, &actualStr))

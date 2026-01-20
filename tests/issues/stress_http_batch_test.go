@@ -19,7 +19,7 @@ func TestStressHTTPBatchConcurrency(t *testing.T) {
 
 	env, err := tests.GetTestEnvironment("issues")
 	require.NoError(t, err)
-	useSSL, err := strconv.ParseBool(tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	useSSL, err := strconv.ParseBool(tests.GetEnv("DATASTORE_USE_SSL", "false"))
 	require.NoError(t, err)
 	port := env.HttpPort
 	var tlsConfig *tls.Config
@@ -28,9 +28,9 @@ func TestStressHTTPBatchConcurrency(t *testing.T) {
 		port = env.HttpsPort
 	}
 	conn, err := tests.GetConnectionWithOptions(&datastore.Options{
-		Protocol: clickhouse.HTTP,
+		Protocol: datastore.HTTP,
 		Addr:     []string{fmt.Sprintf("%s:%d", env.Host, port)},
-		Auth: clickhouse.Auth{
+		Auth: datastore.Auth{
 			Database: "default",
 			Username: env.Username,
 			Password: env.Password,
@@ -39,8 +39,8 @@ func TestStressHTTPBatchConcurrency(t *testing.T) {
 		Debugf: func(format string, v ...any) {
 			t.Logf(format, v...)
 		},
-		Compression: &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+		Compression: &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		},
 		TLS:          tlsConfig,
 		MaxIdleConns: 10,

@@ -12,7 +12,7 @@ import (
 func Test1297(t *testing.T) {
 	testEnv, err := datastore_tests.GetTestEnvironment("issues")
 	require.NoError(t, err)
-	conn, err := datastore_tests.TestClientWithDefaultOptions(testEnv, clickhouse.Settings{
+	conn, err := datastore_tests.TestClientWithDefaultOptions(testEnv, datastore.Settings{
 		"flatten_nested": "0",
 	})
 	require.NoError(t, err)

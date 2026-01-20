@@ -14,15 +14,15 @@ import (
 )
 
 func TestStdTemporaryTable(t *testing.T) {
-	dsns := map[string]clickhouse.Protocol{"Native": clickhouse.Native, "Http": clickhouse.HTTP}
-	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	dsns := map[string]datastore.Protocol{"Native": datastore.Native, "Http": datastore.HTTP}
+	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("DATASTORE_USE_SSL", "false"))
 	require.NoError(t, err)
 	for name, protocol := range dsns {
 		t.Run(fmt.Sprintf("%s Protocol", name), func(t *testing.T) {
 			ctx := context.Background()
 			if name == "Http" {
 				t.Skip("flaky test with HTTP")
-				ctx = clickhouse.Context(ctx, clickhouse.WithSettings(clickhouse.Settings{
+				ctx = datastore.Context(ctx, datastore.WithSettings(datastore.Settings{
 					"session_id":        "temp_table_test_session",
 					"wait_end_of_query": "1",
 				}))
@@ -60,7 +60,7 @@ func TestStdTemporaryTable(t *testing.T) {
 			if name == "Http" {
 				assert.Contains(t, err.Error(), "Code: 60")
 			} else {
-				exception, ok := err.(*clickhouse.Exception)
+				exception, ok := err.(*datastore.Exception)
 				require.True(t, ok)
 				assert.Equal(t, int32(60), exception.Code)
 			}

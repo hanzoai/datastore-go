@@ -1,0 +1,50 @@
+package datastore_api
+
+import (
+	"context"
+	"fmt"
+	"github.com/hanzoai/datastore-go"
+	"net"
+	"time"
+)
+
+func PingWithSettings() error {
+	dialCount := 0
+	env, err := GetNativeTestEnvironment()
+	if err != nil {
+		return err
+	}
+	conn, err := datastore.Open(&datastore.Options{
+		Addr: []string{fmt.Sprintf("%s:%d", env.Host, env.Port)},
+		Auth: datastore.Auth{
+			Database: env.Database,
+			Username: env.Username,
+			Password: env.Password,
+		},
+		DialContext: func(ctx context.Context, addr string) (net.Conn, error) {
+			dialCount++
+			var d net.Dialer
+			return d.DialContext(ctx, "tcp", addr)
+		},
+		Debug: true,
+		Debugf: func(format string, v ...any) {
+			fmt.Printf(format, v)
+		},
+		Settings: datastore.Settings{
+			"max_execution_time": 60,
+		},
+		Compression: &datastore.Compression{
+			Method: datastore.CompressionLZ4,
+		},
+		DialTimeout:      time.Duration(10) * time.Second,
+		MaxOpenConns:     5,
+		MaxIdleConns:     5,
+		ConnMaxLifetime:  time.Duration(10) * time.Minute,
+		ConnOpenStrategy: datastore.ConnOpenInOrder,
+		BlockBufferSize:  10,
+	})
+	if err != nil {
+		return err
+	}
+	return conn.Ping(context.Background())
+}

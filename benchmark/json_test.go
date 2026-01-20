@@ -17,23 +17,23 @@ func TestMain(m *testing.M) {
 	os.Exit(datastore_tests.Runtime(m, testSet))
 }
 
-func GetNativeConnection(settings clickhouse.Settings, tlsConfig *tls.Config, compression *clickhouse.Compression) (driver.Conn, error) {
+func GetNativeConnection(settings datastore.Settings, tlsConfig *tls.Config, compression *datastore.Compression) (driver.Conn, error) {
 	return datastore_tests.GetConnectionTCP(testSet, settings, tlsConfig, compression)
 }
 
 func prepareJSONTest(ctx context.Context, b *testing.B) driver.Conn {
-	conn, err := GetNativeConnection(clickhouse.Settings{
+	conn, err := GetNativeConnection(datastore.Settings{
 		"max_execution_time":           60,
 		"allow_experimental_json_type": true,
-	}, nil, &clickhouse.Compression{
-		Method: clickhouse.CompressionLZ4,
+	}, nil, &datastore.Compression{
+		Method: datastore.CompressionLZ4,
 	})
 	if err != nil {
 		b.Fatal(err)
 	}
 
 	if !datastore_tests.CheckMinServerServerVersion(conn, 24, 9, 0) {
-		b.Skip("unsupported clickhouse version for JSON type")
+		b.Skip("unsupported datastore version for JSON type")
 	}
 
 	err = conn.Exec(ctx, "DROP TABLE IF EXISTS go_json_bench")
@@ -206,7 +206,7 @@ func BenchmarkJSONRead(b *testing.B) {
 		for i := 0; i < b.N; i++ {
 			rows.Next()
 
-			var row clickhouse.JSON
+			var row datastore.JSON
 			err := rows.Scan(&row)
 			if err != nil {
 				b.Fatal(err)

@@ -12,27 +12,27 @@ import (
 
 var variantTestDate, _ = time.Parse(time.RFC3339, "2024-12-13T02:09:30.123Z")
 
-func setupVariantTest(t *testing.T, protocol clickhouse.Protocol) driver.Conn {
+func setupVariantTest(t *testing.T, protocol datastore.Protocol) driver.Conn {
 	SkipOnCloud(t, "cannot modify Variant settings on cloud")
 
-	conn, err := GetNativeConnection(t, protocol, clickhouse.Settings{
+	conn, err := GetNativeConnection(t, protocol, datastore.Settings{
 		"max_execution_time":              60,
 		"allow_experimental_variant_type": true,
 		"allow_suspicious_variant_types":  true,
-	}, nil, &clickhouse.Compression{
-		Method: clickhouse.CompressionLZ4,
+	}, nil, &datastore.Compression{
+		Method: datastore.CompressionLZ4,
 	})
 	require.NoError(t, err)
 
 	if !CheckMinServerServerVersion(conn, 24, 4, 0) {
-		t.Skip("unsupported clickhouse version for Variant type")
+		t.Skip("unsupported datastore version for Variant type")
 	}
 
 	return conn
 }
 
 func TestVariant(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		conn := setupVariantTest(t, protocol)
 		ctx := context.Background()
 
@@ -61,16 +61,16 @@ func TestVariant(t *testing.T) {
 
 		require.NoError(t, batch.Append(true))
 		colInt64 := int64(42)
-		require.NoError(t, batch.Append(clickhouse.NewVariantWithType(colInt64, "Int64")))
+		require.NoError(t, batch.Append(datastore.NewVariantWithType(colInt64, "Int64")))
 		colString := "test"
-		require.NoError(t, batch.Append(clickhouse.NewVariantWithType(colString, "String")))
-		require.NoError(t, batch.Append(clickhouse.NewVariantWithType(variantTestDate, "DateTime64(3)")))
+		require.NoError(t, batch.Append(datastore.NewVariantWithType(colString, "String")))
+		require.NoError(t, batch.Append(datastore.NewVariantWithType(variantTestDate, "DateTime64(3)")))
 		var colNil any = nil
 		require.NoError(t, batch.Append(colNil))
 		colSliceString := []string{"a", "b"}
-		require.NoError(t, batch.Append(clickhouse.NewVariantWithType(colSliceString, "Array(String)")))
+		require.NoError(t, batch.Append(datastore.NewVariantWithType(colSliceString, "Array(String)")))
 		colSliceUInt8 := []uint8{0xA, 0xB, 0xC}
-		require.NoError(t, batch.Append(clickhouse.NewVariantWithType(colSliceUInt8, "Array(UInt8)")))
+		require.NoError(t, batch.Append(datastore.NewVariantWithType(colSliceUInt8, "Array(UInt8)")))
 		colSliceMapStringString := []map[string]string{{"key1": "value1", "key2": "value2"}, {"key3": "value3"}}
 		require.NoError(t, batch.Append(colSliceMapStringString))
 		colMapStringString := map[string]string{"key1": "value1", "key2": "value2"}
@@ -82,7 +82,7 @@ func TestVariant(t *testing.T) {
 		rows, err := conn.Query(ctx, "SELECT c FROM test_variant")
 		require.NoError(t, err)
 
-		var row clickhouse.Variant
+		var row datastore.Variant
 
 		require.True(t, rows.Next())
 		err = rows.Scan(&row)
@@ -140,7 +140,7 @@ func TestVariant(t *testing.T) {
 }
 
 func TestVariantPrefix(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		conn := setupVariantTest(t, protocol)
 		ctx := context.Background()
 
@@ -158,13 +158,13 @@ func TestVariantPrefix(t *testing.T) {
 		require.NoError(t, err)
 
 		val := "a"
-		require.NoError(t, batch.Append(clickhouse.NewVariantWithType(val, "LowCardinality(String)")))
+		require.NoError(t, batch.Append(datastore.NewVariantWithType(val, "LowCardinality(String)")))
 		require.NoError(t, batch.Send())
 
 		rows, err := conn.Query(ctx, "SELECT c FROM test_variant_prefix")
 		require.NoError(t, err)
 
-		var row clickhouse.Variant
+		var row datastore.Variant
 
 		require.True(t, rows.Next())
 		err = rows.Scan(&row)
@@ -177,7 +177,7 @@ func TestVariantPrefix(t *testing.T) {
 }
 
 func TestVariantArray(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		conn := setupVariantTest(t, protocol)
 		ctx := context.Background()
 
@@ -194,16 +194,16 @@ func TestVariantArray(t *testing.T) {
 		batch, err := conn.PrepareBatch(ctx, "INSERT INTO test_variant_array (c)")
 		require.NoError(t, err)
 
-		batch.Append([]clickhouse.Variant{
-			clickhouse.NewVariantWithType(int64(42), "Int64"),
-			clickhouse.NewVariantWithType(int64(84), "Int64"),
+		batch.Append([]datastore.Variant{
+			datastore.NewVariantWithType(int64(42), "Int64"),
+			datastore.NewVariantWithType(int64(84), "Int64"),
 		})
 		require.NoError(t, batch.Send())
 
 		rows, err := conn.Query(ctx, "SELECT c FROM test_variant_array")
 		require.NoError(t, err)
 
-		var arrRow []clickhouse.Variant
+		var arrRow []datastore.Variant
 
 		require.True(t, rows.Next())
 		err = rows.Scan(&arrRow)
@@ -219,7 +219,7 @@ func TestVariantArray(t *testing.T) {
 }
 
 func TestVariantEmptyArray(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		conn := setupVariantTest(t, protocol)
 		ctx := context.Background()
 
@@ -236,13 +236,13 @@ func TestVariantEmptyArray(t *testing.T) {
 		batch, err := conn.PrepareBatch(ctx, "INSERT INTO test_variant_empty_array (c)")
 		require.NoError(t, err)
 
-		batch.Append([]clickhouse.Variant{})
+		batch.Append([]datastore.Variant{})
 		require.NoError(t, batch.Send())
 
 		rows, err := conn.Query(ctx, "SELECT c FROM test_variant_empty_array")
 		require.NoError(t, err)
 
-		var arrRow []clickhouse.Variant
+		var arrRow []datastore.Variant
 
 		require.True(t, rows.Next())
 		err = rows.Scan(&arrRow)
@@ -255,7 +255,7 @@ func TestVariantEmptyArray(t *testing.T) {
 }
 
 func TestVariant_ScanWithType(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		conn := setupVariantTest(t, protocol)
 		ctx := context.Background()
 
@@ -273,14 +273,14 @@ func TestVariant_ScanWithType(t *testing.T) {
 		require.NoError(t, err)
 
 		require.NoError(t, batch.Append(true))
-		require.NoError(t, batch.Append(clickhouse.NewVariantWithType(int64(42), "Int64")))
+		require.NoError(t, batch.Append(datastore.NewVariantWithType(int64(42), "Int64")))
 		require.NoError(t, batch.Append(nil))
 		require.NoError(t, batch.Send())
 
 		rows, err := conn.Query(ctx, "SELECT c FROM test_variant_scan_with_type")
 		require.NoError(t, err)
 
-		var row clickhouse.Variant
+		var row datastore.Variant
 
 		require.True(t, rows.Next())
 		err = rows.Scan(&row)
@@ -306,7 +306,7 @@ func TestVariant_ScanWithType(t *testing.T) {
 }
 
 func TestVariant_BatchFlush(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		conn := setupVariantTest(t, protocol)
 		ctx := context.Background()
 
@@ -323,12 +323,12 @@ func TestVariant_BatchFlush(t *testing.T) {
 		batch, err := conn.PrepareBatch(ctx, "INSERT INTO test_variant_batch_flush (c)")
 		require.NoError(t, err)
 
-		vals := make([]clickhouse.Variant, 0, 1000)
+		vals := make([]datastore.Variant, 0, 1000)
 		for i := 0; i < 1000; i++ {
 			if i%2 == 0 {
-				vals = append(vals, clickhouse.NewVariantWithType(int64(i), "Int64"))
+				vals = append(vals, datastore.NewVariantWithType(int64(i), "Int64"))
 			} else {
-				vals = append(vals, clickhouse.NewVariantWithType(i%5 == 0, "Bool"))
+				vals = append(vals, datastore.NewVariantWithType(i%5 == 0, "Bool"))
 			}
 
 			require.NoError(t, batch.Append(vals[i]))
@@ -341,7 +341,7 @@ func TestVariant_BatchFlush(t *testing.T) {
 
 		i := 0
 		for rows.Next() {
-			var row clickhouse.Variant
+			var row datastore.Variant
 			err = rows.Scan(&row)
 
 			if i%2 == 0 {

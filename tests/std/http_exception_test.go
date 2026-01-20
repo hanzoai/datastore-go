@@ -10,13 +10,13 @@ import (
 )
 
 func TestHTTPExceptionHandlingDB(t *testing.T) {
-	conn, err := GetStdOpenDBConnection(clickhouse.HTTP, nil, nil, nil)
+	conn, err := GetStdOpenDBConnection(datastore.HTTP, nil, nil, nil)
 	require.NoError(t, err)
 
 	ctx := context.Background()
 
 	// These settings will make sure mid-stream exception most likely on the server
-	ctx = clickhouse.Context(ctx, clickhouse.WithSettings(clickhouse.Settings{
+	ctx = datastore.Context(ctx, datastore.WithSettings(datastore.Settings{
 		"max_threads":                           1,
 		"max_block_size":                        1,
 		"http_write_exception_in_output_format": 0,

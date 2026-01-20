@@ -12,7 +12,7 @@ import (
 )
 
 func UseContext() error {
-	conn, err := GetStdOpenDBConnection(clickhouse.Native, nil, nil, nil)
+	conn, err := GetStdOpenDBConnection(datastore.Native, nil, nil, nil)
 	if err != nil {
 		return err
 	}
@@ -20,7 +20,7 @@ func UseContext() error {
 		return nil
 	}
 	// we can use context to pass settings to a specific API call
-	ctx := clickhouse.Context(context.Background(), clickhouse.WithSettings(clickhouse.Settings{
+	ctx := datastore.Context(context.Background(), datastore.WithSettings(datastore.Settings{
 		"async_insert": "1",
 	}))
 	var settingValue bool
@@ -50,7 +50,7 @@ func UseContext() error {
 
 	// set a query id to assist tracing queries in logs e.g. see system.query_log
 	var one uint8
-	ctx = clickhouse.Context(context.Background(), clickhouse.WithQueryID(uuid.NewString()))
+	ctx = datastore.Context(context.Background(), datastore.WithQueryID(uuid.NewString()))
 	if err = conn.QueryRowContext(ctx, "SELECT 1").Scan(&one); err != nil {
 		return err
 	}
@@ -59,7 +59,7 @@ func UseContext() error {
 	defer func() {
 		conn.ExecContext(context.Background(), "DROP QUOTA IF EXISTS foobar")
 	}()
-	ctx = clickhouse.Context(context.Background(), clickhouse.WithQuotaKey("abcde"))
+	ctx = datastore.Context(context.Background(), datastore.WithQuotaKey("abcde"))
 	// set a quota key - first create the quota
 	if _, err = conn.ExecContext(ctx, "CREATE QUOTA IF NOT EXISTS foobar KEYED BY client_key FOR INTERVAL 1 minute MAX queries = 5 TO default"); err != nil {
 		return err
@@ -68,7 +68,7 @@ func UseContext() error {
 	// queries can be cancelled using the context
 	ctx, cancel = context.WithCancel(context.Background())
 	// we will get some results before cancel
-	ctx = clickhouse.Context(ctx, clickhouse.WithSettings(clickhouse.Settings{
+	ctx = datastore.Context(ctx, datastore.WithSettings(datastore.Settings{
 		"max_block_size": "1",
 	}))
 	rows, err := conn.QueryContext(ctx, "SELECT sleepEachRow(1), number FROM numbers(100);")

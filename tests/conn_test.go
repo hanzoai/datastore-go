@@ -18,9 +18,9 @@ import (
 )
 
 func TestConn(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
-		conn, err := GetNativeConnection(t, protocol, nil, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
+		conn, err := GetNativeConnection(t, protocol, nil, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 		require.NoError(t, err)
 		require.NoError(t, conn.Ping(context.Background()))
@@ -35,7 +35,7 @@ func TestBadConn(t *testing.T) {
 	require.NoError(t, err)
 	conn, err := datastore.Open(&datastore.Options{
 		Addr: []string{"127.0.0.1:9790"},
-		Auth: clickhouse.Auth{
+		Auth: datastore.Auth{
 			Database: "default",
 			Username: env.Username,
 			Password: env.Password,
@@ -66,24 +66,24 @@ func TestConnFailoverRandom(t *testing.T) {
 }
 
 func testConnFailover(t *testing.T, connOpenStrategy datastore.ConnOpenStrategy) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		if connOpenStrategy == datastore.ConnOpenRandom {
 			SkipOnHTTP(t, protocol, "random seed")
 		}
 
 		env, err := GetNativeTestEnvironment()
 		require.NoError(t, err)
-		useSSL, err := strconv.ParseBool(GetEnv("CLICKHOUSE_USE_SSL", "false"))
+		useSSL, err := strconv.ParseBool(GetEnv("DATASTORE_USE_SSL", "false"))
 		require.NoError(t, err)
 		port := env.Port
-		if protocol == clickhouse.HTTP {
+		if protocol == datastore.HTTP {
 			port = env.HttpPort
 		}
 		var tlsConfig *tls.Config
 		if useSSL {
 			tlsConfig = &tls.Config{}
 			port = env.SslPort
-			if protocol == clickhouse.HTTP {
+			if protocol == datastore.HTTP {
 				port = env.HttpsPort
 			}
 		}
@@ -95,13 +95,13 @@ func testConnFailover(t *testing.T, connOpenStrategy datastore.ConnOpenStrategy)
 				"127.0.0.1:9002",
 				fmt.Sprintf("%s:%d", env.Host, port),
 			},
-			Auth: clickhouse.Auth{
+			Auth: datastore.Auth{
 				Database: "default",
 				Username: env.Username,
 				Password: env.Password,
 			},
-			Compression: &clickhouse.Compression{
-				Method: clickhouse.CompressionLZ4,
+			Compression: &datastore.Compression{
+				Method: datastore.CompressionLZ4,
 			},
 			TLS: tlsConfig,
 		}
@@ -115,9 +115,9 @@ func testConnFailover(t *testing.T, connOpenStrategy datastore.ConnOpenStrategy)
 }
 
 func TestPingDeadline(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
-		conn, err := GetNativeConnection(t, protocol, nil, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
+		conn, err := GetNativeConnection(t, protocol, nil, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 		require.NoError(t, err)
 		ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(-time.Second))
@@ -131,7 +131,7 @@ func TestPingDeadline(t *testing.T) {
 func TestReadDeadline(t *testing.T) {
 	env, err := GetNativeTestEnvironment()
 	require.NoError(t, err)
-	useSSL, err := strconv.ParseBool(GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	useSSL, err := strconv.ParseBool(GetEnv("DATASTORE_USE_SSL", "false"))
 	require.NoError(t, err)
 	port := env.Port
 	var tlsConfig *tls.Config
@@ -141,13 +141,13 @@ func TestReadDeadline(t *testing.T) {
 	}
 	conn, err := GetConnectionWithOptions(&datastore.Options{
 		Addr: []string{fmt.Sprintf("%s:%d", env.Host, port)},
-		Auth: clickhouse.Auth{
+		Auth: datastore.Auth{
 			Database: "default",
 			Username: env.Username,
 			Password: env.Password,
 		},
-		Compression: &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+		Compression: &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		},
 		ReadTimeout: time.Duration(-1) * time.Second,
 		TLS:         tlsConfig,
@@ -166,7 +166,7 @@ func TestReadDeadline(t *testing.T) {
 func TestQueryDeadline(t *testing.T) {
 	env, err := GetNativeTestEnvironment()
 	require.NoError(t, err)
-	useSSL, err := strconv.ParseBool(GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	useSSL, err := strconv.ParseBool(GetEnv("DATASTORE_USE_SSL", "false"))
 	require.NoError(t, err)
 	port := env.Port
 	var tlsConfig *tls.Config
@@ -176,13 +176,13 @@ func TestQueryDeadline(t *testing.T) {
 	}
 	conn, err := GetConnectionWithOptions(&datastore.Options{
 		Addr: []string{fmt.Sprintf("%s:%d", env.Host, port)},
-		Auth: clickhouse.Auth{
+		Auth: datastore.Auth{
 			Database: "default",
 			Username: env.Username,
 			Password: env.Password,
 		},
-		Compression: &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+		Compression: &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		},
 		ReadTimeout: time.Duration(-1) * time.Second,
 		TLS:         tlsConfig,
@@ -196,40 +196,40 @@ func TestQueryDeadline(t *testing.T) {
 }
 
 func TestBlockBufferSize(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		env, err := GetNativeTestEnvironment()
 		require.NoError(t, err)
-		useSSL, err := strconv.ParseBool(GetEnv("CLICKHOUSE_USE_SSL", "false"))
+		useSSL, err := strconv.ParseBool(GetEnv("DATASTORE_USE_SSL", "false"))
 		require.NoError(t, err)
 		port := env.Port
-		if protocol == clickhouse.HTTP {
+		if protocol == datastore.HTTP {
 			port = env.HttpPort
 		}
 		var tlsConfig *tls.Config
 		if useSSL {
 			tlsConfig = &tls.Config{}
 			port = env.SslPort
-			if protocol == clickhouse.HTTP {
+			if protocol == datastore.HTTP {
 				port = env.HttpsPort
 			}
 		}
 		conn, err := GetConnectionWithOptions(&datastore.Options{
 			Protocol: protocol,
 			Addr:     []string{fmt.Sprintf("%s:%d", env.Host, port)},
-			Auth: clickhouse.Auth{
+			Auth: datastore.Auth{
 				Database: "default",
 				Username: env.Username,
 				Password: env.Password,
 			},
-			Compression: &clickhouse.Compression{
-				Method: clickhouse.CompressionLZ4,
+			Compression: &datastore.Compression{
+				Method: datastore.CompressionLZ4,
 			},
 			TLS:             tlsConfig,
 			BlockBufferSize: 100,
 		})
 		require.NoError(t, err)
 		var count uint64
-		rows, err := conn.Query(clickhouse.Context(context.Background(), clickhouse.WithBlockBufferSize(50)), "SELECT number FROM numbers(1000000)")
+		rows, err := conn.Query(datastore.Context(context.Background(), datastore.WithBlockBufferSize(50)), "SELECT number FROM numbers(1000000)")
 		require.NoError(t, err)
 		i := 0
 		for rows.Next() {
@@ -246,33 +246,33 @@ func TestBlockBufferSize(t *testing.T) {
 func TestConnAcquireRelease(t *testing.T) {
 	SkipOnCloud(t, "requires low latency")
 
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		env, err := GetNativeTestEnvironment()
 		require.NoError(t, err)
-		useSSL, err := strconv.ParseBool(GetEnv("CLICKHOUSE_USE_SSL", "false"))
+		useSSL, err := strconv.ParseBool(GetEnv("DATASTORE_USE_SSL", "false"))
 		require.NoError(t, err)
 		port := env.Port
-		if protocol == clickhouse.HTTP {
+		if protocol == datastore.HTTP {
 			port = env.HttpPort
 		}
 		var tlsConfig *tls.Config
 		if useSSL {
 			tlsConfig = &tls.Config{}
 			port = env.SslPort
-			if protocol == clickhouse.HTTP {
+			if protocol == datastore.HTTP {
 				port = env.HttpsPort
 			}
 		}
 		conn, err := GetConnectionWithOptions(&datastore.Options{
 			Protocol: protocol,
 			Addr:     []string{fmt.Sprintf("%s:%d", env.Host, port)},
-			Auth: clickhouse.Auth{
+			Auth: datastore.Auth{
 				Database: "default",
 				Username: env.Username,
 				Password: env.Password,
 			},
-			Compression: &clickhouse.Compression{
-				Method: clickhouse.CompressionLZ4,
+			Compression: &datastore.Compression{
+				Method: datastore.CompressionLZ4,
 			},
 			TLS:          tlsConfig,
 			DialTimeout:  100 * time.Millisecond, // Fast acquire failure
@@ -312,11 +312,11 @@ func TestConnCustomDialStrategy(t *testing.T) {
 	env, err := GetTestEnvironment(testSet)
 	require.NoError(t, err)
 
-	opts := ClientOptionsFromEnv(env, clickhouse.Settings{}, false)
+	opts := ClientOptionsFromEnv(env, datastore.Settings{}, false)
 	validAddr := opts.Addr[0]
 	opts.Addr = []string{"invalid.host:9001"}
 
-	opts.DialStrategy = func(ctx context.Context, connID int, opts *datastore.Options, dial clickhouse.Dial) (clickhouse.DialResult, error) {
+	opts.DialStrategy = func(ctx context.Context, connID int, opts *datastore.Options, dial datastore.Dial) (datastore.DialResult, error) {
 		return dial(ctx, validAddr, opts)
 	}
 
@@ -333,7 +333,7 @@ func TestEmptyDatabaseConfig(t *testing.T) {
 
 	env, err := GetNativeTestEnvironment()
 	require.NoError(t, err)
-	useSSL, err := strconv.ParseBool(GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	useSSL, err := strconv.ParseBool(GetEnv("DATASTORE_USE_SSL", "false"))
 	require.NoError(t, err)
 	port := env.Port
 	var tlsConfig *tls.Config
@@ -343,7 +343,7 @@ func TestEmptyDatabaseConfig(t *testing.T) {
 	}
 	options := &datastore.Options{
 		Addr: []string{fmt.Sprintf("%s:%d", env.Host, port)},
-		Auth: clickhouse.Auth{
+		Auth: datastore.Auth{
 			Username: env.Username,
 			Password: env.Password,
 		},
@@ -373,11 +373,11 @@ func TestEmptyDatabaseConfig(t *testing.T) {
 func TestCustomSettings(t *testing.T) {
 	SkipOnCloud(t, "Custom settings are not supported on ClickHouse Cloud")
 
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
-		conn, err := GetNativeConnection(t, protocol, clickhouse.Settings{
-			"custom_setting": clickhouse.CustomSetting{"custom_value"},
-		}, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
+		conn, err := GetNativeConnection(t, protocol, datastore.Settings{
+			"custom_setting": datastore.CustomSetting{"custom_value"},
+		}, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 		require.NoError(t, err)
 
@@ -396,8 +396,8 @@ func TestCustomSettings(t *testing.T) {
 		})
 
 		t.Run("get custom setting value from query context", func(t *testing.T) {
-			ctx := clickhouse.Context(context.Background(), clickhouse.WithSettings(clickhouse.Settings{
-				"custom_query_setting": clickhouse.CustomSetting{"custom_query_value"},
+			ctx := datastore.Context(context.Background(), datastore.WithSettings(datastore.Settings{
+				"custom_query_setting": datastore.CustomSetting{"custom_query_value"},
 			}))
 
 			row := conn.QueryRow(ctx, "SELECT getSetting('custom_query_setting')")
@@ -428,7 +428,7 @@ func TestConnectionExpiresIdleConnection(t *testing.T) {
 	expectedConnections := getActiveConnections(t, baseConn)
 
 	// when the client is configured to expire idle connections after 1/10 of a second
-	opts := ClientOptionsFromEnv(testEnv, clickhouse.Settings{}, false)
+	opts := ClientOptionsFromEnv(testEnv, datastore.Settings{}, false)
 	opts.MaxIdleConns = 20
 	opts.MaxOpenConns = 20
 	opts.ConnMaxLifetime = time.Second / 10
@@ -491,7 +491,7 @@ func TestConnectionCloseIdle(t *testing.T) {
 func TestFreeBufOnConnRelease(t *testing.T) {
 	env, err := GetNativeTestEnvironment()
 	require.NoError(t, err)
-	useSSL, err := strconv.ParseBool(GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	useSSL, err := strconv.ParseBool(GetEnv("DATASTORE_USE_SSL", "false"))
 	require.NoError(t, err)
 	port := env.Port
 	var tlsConfig *tls.Config
@@ -501,13 +501,13 @@ func TestFreeBufOnConnRelease(t *testing.T) {
 	}
 	conn, err := GetConnectionWithOptions(&datastore.Options{
 		Addr: []string{fmt.Sprintf("%s:%d", env.Host, port)},
-		Auth: clickhouse.Auth{
+		Auth: datastore.Auth{
 			Database: "default",
 			Username: env.Username,
 			Password: env.Password,
 		},
-		Compression: &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+		Compression: &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		},
 		TLS:                  tlsConfig,
 		FreeBufOnConnRelease: true,
@@ -556,7 +556,7 @@ func TestJWTError(t *testing.T) {
 func TestNativeJWTAuth(t *testing.T) {
 	SkipNotCloud(t)
 
-	jwt := GetEnv("CLICKHOUSE_JWT", "")
+	jwt := GetEnv("DATASTORE_JWT", "")
 	getJWT := func(ctx context.Context) (string, error) {
 		return jwt, nil
 	}

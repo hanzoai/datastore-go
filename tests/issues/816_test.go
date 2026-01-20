@@ -3,7 +3,7 @@ package issues
 import (
 	"github.com/hanzoai/datastore-go"
 	datastore_tests "github.com/hanzoai/datastore-go/tests"
-	clickhouse_std_tests "github.com/hanzoai/datastore-go/tests/std"
+	datastore_std_tests "github.com/hanzoai/datastore-go/tests/std"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"strconv"
@@ -11,9 +11,9 @@ import (
 )
 
 func Test816(t *testing.T) {
-	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("DATASTORE_USE_SSL", "false"))
 	require.NoError(t, err)
-	conn, err := clickhouse_std_tests.GetDSNConnection("issues", clickhouse.Native, useSSL, nil)
+	conn, err := datastore_std_tests.GetDSNConnection("issues", datastore.Native, useSSL, nil)
 	const ddl = `
 		CREATE TABLE test_816 (
 			  Col1 Tuple(count Nullable(Int64), products Array(Tuple(price Nullable(Float64), qty Nullable(Int64))), price Nullable(Float64))
@@ -50,5 +50,5 @@ func Test816(t *testing.T) {
 	require.NoError(t, scope.Commit())
 	var col1 any
 	require.NoError(t, conn.QueryRow("SELECT Col1 FROM test_816").Scan(&col1))
-	assert.Equal(t, clickhouse_std_tests.ToJson(col1Data), clickhouse_std_tests.ToJson(col1))
+	assert.Equal(t, datastore_std_tests.ToJson(col1Data), datastore_std_tests.ToJson(col1))
 }

@@ -739,7 +739,7 @@ func (h *httpConnect) ping(ctx context.Context) error {
 	if len(column) == 1 && column[0] == "1" {
 		return nil
 	}
-	return errors.New("datastore [ping]:: cannot ping clickhouse")
+	return errors.New("datastore [ping]:: cannot ping datastore")
 }
 
 func (h *httpConnect) close() error {

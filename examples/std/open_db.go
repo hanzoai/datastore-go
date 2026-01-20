@@ -15,29 +15,29 @@ func OpenDb() error {
 	}
 	conn := datastore.OpenDB(&datastore.Options{
 		Addr: []string{fmt.Sprintf("%s:%d", env.Host, env.Port)},
-		Auth: clickhouse.Auth{
+		Auth: datastore.Auth{
 			Database: env.Database,
 			Username: env.Username,
 			Password: env.Password,
 		},
-		Settings: clickhouse.Settings{
+		Settings: datastore.Settings{
 			"max_execution_time": 60,
 		},
 		DialTimeout: 5 * time.Second,
-		Compression: &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+		Compression: &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		},
 	})
 	conn.SetMaxIdleConns(5)
 	conn.SetMaxOpenConns(10)
 	conn.SetConnMaxLifetime(time.Hour)
-	ctx := clickhouse.Context(context.Background(), clickhouse.WithSettings(clickhouse.Settings{
+	ctx := datastore.Context(context.Background(), datastore.WithSettings(datastore.Settings{
 		"max_block_size": 10,
-	}), clickhouse.WithProgress(func(p *clickhouse.Progress) {
+	}), datastore.WithProgress(func(p *datastore.Progress) {
 		fmt.Println("progress: ", p)
 	}))
 	if err := conn.PingContext(ctx); err != nil {
-		if exception, ok := err.(*clickhouse.Exception); ok {
+		if exception, ok := err.(*datastore.Exception); ok {
 			fmt.Printf("Catch exception [%d] %s \n%s\n", exception.Code, exception.Message, exception.StackTrace)
 		}
 		return err

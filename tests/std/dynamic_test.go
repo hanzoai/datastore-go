@@ -18,13 +18,13 @@ var dynamicTestDate, _ = time.Parse(time.RFC3339, "2024-12-13T02:09:30.123Z")
 func setupDynamicTest(t *testing.T) *sql.DB {
 	datastore_tests.SkipOnCloud(t, "cannot modify Dynamic settings on cloud")
 
-	conn, err := GetStdOpenDBConnection(clickhouse.Native, nil, nil, &clickhouse.Compression{
-		Method: clickhouse.CompressionLZ4,
+	conn, err := GetStdOpenDBConnection(datastore.Native, nil, nil, &datastore.Compression{
+		Method: datastore.CompressionLZ4,
 	})
 	require.NoError(t, err)
 
 	if !CheckMinServerVersion(conn, 24, 8, 0) {
-		t.Skip(fmt.Errorf("unsupported clickhouse version for Dynamic type"))
+		t.Skip(fmt.Errorf("unsupported datastore version for Dynamic type"))
 		return nil
 	}
 
@@ -67,30 +67,30 @@ func TestDynamic(t *testing.T) {
 	batch, err := tx.PrepareContext(ctx, "INSERT INTO std_test_dynamic (c)")
 	require.NoError(t, err)
 
-	_, err = batch.ExecContext(ctx, clickhouse.NewDynamicWithType(true, "Bool"))
+	_, err = batch.ExecContext(ctx, datastore.NewDynamicWithType(true, "Bool"))
 	require.NoError(t, err)
 	colInt64 := int64(42)
-	_, err = batch.ExecContext(ctx, clickhouse.NewDynamicWithType(colInt64, "Int64"))
+	_, err = batch.ExecContext(ctx, datastore.NewDynamicWithType(colInt64, "Int64"))
 	require.NoError(t, err)
 	colString := "test"
-	_, err = batch.ExecContext(ctx, clickhouse.NewDynamicWithType(colString, "String"))
+	_, err = batch.ExecContext(ctx, datastore.NewDynamicWithType(colString, "String"))
 	require.NoError(t, err)
-	_, err = batch.ExecContext(ctx, clickhouse.NewDynamicWithType(dynamicTestDate, "DateTime64(3)"))
+	_, err = batch.ExecContext(ctx, datastore.NewDynamicWithType(dynamicTestDate, "DateTime64(3)"))
 	require.NoError(t, err)
 	var colNil any = nil
 	_, err = batch.ExecContext(ctx, colNil)
 	require.NoError(t, err)
 	colSliceUInt8 := []uint8{0xA, 0xB, 0xC}
-	_, err = batch.ExecContext(ctx, clickhouse.NewDynamicWithType(colSliceUInt8, "Array(UInt8)"))
+	_, err = batch.ExecContext(ctx, datastore.NewDynamicWithType(colSliceUInt8, "Array(UInt8)"))
 	require.NoError(t, err)
 	colSliceMapStringString := []map[string]string{{"key1": "value1", "key2": "value2"}, {"key3": "value3"}}
-	_, err = batch.ExecContext(ctx, clickhouse.NewDynamicWithType(colSliceMapStringString, "Array(Map(String, String))"))
+	_, err = batch.ExecContext(ctx, datastore.NewDynamicWithType(colSliceMapStringString, "Array(Map(String, String))"))
 	require.NoError(t, err)
 	colMapStringString := map[string]string{"key1": "value1", "key2": "value2"}
-	_, err = batch.ExecContext(ctx, clickhouse.NewDynamicWithType(colMapStringString, "Map(String, String)"))
+	_, err = batch.ExecContext(ctx, datastore.NewDynamicWithType(colMapStringString, "Map(String, String)"))
 	require.NoError(t, err)
 	colMapStringInt64 := map[string]int64{"key1": 42, "key2": 84}
-	_, err = batch.ExecContext(ctx, clickhouse.NewDynamicWithType(colMapStringInt64, "Map(String, Int64)"))
+	_, err = batch.ExecContext(ctx, datastore.NewDynamicWithType(colMapStringInt64, "Map(String, Int64)"))
 	require.NoError(t, err)
 
 	require.NoError(t, tx.Commit())
@@ -169,9 +169,9 @@ func TestDynamic_ScanWithType(t *testing.T) {
 	batch, err := tx.PrepareContext(ctx, "INSERT INTO std_test_dynamic_scan_with_type (c)")
 	require.NoError(t, err)
 
-	_, err = batch.ExecContext(ctx, clickhouse.NewDynamicWithType(true, "Bool"))
+	_, err = batch.ExecContext(ctx, datastore.NewDynamicWithType(true, "Bool"))
 	require.NoError(t, err)
-	_, err = batch.ExecContext(ctx, clickhouse.NewDynamicWithType(int64(42), "Int64"))
+	_, err = batch.ExecContext(ctx, datastore.NewDynamicWithType(int64(42), "Int64"))
 	require.NoError(t, err)
 	_, err = batch.ExecContext(ctx, nil)
 	require.NoError(t, err)

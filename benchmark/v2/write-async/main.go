@@ -22,7 +22,7 @@ func benchmark(conn datastore.Conn) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	ctx = clickhouse.Context(ctx, clickhouse.WithAsync(true))
+	ctx = datastore.Context(ctx, datastore.WithAsync(true))
 	for i := 0; i < 10_000; i++ {
 		err := conn.Exec(ctx, fmt.Sprintf(`INSERT INTO benchmark_async VALUES (
 			%d, '%s', [1, 2, 3, 4, 5, 6, 7, 8, 9], now()
@@ -39,7 +39,7 @@ func main() {
 		ctx       = context.Background()
 		conn, err = datastore.Open(&datastore.Options{
 			Addr: []string{"127.0.0.1:9000"},
-			Auth: clickhouse.Auth{
+			Auth: datastore.Auth{
 				Database: "default",
 				Username: "default",
 				Password: "",

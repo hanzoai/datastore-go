@@ -66,7 +66,7 @@ func TestClientInfoAppend(t *testing.T) {
 }
 
 func TestClientInfoString(t *testing.T) {
-	// e.g. clickhouse-go/2.5.1
+	// e.g. datastore-go/1.0.5.1
 	expectedClientProduct := fmt.Sprintf("%s/%d.%d.%d", ClientName, ClientVersionMajor, ClientVersionMinor, ClientVersionPatch)
 
 	// e.g. lv:go/1.19.5; os:darwin
@@ -78,14 +78,14 @@ func TestClientInfoString(t *testing.T) {
 	}{
 		"client": {
 			ClientInfo{},
-			// e.g. clickhouse-go/2.5.1 (lv:go/1.19.5; os:darwin)
+			// e.g. datastore-go/1.0.5.1 (lv:go/1.19.5; os:darwin)
 			fmt.Sprintf("%s (%s)", expectedClientProduct, expectedDefaultMeta),
 		},
 		"client with comment": {
 			ClientInfo{
 				Comment: []string{"database/sql"},
 			},
-			// e.g. clickhouse-go/2.5.1 (database/sql; lv:go/1.19.5; os:darwin)
+			// e.g. datastore-go/1.0.5.1 (database/sql; lv:go/1.19.5; os:darwin)
 			fmt.Sprintf("%s (database/sql; %s)", expectedClientProduct, expectedDefaultMeta),
 		},
 		"additional product": {
@@ -97,7 +97,7 @@ func TestClientInfoString(t *testing.T) {
 					{Name: "grafana-datasource", Version: "0.1.1"},
 				},
 			},
-			// e.g. grafana-datasource/0.1.1 clickhouse-go/2.5.1 (lv:go/1.19.5; os:darwin)
+			// e.g. grafana-datasource/0.1.1 datastore-go/1.0.5.1 (lv:go/1.19.5; os:darwin)
 			fmt.Sprintf("grafana-datasource/0.1.1 %s (%s)", expectedClientProduct, expectedDefaultMeta),
 		},
 		"additional products with comment": {
@@ -111,7 +111,7 @@ func TestClientInfoString(t *testing.T) {
 				},
 				Comment: []string{"database/sql"},
 			},
-			// e.g. grafana/6.1 grafana-datasource/0.1.1 clickhouse-go/2.5.1 (database/sql; lv:go/1.19.5; os:darwin)
+			// e.g. grafana/6.1 grafana-datasource/0.1.1 datastore-go/1.0.5.1 (database/sql; lv:go/1.19.5; os:darwin)
 			fmt.Sprintf("grafana/6.1 grafana-datasource/0.1.1 %s (database/sql; %s)", expectedClientProduct, expectedDefaultMeta),
 		},
 	}

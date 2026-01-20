@@ -11,17 +11,17 @@ import (
 func main() {
 	conn := datastore_tests.GetConnectionWithOptions(&datastore.Options{
 		Addr: []string{"127.0.0.1:9000"},
-		Auth: clickhouse.Auth{
+		Auth: datastore.Auth{
 			Database: "default",
 			Username: "default",
 			Password: "",
 		},
-		Settings: clickhouse.Settings{
+		Settings: datastore.Settings{
 			"max_execution_time": 60,
 		},
 		DialTimeout: 5 * time.Second,
-		Compression: &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+		Compression: &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		},
 		//Debug: true,
 	})

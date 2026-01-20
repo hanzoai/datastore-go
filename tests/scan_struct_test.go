@@ -13,9 +13,9 @@ import (
 )
 
 func TestQueryRowScanStruct(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
-		conn, err := GetNativeConnection(t, protocol, nil, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
+		conn, err := GetNativeConnection(t, protocol, nil, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 		ctx := context.Background()
 		require.NoError(t, err)
@@ -34,9 +34,9 @@ func TestQueryRowScanStruct(t *testing.T) {
 }
 
 func TestQueryScanStruct(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
-		conn, err := GetNativeConnection(t, protocol, nil, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
+		conn, err := GetNativeConnection(t, protocol, nil, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 		ctx := context.Background()
 		require.NoError(t, err)
@@ -61,9 +61,9 @@ func TestQueryScanStruct(t *testing.T) {
 }
 
 func TestSelectScanStruct(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
-		conn, err := GetNativeConnection(t, protocol, nil, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
+		conn, err := GetNativeConnection(t, protocol, nil, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 		ctx := context.Background()
 		require.NoError(t, err)
@@ -84,9 +84,9 @@ func TestSelectScanStruct(t *testing.T) {
 }
 
 func TestArrayTupleNullableFieldPanic(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
-		conn, err := GetNativeConnection(t, protocol, nil, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
+		conn, err := GetNativeConnection(t, protocol, nil, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 		require.NoError(t, err)
 
@@ -138,9 +138,9 @@ func TestArrayTupleNullableFieldPanic(t *testing.T) {
 }
 
 func TestArrayTupleNonNull(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
-		conn, err := GetNativeConnection(t, protocol, nil, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
+		conn, err := GetNativeConnection(t, protocol, nil, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 		require.NoError(t, err)
 

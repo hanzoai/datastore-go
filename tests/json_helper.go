@@ -36,14 +36,14 @@ type TestStruct struct {
 	DynamicMap    chcol.Dynamic
 }
 
-// FastTestStruct is a distinctly separate type that implements clickhouse.JSONSerializer and clickhouse.JSONDeserializer
+// FastTestStruct is a distinctly separate type that implements datastore.JSONSerializer and datastore.JSONDeserializer
 // The struct must be a separate type since the JSON column is unable to ignore the interface implementation.
 type FastTestStruct struct {
 	ts TestStruct
 }
 
-// SerializeClickHouseJSON implements clickhouse.JSONSerializer for faster struct appending
-func (fts *FastTestStruct) SerializeClickHouseJSON() (*clickhouse.JSON, error) {
+// SerializeClickHouseJSON implements datastore.JSONSerializer for faster struct appending
+func (fts *FastTestStruct) SerializeClickHouseJSON() (*datastore.JSON, error) {
 	obj := chcol.NewJSON()
 	obj.SetValueAtPath("Name", fts.ts.Name)
 	obj.SetValueAtPath("Age", fts.ts.Age)
@@ -66,27 +66,27 @@ func (fts *FastTestStruct) SerializeClickHouseJSON() (*clickhouse.JSON, error) {
 	return obj, nil
 }
 
-// DeserializeClickHouseJSON implements clickhouse.JSONDeserializer for faster struct scanning
-func (fts *FastTestStruct) DeserializeClickHouseJSON(obj *clickhouse.JSON) error {
-	fts.ts.Name, _ = clickhouse.ExtractJSONPathAs[string](obj, "Name")
-	fts.ts.Age, _ = clickhouse.ExtractJSONPathAs[int64](obj, "Age")
-	fts.ts.Active, _ = clickhouse.ExtractJSONPathAs[bool](obj, "Active")
-	fts.ts.Score, _ = clickhouse.ExtractJSONPathAs[float64](obj, "Score")
-	fts.ts.Tags, _ = clickhouse.ExtractJSONPathAs[[]string](obj, "Tags")
-	fts.ts.Numbers, _ = clickhouse.ExtractJSONPathAs[[]int64](obj, "Numbers")
-	fts.ts.Address.Street, _ = clickhouse.ExtractJSONPathAs[string](obj, "Address.Street")
-	fts.ts.Address.City, _ = clickhouse.ExtractJSONPathAs[string](obj, "Address.City")
-	fts.ts.Address.Country, _ = clickhouse.ExtractJSONPathAs[string](obj, "Address.Country")
-	fts.ts.KeysNumbers, _ = clickhouse.ExtractJSONPathAs[map[string]int64](obj, "KeysNumbers")
+// DeserializeClickHouseJSON implements datastore.JSONDeserializer for faster struct scanning
+func (fts *FastTestStruct) DeserializeClickHouseJSON(obj *datastore.JSON) error {
+	fts.ts.Name, _ = datastore.ExtractJSONPathAs[string](obj, "Name")
+	fts.ts.Age, _ = datastore.ExtractJSONPathAs[int64](obj, "Age")
+	fts.ts.Active, _ = datastore.ExtractJSONPathAs[bool](obj, "Active")
+	fts.ts.Score, _ = datastore.ExtractJSONPathAs[float64](obj, "Score")
+	fts.ts.Tags, _ = datastore.ExtractJSONPathAs[[]string](obj, "Tags")
+	fts.ts.Numbers, _ = datastore.ExtractJSONPathAs[[]int64](obj, "Numbers")
+	fts.ts.Address.Street, _ = datastore.ExtractJSONPathAs[string](obj, "Address.Street")
+	fts.ts.Address.City, _ = datastore.ExtractJSONPathAs[string](obj, "Address.City")
+	fts.ts.Address.Country, _ = datastore.ExtractJSONPathAs[string](obj, "Address.Country")
+	fts.ts.KeysNumbers, _ = datastore.ExtractJSONPathAs[map[string]int64](obj, "KeysNumbers")
 	fts.ts.Metadata = make(map[string]any)
-	fts.ts.Metadata["FieldA"], _ = clickhouse.ExtractJSONPathAs[string](obj, "Metadata.FieldA")
-	fts.ts.Metadata["FieldB"], _ = clickhouse.ExtractJSONPathAs[int64](obj, "Metadata.FieldB")
+	fts.ts.Metadata["FieldA"], _ = datastore.ExtractJSONPathAs[string](obj, "Metadata.FieldA")
+	fts.ts.Metadata["FieldB"], _ = datastore.ExtractJSONPathAs[int64](obj, "Metadata.FieldB")
 	fts.ts.Metadata["FieldC"] = make(map[string]any)
-	fts.ts.Metadata["FieldC"].(map[string]any)["FieldD"], _ = clickhouse.ExtractJSONPathAs[string](obj, "Metadata.FieldC.FieldD")
-	fts.ts.Timestamp, _ = clickhouse.ExtractJSONPathAs[time.Time](obj, "Timestamp")
-	fts.ts.DynamicString, _ = clickhouse.ExtractJSONPathAsDynamic(obj, "DynamicString")
-	fts.ts.DynamicInt, _ = clickhouse.ExtractJSONPathAsDynamic(obj, "DynamicInt")
-	fts.ts.DynamicMap, _ = clickhouse.ExtractJSONPathAsDynamic(obj, "DynamicMap")
+	fts.ts.Metadata["FieldC"].(map[string]any)["FieldD"], _ = datastore.ExtractJSONPathAs[string](obj, "Metadata.FieldC.FieldD")
+	fts.ts.Timestamp, _ = datastore.ExtractJSONPathAs[time.Time](obj, "Timestamp")
+	fts.ts.DynamicString, _ = datastore.ExtractJSONPathAsDynamic(obj, "DynamicString")
+	fts.ts.DynamicInt, _ = datastore.ExtractJSONPathAsDynamic(obj, "DynamicInt")
+	fts.ts.DynamicMap, _ = datastore.ExtractJSONPathAsDynamic(obj, "DynamicMap")
 
 	return nil
 }

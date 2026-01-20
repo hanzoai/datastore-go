@@ -14,7 +14,7 @@ import (
 )
 
 func TestExternalTable(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		table1, err := ext.NewTable("external_table_1",
 			ext.Column("col1", "UInt8"),
 			ext.Column("col2", "String"),
@@ -36,12 +36,12 @@ func TestExternalTable(t *testing.T) {
 			}
 		}
 
-		conn, err := GetNativeConnection(t, protocol, nil, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+		conn, err := GetNativeConnection(t, protocol, nil, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 		require.NoError(t, err)
-		ctx := clickhouse.Context(context.Background(),
-			clickhouse.WithExternalTable(table1, table2),
+		ctx := datastore.Context(context.Background(),
+			datastore.WithExternalTable(table1, table2),
 		)
 		rows, err := conn.Query(ctx, "SELECT * FROM external_table_1")
 		require.NoError(t, err)

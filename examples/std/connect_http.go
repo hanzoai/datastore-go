@@ -13,12 +13,12 @@ func ConnectHTTP() error {
 	}
 	conn := datastore.OpenDB(&datastore.Options{
 		Addr: []string{fmt.Sprintf("%s:%d", env.Host, env.HttpPort)},
-		Auth: clickhouse.Auth{
+		Auth: datastore.Auth{
 			Database: env.Database,
 			Username: env.Username,
 			Password: env.Password,
 		},
-		Protocol: clickhouse.HTTP,
+		Protocol: datastore.HTTP,
 	})
 	return conn.Ping()
 }

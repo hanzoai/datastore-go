@@ -12,12 +12,12 @@ on:
 jobs:
   test:
     if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'tests:run-head'))
-    runs-on: [self-hosted, style-checker-aarch64]
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         go:
           - "1.25"
-        clickhouse:
+        datastore:
           - "head"
     steps:
       - name: Checkout
@@ -33,4 +33,4 @@ jobs:
           TESTCONTAINERS_RYUK_DISABLED: "true"
           GOTOOLCHAIN: "local"
         run: |
-          CLICKHOUSE_VERSION=${{ matrix.clickhouse }} make test
+          DATASTORE_VERSION=${{ matrix.datastore }} make test

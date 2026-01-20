@@ -13,26 +13,26 @@ import (
 
 var dynamicTestDate, _ = time.Parse(time.RFC3339, "2024-12-13T02:09:30.123Z")
 
-func setupDynamicTest(t *testing.T, protocol clickhouse.Protocol) driver.Conn {
+func setupDynamicTest(t *testing.T, protocol datastore.Protocol) driver.Conn {
 	SkipOnCloud(t, "cannot modify Dynamic settings on cloud")
 
-	conn, err := GetNativeConnection(t, protocol, clickhouse.Settings{
+	conn, err := GetNativeConnection(t, protocol, datastore.Settings{
 		"max_execution_time":              60,
 		"allow_experimental_dynamic_type": true,
-	}, nil, &clickhouse.Compression{
-		Method: clickhouse.CompressionLZ4,
+	}, nil, &datastore.Compression{
+		Method: datastore.CompressionLZ4,
 	})
 	require.NoError(t, err)
 
 	if !CheckMinServerServerVersion(conn, 24, 8, 0) {
-		t.Skip("unsupported clickhouse version for Dynamic type")
+		t.Skip("unsupported datastore version for Dynamic type")
 	}
 
 	return conn
 }
 
 func TestDynamic(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		conn := setupDynamicTest(t, protocol)
 		ctx := context.Background()
 
@@ -49,30 +49,30 @@ func TestDynamic(t *testing.T) {
 		batch, err := conn.PrepareBatch(ctx, "INSERT INTO test_dynamic (c)")
 		require.NoError(t, err)
 
-		require.NoError(t, batch.Append(clickhouse.NewDynamicWithType(true, "Bool")))
+		require.NoError(t, batch.Append(datastore.NewDynamicWithType(true, "Bool")))
 		colInt64 := int64(42)
-		require.NoError(t, batch.Append(clickhouse.NewDynamicWithType(colInt64, "Int64")))
+		require.NoError(t, batch.Append(datastore.NewDynamicWithType(colInt64, "Int64")))
 		colString := "test"
-		require.NoError(t, batch.Append(clickhouse.NewDynamicWithType(colString, "String")))
-		require.NoError(t, batch.Append(clickhouse.NewDynamicWithType(dynamicTestDate, "DateTime64(3)")))
+		require.NoError(t, batch.Append(datastore.NewDynamicWithType(colString, "String")))
+		require.NoError(t, batch.Append(datastore.NewDynamicWithType(dynamicTestDate, "DateTime64(3)")))
 		var colNil any = nil
 		require.NoError(t, batch.Append(colNil))
 		colSliceUInt8 := []uint8{0xA, 0xB, 0xC}
-		require.NoError(t, batch.Append(clickhouse.NewDynamicWithType(colSliceUInt8, "Array(UInt8)")))
+		require.NoError(t, batch.Append(datastore.NewDynamicWithType(colSliceUInt8, "Array(UInt8)")))
 		colSliceSliceUInt8 := [][]uint8{{0xA, 0xB}, {0xC, 0xD}}
-		require.NoError(t, batch.Append(clickhouse.NewDynamicWithType(colSliceSliceUInt8, "Array(Array(UInt8))")))
+		require.NoError(t, batch.Append(datastore.NewDynamicWithType(colSliceSliceUInt8, "Array(Array(UInt8))")))
 		colSliceMapStringString := []map[string]string{{"key1": "value1", "key2": "value2"}, {"key3": "value3"}}
-		require.NoError(t, batch.Append(clickhouse.NewDynamicWithType(colSliceMapStringString, "Array(Map(String, String))")))
+		require.NoError(t, batch.Append(datastore.NewDynamicWithType(colSliceMapStringString, "Array(Map(String, String))")))
 		colMapStringString := map[string]string{"key1": "value1", "key2": "value2"}
-		require.NoError(t, batch.Append(clickhouse.NewDynamicWithType(colMapStringString, "Map(String, String)")))
+		require.NoError(t, batch.Append(datastore.NewDynamicWithType(colMapStringString, "Map(String, String)")))
 		colMapStringInt64 := map[string]int64{"key1": 42, "key2": 84}
-		require.NoError(t, batch.Append(clickhouse.NewDynamicWithType(colMapStringInt64, "Map(String, Int64)")))
+		require.NoError(t, batch.Append(datastore.NewDynamicWithType(colMapStringInt64, "Map(String, Int64)")))
 		require.NoError(t, batch.Send())
 
 		rows, err := conn.Query(ctx, "SELECT c FROM test_dynamic")
 		require.NoError(t, err)
 
-		var row clickhouse.Dynamic
+		var row datastore.Dynamic
 
 		require.True(t, rows.Next())
 		err = rows.Scan(&row)
@@ -130,7 +130,7 @@ func TestDynamic(t *testing.T) {
 }
 
 func TestDynamicMaxTypes(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		conn := setupDynamicTest(t, protocol)
 		ctx := context.Background()
 
@@ -151,21 +151,21 @@ func TestDynamicMaxTypes(t *testing.T) {
 
 		// Append String first to confirm types don't need to be sorted before sending to server.
 		colString := "test"
-		require.NoError(t, batch.Append(clickhouse.NewDynamicWithType(colString, "String")))
+		require.NoError(t, batch.Append(datastore.NewDynamicWithType(colString, "String")))
 		colInt64 := int64(42)
-		require.NoError(t, batch.Append(clickhouse.NewDynamicWithType(colInt64, "Int64")))
+		require.NoError(t, batch.Append(datastore.NewDynamicWithType(colInt64, "Int64")))
 		// The Null discriminator index will be equal to the total number of types.
 		var colNil any = nil
 		require.NoError(t, batch.Append(colNil))
 		// Append a new type to confirm that the Null discriminator is updated to match the new total types.
-		require.NoError(t, batch.Append(clickhouse.NewDynamicWithType(true, "Bool")))
+		require.NoError(t, batch.Append(datastore.NewDynamicWithType(true, "Bool")))
 
 		require.NoError(t, batch.Send())
 
 		rows, err := conn.Query(ctx, "SELECT c FROM test_dynamic_max_types")
 		require.NoError(t, err)
 
-		var row clickhouse.Dynamic
+		var row datastore.Dynamic
 
 		require.True(t, rows.Next())
 		err = rows.Scan(&row)
@@ -194,7 +194,7 @@ func TestDynamicMaxTypes(t *testing.T) {
 
 // Discriminator precision must grow dynamically depending on the number of types within the Dynamic.
 func TestDynamicExceededTypes(t *testing.T) {
-	conn := setupDynamicTest(t, clickhouse.Native)
+	conn := setupDynamicTest(t, datastore.Native)
 	ctx := context.Background()
 
 	if !CheckMinServerServerVersion(conn, 25, 6, 0) {
@@ -218,7 +218,7 @@ func TestDynamicExceededTypes(t *testing.T) {
 
 			for i := range typeCount {
 				typeName := fmt.Sprintf("Tuple(\"%d\" Int64)", i)
-				require.NoError(t, batch.Append(clickhouse.NewDynamicWithType([]int64{int64(i)}, typeName)))
+				require.NoError(t, batch.Append(datastore.NewDynamicWithType([]int64{int64(i)}, typeName)))
 			}
 			require.NoError(t, batch.Send())
 
@@ -236,7 +236,7 @@ func TestDynamicExceededTypes(t *testing.T) {
 }
 
 func TestDynamicArray(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		conn := setupDynamicTest(t, protocol)
 		ctx := context.Background()
 
@@ -253,16 +253,16 @@ func TestDynamicArray(t *testing.T) {
 		batch, err := conn.PrepareBatch(ctx, "INSERT INTO test_dynamic_array (c)")
 		require.NoError(t, err)
 
-		batch.Append([]clickhouse.Dynamic{
-			clickhouse.NewDynamicWithType(int64(42), "Int64"),
-			clickhouse.NewDynamicWithType(true, "Bool"),
+		batch.Append([]datastore.Dynamic{
+			datastore.NewDynamicWithType(int64(42), "Int64"),
+			datastore.NewDynamicWithType(true, "Bool"),
 		})
 		require.NoError(t, batch.Send())
 
 		rows, err := conn.Query(ctx, "SELECT c FROM test_dynamic_array")
 		require.NoError(t, err)
 
-		var arrRow []clickhouse.Dynamic
+		var arrRow []datastore.Dynamic
 
 		require.True(t, rows.Next())
 		err = rows.Scan(&arrRow)
@@ -278,7 +278,7 @@ func TestDynamicArray(t *testing.T) {
 }
 
 func TestDynamicEmptyArray(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		conn := setupDynamicTest(t, protocol)
 		ctx := context.Background()
 
@@ -295,13 +295,13 @@ func TestDynamicEmptyArray(t *testing.T) {
 		batch, err := conn.PrepareBatch(ctx, "INSERT INTO test_dynamic_empty_array (c)")
 		require.NoError(t, err)
 
-		batch.Append([]clickhouse.Dynamic{})
+		batch.Append([]datastore.Dynamic{})
 		require.NoError(t, batch.Send())
 
 		rows, err := conn.Query(ctx, "SELECT c FROM test_dynamic_empty_array")
 		require.NoError(t, err)
 
-		var arrRow []clickhouse.Dynamic
+		var arrRow []datastore.Dynamic
 
 		require.True(t, rows.Next())
 		err = rows.Scan(&arrRow)
@@ -314,7 +314,7 @@ func TestDynamicEmptyArray(t *testing.T) {
 }
 
 func TestDynamic_ScanWithType(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		conn := setupDynamicTest(t, protocol)
 		ctx := context.Background()
 
@@ -331,15 +331,15 @@ func TestDynamic_ScanWithType(t *testing.T) {
 		batch, err := conn.PrepareBatch(ctx, "INSERT INTO test_dynamic_scan_with_type (c)")
 		require.NoError(t, err)
 
-		require.NoError(t, batch.Append(clickhouse.NewDynamicWithType(true, "Bool")))
-		require.NoError(t, batch.Append(clickhouse.NewDynamicWithType(int64(42), "Int64")))
+		require.NoError(t, batch.Append(datastore.NewDynamicWithType(true, "Bool")))
+		require.NoError(t, batch.Append(datastore.NewDynamicWithType(int64(42), "Int64")))
 		require.NoError(t, batch.Append(nil))
 		require.NoError(t, batch.Send())
 
 		rows, err := conn.Query(ctx, "SELECT c FROM test_dynamic_scan_with_type")
 		require.NoError(t, err)
 
-		var row clickhouse.Dynamic
+		var row datastore.Dynamic
 
 		require.True(t, rows.Next())
 		err = rows.Scan(&row)
@@ -365,7 +365,7 @@ func TestDynamic_ScanWithType(t *testing.T) {
 }
 
 func TestDynamic_BatchFlush(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		SkipOnHTTP(t, protocol, "Flush")
 
 		conn := setupDynamicTest(t, protocol)
@@ -384,12 +384,12 @@ func TestDynamic_BatchFlush(t *testing.T) {
 		batch, err := conn.PrepareBatch(ctx, "INSERT INTO test_dynamic_batch_flush (c)")
 		require.NoError(t, err)
 
-		vals := make([]clickhouse.Dynamic, 0, 1000)
+		vals := make([]datastore.Dynamic, 0, 1000)
 		for i := 0; i < 1000; i++ {
 			if i%2 == 0 {
-				vals = append(vals, clickhouse.NewDynamicWithType(int64(i), "Int64"))
+				vals = append(vals, datastore.NewDynamicWithType(int64(i), "Int64"))
 			} else {
-				vals = append(vals, clickhouse.NewDynamicWithType(i%5 == 0, "Bool"))
+				vals = append(vals, datastore.NewDynamicWithType(i%5 == 0, "Bool"))
 			}
 
 			require.NoError(t, batch.Append(vals[i]))
@@ -402,7 +402,7 @@ func TestDynamic_BatchFlush(t *testing.T) {
 
 		i := 0
 		for rows.Next() {
-			var row clickhouse.Dynamic
+			var row datastore.Dynamic
 			err = rows.Scan(&row)
 			require.NoError(t, err)
 

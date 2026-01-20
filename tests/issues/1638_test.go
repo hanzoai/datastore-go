@@ -15,10 +15,10 @@ func TestIssue1638_NullableJSON(t *testing.T) {
 
 	conn, err := datastore_tests.GetConnectionTCP("issues", nil, nil, nil)
 	require.NoError(t, err)
-	require.NoError(t, err, "open clickhouse")
+	require.NoError(t, err, "open datastore")
 	if !datastore_tests.CheckMinServerServerVersion(conn, 25, 2, 0) {
 		// https://clickhouse.com/docs/ru/whats-new/changelog#new-feature-3
-		t.Skip(fmt.Errorf("unsupported clickhouse version. JSON not supported in Nullable"))
+		t.Skip(fmt.Errorf("unsupported datastore version. JSON not supported in Nullable"))
 		return
 	}
 
@@ -37,7 +37,7 @@ func TestIssue1638_NullableJSON(t *testing.T) {
 	}
 	var (
 		nilMap  map[string]string
-		nilMap2 *clickhouse.JSON
+		nilMap2 *datastore.JSON
 
 		// responses
 		rPayload  map[string]string

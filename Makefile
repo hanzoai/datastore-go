@@ -1,9 +1,25 @@
-CLICKHOUSE_VERSION ?= latest
-CLICKHOUSE_TEST_TIMEOUT ?= 240s
-CLICKHOUSE_QUORUM_INSERT ?= 1
+DATASTORE_VERSION ?= latest
+TEST_TIMEOUT ?= 240s
+DATASTORE_QUORUM_INSERT ?= 1
+
+.PHONY: build test lint up down up-cluster down-cluster cli docker docker-push contributors staticcheck codegen
+
+build:
+	@go build ./...
+
+test:
+	@go install -race -v
+	@DATASTORE_VERSION=$(DATASTORE_VERSION) DATASTORE_QUORUM_INSERT=$(DATASTORE_QUORUM_INSERT) go test -race -timeout $(TEST_TIMEOUT) -count=1 -v ./...
+
+lint:
+	golangci-lint run || :
+
+staticcheck:
+	staticcheck ./...
 
 up:
 	@docker compose up --wait
+
 down:
 	@docker compose down
 
@@ -14,25 +30,20 @@ down-cluster:
 	@docker compose -f docker-compose.cluster.yml down
 
 cli:
-	docker run -it --rm --net clickhouse-go_clickhouse --link clickhouse:clickhouse-server --host clickhouse-server
+	docker run -it --rm --net datastore-go_datastore --link datastore-server:datastore-server hanzoai/datastore-server:$(DATASTORE_VERSION) clickhouse-client --host datastore-server
 
-test:
-	@go install -race -v
-	@CLICKHOUSE_VERSION=$(CLICKHOUSE_VERSION) CLICKHOUSE_QUORUM_INSERT=$(CLICKHOUSE_QUORUM_INSERT) go test -race -timeout $(CLICKHOUSE_TEST_TIMEOUT) -count=1 -v ./...
+docker:
+	docker build -t hanzoai/datastore-server:$(DATASTORE_VERSION) -f Dockerfile .
+	docker build -t hanzoai/datastore-proxy:$(DATASTORE_VERSION) -f Dockerfile.proxy .
 
-lint:
-	golangci-lint run || :
+docker-push: docker
+	docker push hanzoai/datastore-server:$(DATASTORE_VERSION)
+	docker push hanzoai/datastore-proxy:$(DATASTORE_VERSION)
 
 contributors:
 	@git log --pretty="%an <%ae>%n%cn <%ce>" | sort -u -t '<' -k 2,2 | LC_ALL=C sort | \
 		grep -v "users.noreply.github.com\|GitHub <noreply@github.com>" \
 		> contributors/list
 
-staticcheck:
-	staticcheck ./...
-
 codegen: contributors
 	@go run lib/column/codegen/main.go
-	@go-licenser -licensor "ClickHouse, Inc."
-
-.PHONY: contributors

@@ -13,10 +13,10 @@ import (
 
 func Test798(t *testing.T) {
 	var (
-		conn, err = datastore_tests.GetConnectionTCP("issues", clickhouse.Settings{
+		conn, err = datastore_tests.GetConnectionTCP("issues", datastore.Settings{
 			"max_execution_time": 60,
-		}, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+		}, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 	)
 	ctx := context.Background()
@@ -55,13 +55,13 @@ func Test798(t *testing.T) {
 	// append invalid batch
 	require.Error(t, batch.Append("true", false, []bool{true, false, true}))
 	// send invalid batch
-	require.ErrorIs(t, batch.Flush(), clickhouse.ErrBatchInvalid)
-	require.ErrorIs(t, batch.Send(), clickhouse.ErrBatchInvalid)
+	require.ErrorIs(t, batch.Flush(), datastore.ErrBatchInvalid)
+	require.ErrorIs(t, batch.Send(), datastore.ErrBatchInvalid)
 	// test append, send, append
 	batch, err = conn.PrepareBatch(ctx, "INSERT INTO test_issue_798")
 	require.NoError(t, batch.Append(true, false, []bool{true, false, true}))
 	require.NoError(t, batch.Send())
-	require.ErrorIs(t, batch.Append(true, false, []bool{true, false, true}), clickhouse.ErrBatchAlreadySent)
+	require.ErrorIs(t, batch.Append(true, false, []bool{true, false, true}), datastore.ErrBatchAlreadySent)
 }
 
 func writeRows(prepareSQL string, rows [][]any, conn datastore.Conn) (err error) {
@@ -83,10 +83,10 @@ func writeRows(prepareSQL string, rows [][]any, conn datastore.Conn) (err error)
 func Test798Concurrent(t *testing.T) {
 
 	var (
-		conn, err = datastore_tests.GetConnectionTCP("issues", clickhouse.Settings{
+		conn, err = datastore_tests.GetConnectionTCP("issues", datastore.Settings{
 			"max_execution_time": 60,
-		}, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+		}, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 	)
 	ctx := context.Background()

@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func setupTimeMixedTest(t *testing.T, protocol clickhouse.Protocol) datastore.Conn {
+func setupTimeMixedTest(t *testing.T, protocol datastore.Protocol) datastore.Conn {
 	conn, err := GetNativeConnection(t, protocol, nil, nil, nil)
 	require.NoError(t, err)
 	if !CheckMinServerServerVersion(conn, 25, 6, 0) {
@@ -21,10 +21,10 @@ func setupTimeMixedTest(t *testing.T, protocol clickhouse.Protocol) datastore.Co
 }
 
 func TestTimeMixed(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		conn := setupTimeMixedTest(t, protocol)
 
-		ctx := clickhouse.Context(context.Background(), clickhouse.WithSettings(clickhouse.Settings{
+		ctx := datastore.Context(context.Background(), datastore.WithSettings(datastore.Settings{
 			"enable_time_time64_type": 1,
 		}))
 
@@ -68,10 +68,10 @@ func TestTimeMixed(t *testing.T) {
 }
 
 func TestTimeMixedArrays(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		conn := setupTimeMixedTest(t, protocol)
 
-		ctx := clickhouse.Context(context.Background(), clickhouse.WithSettings(clickhouse.Settings{
+		ctx := datastore.Context(context.Background(), datastore.WithSettings(datastore.Settings{
 			"enable_time_time64_type": 1,
 		}))
 
@@ -116,10 +116,10 @@ func TestTimeMixedArrays(t *testing.T) {
 }
 
 func TestTimeMixedNullable(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		conn := setupTimeMixedTest(t, protocol)
 
-		ctx := clickhouse.Context(context.Background(), clickhouse.WithSettings(clickhouse.Settings{
+		ctx := datastore.Context(context.Background(), datastore.WithSettings(datastore.Settings{
 			"enable_time_time64_type": 1,
 		}))
 
@@ -189,10 +189,10 @@ func TestTimeMixedNullable(t *testing.T) {
 }
 
 func TestTimeMixedMultipleRows(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		conn := setupTimeMixedTest(t, protocol)
 
-		ctx := clickhouse.Context(context.Background(), clickhouse.WithSettings(clickhouse.Settings{
+		ctx := datastore.Context(context.Background(), datastore.WithSettings(datastore.Settings{
 			"enable_time_time64_type": 1,
 		}))
 
@@ -245,10 +245,10 @@ func TestTimeMixedMultipleRows(t *testing.T) {
 }
 
 func TestTimeMixedComplexTypes(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		conn := setupTimeMixedTest(t, protocol)
 
-		ctx := clickhouse.Context(context.Background(), clickhouse.WithSettings(clickhouse.Settings{
+		ctx := datastore.Context(context.Background(), datastore.WithSettings(datastore.Settings{
 			"enable_time_time64_type": 1,
 		}))
 

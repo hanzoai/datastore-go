@@ -15,10 +15,10 @@ import (
 func TestClientInfo(t *testing.T) {
 	expectedClientProduct := fmt.Sprintf(
 		"%s/%d.%d.%d (lv:go/%s; os:%s)",
-		clickhouse.ClientName,
-		clickhouse.ClientVersionMajor,
-		clickhouse.ClientVersionMinor,
-		clickhouse.ClientVersionPatch,
+		datastore.ClientName,
+		datastore.ClientVersionMajor,
+		datastore.ClientVersionMinor,
+		datastore.ClientVersionPatch,
 		runtime.Version()[2:],
 		runtime.GOOS,
 	)
@@ -26,19 +26,19 @@ func TestClientInfo(t *testing.T) {
 	testCases := map[string]struct {
 		expectedClientInfo string
 		ctx                context.Context
-		clientInfo         clickhouse.ClientInfo
+		clientInfo         datastore.ClientInfo
 	}{
 		"no additional products": {
-			// e.g. clickhouse-go/2.5.1 (database/sql; lv:go/1.19.3; os:darwin)
+			// e.g. datastore-go/1.0.5.1 (database/sql; lv:go/1.19.3; os:darwin)
 			expectedClientProduct,
 			context.Background(),
-			clickhouse.ClientInfo{},
+			datastore.ClientInfo{},
 		},
 		"one additional product": {
-			// e.g. tests/dev clickhouse-go/2.5.1 (database/sql; lv:go/1.19.3; os:darwin)
+			// e.g. tests/dev datastore-go/1.0.5.1 (database/sql; lv:go/1.19.3; os:darwin)
 			fmt.Sprintf("tests/dev %s", expectedClientProduct),
 			context.Background(),
-			clickhouse.ClientInfo{
+			datastore.ClientInfo{
 				Products: []struct {
 					Name    string
 					Version string
@@ -51,10 +51,10 @@ func TestClientInfo(t *testing.T) {
 			},
 		},
 		"two additional products": {
-			// e.g. product/version tests/dev clickhouse-go/2.5.1 (database/sql; lv:go/1.19.3; os:darwin)
+			// e.g. product/version tests/dev datastore-go/1.0.5.1 (database/sql; lv:go/1.19.3; os:darwin)
 			fmt.Sprintf("product/version tests/dev %s", expectedClientProduct),
 			context.Background(),
-			clickhouse.ClientInfo{
+			datastore.ClientInfo{
 				Products: []struct {
 					Name    string
 					Version string
@@ -71,17 +71,17 @@ func TestClientInfo(t *testing.T) {
 			},
 		},
 		"additional product from context": {
-			// e.g. ctxProduct/1.2.3 clickhouse-go/2.41.0 (ctxComment; lv:go/1.25.5; os:linux)
+			// e.g. ctxProduct/1.2.3 datastore-go/1.0.41.0 (ctxComment; lv:go/1.25.5; os:linux)
 			fmt.Sprintf(
 				"ctxProduct/1.2.3 %s/%d.%d.%d (ctxComment; lv:go/%s; os:%s)",
-				clickhouse.ClientName,
-				clickhouse.ClientVersionMajor,
-				clickhouse.ClientVersionMinor,
-				clickhouse.ClientVersionPatch,
+				datastore.ClientName,
+				datastore.ClientVersionMajor,
+				datastore.ClientVersionMinor,
+				datastore.ClientVersionPatch,
 				runtime.Version()[2:],
 				runtime.GOOS,
 			),
-			clickhouse.Context(context.Background(), clickhouse.WithClientInfo(clickhouse.ClientInfo{
+			datastore.Context(context.Background(), datastore.WithClientInfo(datastore.ClientInfo{
 				Products: []struct {
 					Name    string
 					Version string
@@ -93,7 +93,7 @@ func TestClientInfo(t *testing.T) {
 				},
 				Comment: []string{"ctxComment"},
 			})),
-			clickhouse.ClientInfo{},
+			datastore.ClientInfo{},
 		},
 	}
 
@@ -102,7 +102,7 @@ func TestClientInfo(t *testing.T) {
 
 	for name, testCase := range testCases {
 		t.Run(name, func(t *testing.T) {
-			opts := ClientOptionsFromEnv(env, clickhouse.Settings{}, false)
+			opts := ClientOptionsFromEnv(env, datastore.Settings{}, false)
 			opts.ClientInfo = testCase.clientInfo
 
 			conn, err := datastore.Open(&opts)

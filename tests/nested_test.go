@@ -12,14 +12,14 @@ import (
 )
 
 func TestSimpleNested(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
-		conn, err := GetNativeConnection(t, protocol, nil, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
+		conn, err := GetNativeConnection(t, protocol, nil, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 		ctx := context.Background()
 		require.NoError(t, err)
 		if !CheckMinServerServerVersion(conn, 22, 1, 0) {
-			t.Skip(fmt.Errorf("unsupported clickhouse version"))
+			t.Skip(fmt.Errorf("unsupported datastore version"))
 			return
 		}
 		const ddl = `
@@ -51,16 +51,16 @@ func TestSimpleNested(t *testing.T) {
 
 // this isn't documented behaviour in ClickHouse - i.e. flatten_nested=1 with multiple Nested. Following does work however.
 func TestNestedFlattened(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
-		conn, err := GetNativeConnection(t, protocol, clickhouse.Settings{
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
+		conn, err := GetNativeConnection(t, protocol, datastore.Settings{
 			"flatten_nested": 1,
-		}, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+		}, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 		ctx := context.Background()
 		require.NoError(t, err)
 		if !CheckMinServerServerVersion(conn, 22, 1, 0) {
-			t.Skip(fmt.Errorf("unsupported clickhouse version"))
+			t.Skip(fmt.Errorf("unsupported datastore version"))
 			return
 		}
 		const ddl = `
@@ -120,16 +120,16 @@ func TestNestedFlattened(t *testing.T) {
 }
 
 func TestFlattenedSimpleNested(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
-		conn, err := GetNativeConnection(t, protocol, clickhouse.Settings{
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
+		conn, err := GetNativeConnection(t, protocol, datastore.Settings{
 			"flatten_nested": 0,
-		}, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+		}, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 		ctx := context.Background()
 		require.NoError(t, err)
 		if !CheckMinServerServerVersion(conn, 22, 1, 0) {
-			t.Skip(fmt.Errorf("unsupported clickhouse version"))
+			t.Skip(fmt.Errorf("unsupported datastore version"))
 			return
 		}
 		const ddl = `
@@ -171,16 +171,16 @@ func TestFlattenedSimpleNested(t *testing.T) {
 
 // nested with flatten_nested = 0
 func TestNestedUnFlattened(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
-		conn, err := GetNativeConnection(t, protocol, clickhouse.Settings{
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
+		conn, err := GetNativeConnection(t, protocol, datastore.Settings{
 			"flatten_nested": 0,
-		}, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+		}, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 		ctx := context.Background()
 		require.NoError(t, err)
 		if !CheckMinServerServerVersion(conn, 22, 1, 0) {
-			t.Skip(fmt.Errorf("unsupported clickhouse version"))
+			t.Skip(fmt.Errorf("unsupported datastore version"))
 			return
 		}
 		const ddl = `
@@ -255,17 +255,17 @@ func TestNestedUnFlattened(t *testing.T) {
 }
 
 func TestNestedFlush(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		SkipOnHTTP(t, protocol, "Flush")
-		conn, err := GetNativeConnection(t, protocol, clickhouse.Settings{
+		conn, err := GetNativeConnection(t, protocol, datastore.Settings{
 			"flatten_nested": 0,
-		}, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+		}, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 		ctx := context.Background()
 		require.NoError(t, err)
 		if !CheckMinServerServerVersion(conn, 22, 1, 0) {
-			t.Skip(fmt.Errorf("unsupported clickhouse version"))
+			t.Skip(fmt.Errorf("unsupported datastore version"))
 			return
 		}
 		const ddl = `

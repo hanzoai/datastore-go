@@ -15,21 +15,21 @@ import (
 
 func TestIssue546(t *testing.T) {
 	var (
-		conn, err = datastore_tests.GetConnectionTCP("issues", nil, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+		conn, err = datastore_tests.GetConnectionTCP("issues", nil, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 	)
 	require.NoError(t, err)
-	ctx := clickhouse.Context(context.Background(), clickhouse.WithSettings(clickhouse.Settings{
+	ctx := datastore.Context(context.Background(), datastore.WithSettings(datastore.Settings{
 		"max_block_size": 2000000,
 	}),
-		clickhouse.WithProgress(func(p *clickhouse.Progress) {
+		datastore.WithProgress(func(p *datastore.Progress) {
 			fmt.Println("progress: ", p)
-		}), clickhouse.WithProfileInfo(func(p *clickhouse.ProfileInfo) {
+		}), datastore.WithProfileInfo(func(p *datastore.ProfileInfo) {
 			fmt.Println("profile info: ", p)
 		}))
 	require.NoError(t, conn.Ping(context.Background()))
-	if exception, ok := err.(*clickhouse.Exception); ok {
+	if exception, ok := err.(*datastore.Exception); ok {
 		fmt.Printf("Catch exception [%d] %s \n%s\n", exception.Code, exception.Message, exception.StackTrace)
 	}
 	assert.NoError(t, err)

@@ -13,9 +13,9 @@ import (
 )
 
 func TestSimpleEnum(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
-		conn, err := GetNativeConnection(t, protocol, nil, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
+		conn, err := GetNativeConnection(t, protocol, nil, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 		ctx := context.Background()
 		require.NoError(t, err)
@@ -47,9 +47,9 @@ func TestSimpleEnum(t *testing.T) {
 }
 
 func TestCustomEnum(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
-		conn, err := GetNativeConnection(t, protocol, nil, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
+		conn, err := GetNativeConnection(t, protocol, nil, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 		ctx := context.Background()
 		require.NoError(t, err)
@@ -91,9 +91,9 @@ func TestCustomEnum(t *testing.T) {
 }
 
 func TestEnum(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
-		conn, err := GetNativeConnection(t, protocol, nil, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
+		conn, err := GetNativeConnection(t, protocol, nil, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 		ctx := context.Background()
 		require.NoError(t, err)
@@ -158,9 +158,9 @@ func TestEnum(t *testing.T) {
 }
 
 func TestNullableEnum(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
-		conn, err := GetNativeConnection(t, protocol, nil, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
+		conn, err := GetNativeConnection(t, protocol, nil, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 		ctx := context.Background()
 		require.NoError(t, err)
@@ -210,9 +210,9 @@ func TestNullableEnum(t *testing.T) {
 }
 
 func TestColumnarEnum(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
-		conn, err := GetNativeConnection(t, protocol, nil, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
+		conn, err := GetNativeConnection(t, protocol, nil, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 		ctx := context.Background()
 		require.NoError(t, err)
@@ -306,9 +306,9 @@ func (c *testEnumSerializer) Scan(src any) error {
 }
 
 func TestEnumValuer(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
-		conn, err := GetNativeConnection(t, protocol, nil, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
+		conn, err := GetNativeConnection(t, protocol, nil, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 		ctx := context.Background()
 		require.NoError(t, err)

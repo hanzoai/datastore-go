@@ -12,14 +12,14 @@ on:
 
 jobs:
   test:
-    runs-on: [self-hosted, style-checker-aarch64]
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         go:
           - "1.25"
           - "1.24"
-        clickhouse: # https://github.com/ClickHouse/ClickHouse/blob/master/SECURITY.md#scope-and-supported-versions
+        datastore: # ClickHouse versions
           - "25.10"
           - "25.9"
           - "25.8"
@@ -38,4 +38,4 @@ jobs:
           TESTCONTAINERS_RYUK_DISABLED: "true"
           GOTOOLCHAIN: "local"
         run: |
-          CLICKHOUSE_VERSION=${{ matrix.clickhouse }} make test
+          DATASTORE_VERSION=${{ matrix.datastore }} make test

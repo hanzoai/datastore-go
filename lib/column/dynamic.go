@@ -285,7 +285,7 @@ func (c *Dynamic) AppendRow(v any) error {
 		return c.AppendRow(chcol.NewDynamicWithType(v, inferredTypeName))
 	}
 
-	return fmt.Errorf("value \"%v\" cannot be stored in dynamic column: no compatible types. hint: use clickhouse.DynamicWithType to wrap the value", v)
+	return fmt.Errorf("value \"%v\" cannot be stored in dynamic column: no compatible types. hint: use datastore.DynamicWithType to wrap the value", v)
 }
 
 func (c *Dynamic) encodeHeader(buffer *proto.Buffer) error {

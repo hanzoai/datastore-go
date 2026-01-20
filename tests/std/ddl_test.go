@@ -11,8 +11,8 @@ import (
 )
 
 func TestQuotedDDL(t *testing.T) {
-	dsns := map[string]clickhouse.Protocol{"Native": clickhouse.Native, "Http": clickhouse.HTTP}
-	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	dsns := map[string]datastore.Protocol{"Native": datastore.Native, "Http": datastore.HTTP}
+	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("DATASTORE_USE_SSL", "false"))
 	require.NoError(t, err)
 	ctx := context.Background()
 	for name, protocol := range dsns {

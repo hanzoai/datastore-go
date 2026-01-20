@@ -22,14 +22,14 @@ func TestIssue1503(t *testing.T) {
 	defer cancel()
 
 	// Settings gets re-used between contexts
-	settings := clickhouse.Settings{
+	settings := datastore.Settings{
 		"async_insert": "0",
 	}
 
 	// Try to force a concurrent map write error from re-using the same settings map
 	var wg sync.WaitGroup
 	testInsert := func() {
-		ctx = clickhouse.Context(ctx, clickhouse.WithSettings(settings))
+		ctx = datastore.Context(ctx, datastore.WithSettings(settings))
 		err = conn.Exec(ctx, "INSERT INTO function null('x UInt64') VALUES (1)")
 		require.NoError(t, err)
 		wg.Done()

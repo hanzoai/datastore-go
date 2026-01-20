@@ -101,11 +101,11 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/ClickHouse/clickhouse-go/v2"
+	"github.com/hanzoai/datastore-go"
 )
 
 func main() {
-	conn, err := clickhouse.Open(&clickhouse.Options{
+	conn, err := datastore.Open(&datastore.Options{
 		Addr: []string{"localhost:9000"},
 	})
 	if err != nil {
@@ -113,7 +113,7 @@ func main() {
 	}
 	defer conn.Close()
 
-	ctx := clickhouse.Context(context.Background(), clickhouse.WithSettings(clickhouse.Settings{
+	ctx := datastore.Context(context.Background(), datastore.WithSettings(datastore.Settings{
 		"enable_time_time64_type": 1,
 	}))
 

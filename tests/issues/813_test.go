@@ -3,16 +3,16 @@ package issues
 import (
 	"github.com/hanzoai/datastore-go"
 	datastore_tests "github.com/hanzoai/datastore-go/tests"
-	clickhouse_std_tests "github.com/hanzoai/datastore-go/tests/std"
+	datastore_std_tests "github.com/hanzoai/datastore-go/tests/std"
 	"github.com/stretchr/testify/require"
 	"strconv"
 	"testing"
 )
 
 func Test813(t *testing.T) {
-	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("DATASTORE_USE_SSL", "false"))
 	require.NoError(t, err)
-	conn, err := clickhouse_std_tests.GetDSNConnection("issues", clickhouse.Native, useSSL, nil)
+	conn, err := datastore_std_tests.GetDSNConnection("issues", datastore.Native, useSSL, nil)
 	const ddl = `
 		CREATE TABLE test_813 (
 		  	IntValue Int64,
@@ -30,7 +30,7 @@ func Test813(t *testing.T) {
 
 	valueArgs := []any{
 		int64(14),
-		clickhouse.ArraySet{map[string]string{"array1_key1": "array1_value2", "array1_key2": "array1_value2"}},
+		datastore.ArraySet{map[string]string{"array1_key1": "array1_value2", "array1_key2": "array1_value2"}},
 	}
 	_, err = conn.Exec("INSERT INTO test_813 (IntValue, Exemplars.Attributes) VALUES (?,?)", valueArgs...)
 	require.NoError(t, err)

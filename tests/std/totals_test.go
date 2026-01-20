@@ -20,9 +20,9 @@ func TestStdWithTotals(t *testing.T) {
 		SELECT number FROM system.numbers LIMIT 100
 	) GROUP BY n WITH TOTALS
 	`
-	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("DATASTORE_USE_SSL", "false"))
 	require.NoError(t, err)
-	conn, err := GetStdDSNConnection(clickhouse.Native, useSSL, nil)
+	conn, err := GetStdDSNConnection(datastore.Native, useSSL, nil)
 	require.NoError(t, err)
 	rows, err := conn.Query(query)
 	require.NoError(t, err)

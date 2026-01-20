@@ -14,7 +14,7 @@ func TestSimpleStdString(t *testing.T) {
 	env, err := GetStdTestEnvironment()
 	require.NoError(t, err)
 	require.NoError(t, err)
-	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("DATASTORE_USE_SSL", "false"))
 	require.NoError(t, err)
 	connectionString := fmt.Sprintf("http://%s:%d?username=%s&password=%s&dial_timeout=200ms&max_execution_time=60", env.Host, env.HttpPort, env.Username, env.Password)
 	if useSSL {

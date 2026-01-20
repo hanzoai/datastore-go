@@ -12,11 +12,11 @@ import (
 )
 
 func TestBatchNoFlush(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		SkipOnHTTP(t, protocol, "cannot flush HTTP")
 
-		conn, err := GetNativeConnection(t, protocol, nil, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+		conn, err := GetNativeConnection(t, protocol, nil, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 		require.NoError(t, err)
 		insertWithFlush(t, protocol, conn, false)
@@ -24,18 +24,18 @@ func TestBatchNoFlush(t *testing.T) {
 }
 
 func TestBatchFlush(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		SkipOnHTTP(t, protocol, "cannot flush HTTP")
 
-		conn, err := GetNativeConnection(t, protocol, nil, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+		conn, err := GetNativeConnection(t, protocol, nil, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 		require.NoError(t, err)
 		insertWithFlush(t, protocol, conn, true)
 	})
 }
 
-func insertWithFlush(t *testing.T, protocol clickhouse.Protocol, conn driver.Conn, flush bool) {
+func insertWithFlush(t *testing.T, protocol datastore.Protocol, conn driver.Conn, flush bool) {
 	ctx := context.Background()
 	tableName := "batch_flush_example"
 	if !flush {

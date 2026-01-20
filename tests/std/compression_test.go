@@ -14,16 +14,16 @@ import (
 
 func TestCompressionStd(t *testing.T) {
 	type compressionTest struct {
-		compressionMethods []clickhouse.CompressionMethod
+		compressionMethods []datastore.CompressionMethod
 	}
 
-	protocols := map[clickhouse.Protocol]compressionTest{clickhouse.HTTP: {
-		compressionMethods: []clickhouse.CompressionMethod{clickhouse.CompressionLZ4, clickhouse.CompressionZSTD, clickhouse.CompressionGZIP, clickhouse.CompressionDeflate, clickhouse.CompressionBrotli},
-	}, clickhouse.Native: {
-		compressionMethods: []clickhouse.CompressionMethod{clickhouse.CompressionLZ4, clickhouse.CompressionZSTD},
+	protocols := map[datastore.Protocol]compressionTest{datastore.HTTP: {
+		compressionMethods: []datastore.CompressionMethod{datastore.CompressionLZ4, datastore.CompressionZSTD, datastore.CompressionGZIP, datastore.CompressionDeflate, datastore.CompressionBrotli},
+	}, datastore.Native: {
+		compressionMethods: []datastore.CompressionMethod{datastore.CompressionLZ4, datastore.CompressionZSTD},
 	}}
 
-	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("DATASTORE_USE_SSL", "false"))
 	require.NoError(t, err)
 	var tlsConfig *tls.Config
 	if useSSL {
@@ -32,10 +32,10 @@ func TestCompressionStd(t *testing.T) {
 	for protocol, compressionTest := range protocols {
 		for _, method := range compressionTest.compressionMethods {
 			t.Run(fmt.Sprintf("%s with %s", protocol, method), func(t *testing.T) {
-				conn, err := GetStdOpenDBConnection(protocol, clickhouse.Settings{
+				conn, err := GetStdOpenDBConnection(protocol, datastore.Settings{
 					"max_execution_time":      60,
 					"enable_http_compression": 1, // needed for http compression e.g. gzip
-				}, tlsConfig, &clickhouse.Compression{
+				}, tlsConfig, &datastore.Compression{
 					Method: method,
 					Level:  3,
 				})
@@ -103,8 +103,8 @@ func TestCompressionStd(t *testing.T) {
 }
 
 func TestCompressionStdDSN(t *testing.T) {
-	dsns := map[string]clickhouse.Protocol{"Native": clickhouse.Native, "Http": clickhouse.HTTP}
-	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	dsns := map[string]datastore.Protocol{"Native": datastore.Native, "Http": datastore.HTTP}
+	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("DATASTORE_USE_SSL", "false"))
 	require.NoError(t, err)
 	for name, protocol := range dsns {
 		t.Run(fmt.Sprintf("%s Protocol", name), func(t *testing.T) {
@@ -149,21 +149,21 @@ func TestCompressionStdDSN(t *testing.T) {
 }
 
 type protocolCompress struct {
-	protocol clickhouse.Protocol
+	protocol datastore.Protocol
 	compress string
 	level    string
 }
 
 func TestCompressionStdDSNWithLevel(t *testing.T) {
 	dsns := map[string]protocolCompress{"Native": {
-		protocol: clickhouse.Native,
+		protocol: datastore.Native,
 		compress: "lz4",
 	}, "Http": {
-		protocol: clickhouse.HTTP,
+		protocol: datastore.HTTP,
 		compress: "gzip",
 		level:    "9",
 	}}
-	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("DATASTORE_USE_SSL", "false"))
 	require.NoError(t, err)
 	for name, protocol := range dsns {
 		t.Run(fmt.Sprintf("%s Protocol", name), func(t *testing.T) {
@@ -210,18 +210,18 @@ func TestCompressionStdDSNWithLevel(t *testing.T) {
 func TestCompressionStdDSNInvalid(t *testing.T) {
 	// these should all fail
 	configs := map[string][]protocolCompress{"Native": {{
-		protocol: clickhouse.Native,
+		protocol: datastore.Native,
 		compress: "gzip",
 	}}, "Http": {{
-		protocol: clickhouse.HTTP,
+		protocol: datastore.HTTP,
 		compress: "gzip",
 		level:    "10",
 	}, {
-		protocol: clickhouse.HTTP,
+		protocol: datastore.HTTP,
 		compress: "gzip",
 		level:    "-3",
 	}}}
-	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("DATASTORE_USE_SSL", "false"))
 	require.NoError(t, err)
 	for name, dsns := range configs {
 		for _, dsn := range dsns {

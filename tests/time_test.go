@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func setupTimeTest(t *testing.T, protocol clickhouse.Protocol) datastore.Conn {
+func setupTimeTest(t *testing.T, protocol datastore.Protocol) datastore.Conn {
 	conn, err := GetNativeConnection(t, protocol, nil, nil, nil)
 	require.NoError(t, err)
 	if !CheckMinServerServerVersion(conn, 25, 6, 0) {
@@ -21,10 +21,10 @@ func setupTimeTest(t *testing.T, protocol clickhouse.Protocol) datastore.Conn {
 }
 
 func TestTime(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		conn := setupTimeTest(t, protocol)
 
-		ctx := clickhouse.Context(context.Background(), clickhouse.WithSettings(clickhouse.Settings{
+		ctx := datastore.Context(context.Background(), datastore.WithSettings(datastore.Settings{
 			"enable_time_time64_type": 1,
 		}))
 
@@ -50,10 +50,10 @@ func TestTime(t *testing.T) {
 }
 
 func TestTimeEdgeCases(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		conn := setupTimeTest(t, protocol)
 
-		ctx := clickhouse.Context(context.Background(), clickhouse.WithSettings(clickhouse.Settings{
+		ctx := datastore.Context(context.Background(), datastore.WithSettings(datastore.Settings{
 			"enable_time_time64_type": 1,
 		}))
 
@@ -103,10 +103,10 @@ func TestTimeEdgeCases(t *testing.T) {
 }
 
 func TestTimeArray(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		conn := setupTimeTest(t, protocol)
 
-		ctx := clickhouse.Context(context.Background(), clickhouse.WithSettings(clickhouse.Settings{
+		ctx := datastore.Context(context.Background(), datastore.WithSettings(datastore.Settings{
 			"enable_time_time64_type": 1,
 		}))
 
@@ -146,10 +146,10 @@ func TestTimeArray(t *testing.T) {
 }
 
 func TestTimeNullable(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		conn := setupTimeTest(t, protocol)
 
-		ctx := clickhouse.Context(context.Background(), clickhouse.WithSettings(clickhouse.Settings{
+		ctx := datastore.Context(context.Background(), datastore.WithSettings(datastore.Settings{
 			"enable_time_time64_type": 1,
 		}))
 
@@ -191,10 +191,10 @@ func TestTimeNullable(t *testing.T) {
 }
 
 func TestTimeMultipleRows(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		conn := setupTimeTest(t, protocol)
 
-		ctx := clickhouse.Context(context.Background(), clickhouse.WithSettings(clickhouse.Settings{
+		ctx := datastore.Context(context.Background(), datastore.WithSettings(datastore.Settings{
 			"enable_time_time64_type": 1,
 		}))
 

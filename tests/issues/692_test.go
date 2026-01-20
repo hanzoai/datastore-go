@@ -9,18 +9,18 @@ import (
 	"github.com/hanzoai/datastore-go"
 	datastore_tests "github.com/hanzoai/datastore-go/tests"
 	"github.com/hanzoai/datastore-go/tests/std"
-	clickhouse_std_tests "github.com/hanzoai/datastore-go/tests/std"
+	datastore_std_tests "github.com/hanzoai/datastore-go/tests/std"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestIssue692(t *testing.T) {
-	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("DATASTORE_USE_SSL", "false"))
 	require.NoError(t, err)
-	conn, err := clickhouse_std_tests.GetDSNConnection("issues", clickhouse.Native, useSSL, url.Values{})
+	conn, err := datastore_std_tests.GetDSNConnection("issues", datastore.Native, useSSL, url.Values{})
 	require.NoError(t, err)
 	if !std.CheckMinServerVersion(conn, 21, 9, 0) {
-		t.Skip(fmt.Errorf("unsupported clickhouse version"))
+		t.Skip(fmt.Errorf("unsupported datastore version"))
 		return
 	}
 	const ddl = `

@@ -10,13 +10,13 @@ import (
 func JSONPathsExample() error {
 	ctx := context.Background()
 
-	conn, err := GetStdOpenDBConnection(clickhouse.Native, nil, nil, nil)
+	conn, err := GetStdOpenDBConnection(datastore.Native, nil, nil, nil)
 	if err != nil {
 		return err
 	}
 
 	if !CheckMinServerVersion(conn, 25, 6, 0) {
-		fmt.Print("unsupported clickhouse version for JSON type")
+		fmt.Print("unsupported datastore version for JSON type")
 		return nil
 	}
 
@@ -57,15 +57,15 @@ func JSONPathsExample() error {
 		return err
 	}
 
-	insertProduct := clickhouse.NewJSON()
-	insertProduct.SetValueAtPath("id", clickhouse.NewDynamicWithType(uint64(1234), "UInt64"))
+	insertProduct := datastore.NewJSON()
+	insertProduct.SetValueAtPath("id", datastore.NewDynamicWithType(uint64(1234), "UInt64"))
 	insertProduct.SetValueAtPath("name", "Book")
 	insertProduct.SetValueAtPath("tags", []string{"library", "fiction"})
 	insertProduct.SetValueAtPath("pricing.price", int64(750))
 	insertProduct.SetValueAtPath("pricing.currency", "usd")
 	insertProduct.SetValueAtPath("metadata.region", "us")
 	insertProduct.SetValueAtPath("metadata.page_count", int64(852))
-	insertProduct.SetValueAtPath("created_at", clickhouse.NewDynamicWithType(time.Now().UTC().Truncate(time.Millisecond), "DateTime64(3)"))
+	insertProduct.SetValueAtPath("created_at", datastore.NewDynamicWithType(time.Now().UTC().Truncate(time.Millisecond), "DateTime64(3)"))
 
 	if _, err = batch.ExecContext(ctx, insertProduct); err != nil {
 		return err
@@ -75,7 +75,7 @@ func JSONPathsExample() error {
 		return err
 	}
 
-	var selectedProduct clickhouse.JSON
+	var selectedProduct datastore.JSON
 
 	if err = conn.QueryRowContext(ctx, "SELECT product FROM go_json_example").Scan(&selectedProduct); err != nil {
 		return err

@@ -12,16 +12,16 @@ import (
 )
 
 func TestSimpleAggregateFunction(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
-		conn, err := GetNativeConnection(t, protocol, clickhouse.Settings{
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
+		conn, err := GetNativeConnection(t, protocol, datastore.Settings{
 			"allow_experimental_json_type": true,
-		}, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+		}, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 		ctx := context.Background()
 		require.NoError(t, err)
 		if !CheckMinServerServerVersion(conn, 21, 1, 0) {
-			t.Skip(fmt.Errorf("unsupported clickhouse version"))
+			t.Skip(fmt.Errorf("unsupported datastore version"))
 			return
 		}
 		const ddl = `

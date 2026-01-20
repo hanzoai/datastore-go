@@ -12,10 +12,10 @@ import (
 
 func Test1280(t *testing.T) {
 	var (
-		conn, err = datastore_tests.GetConnectionTCP(testSet, clickhouse.Settings{
+		conn, err = datastore_tests.GetConnectionTCP(testSet, datastore.Settings{
 			"max_execution_time": 60,
-		}, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+		}, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 		env, errEnv = datastore_tests.GetTestEnvironment(testSet)
 	)

@@ -16,7 +16,7 @@ import (
 func TestIssue1163(t *testing.T) {
 	env, err := GetIssuesTestEnvironment()
 	require.NoError(t, err)
-	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("DATASTORE_USE_SSL", "false"))
 	require.NoError(t, err)
 	var tlsConfig *tls.Config
 	port := env.Port
@@ -31,7 +31,7 @@ func TestIssue1163(t *testing.T) {
 		Debugf: func(format string, v ...any) {
 			debugfCalled = true
 		},
-		Auth: clickhouse.Auth{
+		Auth: datastore.Auth{
 			Database: "default",
 			Username: env.Username,
 			Password: env.Password,

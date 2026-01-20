@@ -12,10 +12,10 @@ import (
 
 func TestIssue584(t *testing.T) {
 	var (
-		conn, err = datastore_tests.GetConnectionTCP("issues", clickhouse.Settings{
+		conn, err = datastore_tests.GetConnectionTCP("issues", datastore.Settings{
 			"max_execution_time": 60,
-		}, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+		}, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 	)
 	require.NoError(t, err)
@@ -42,10 +42,10 @@ func TestIssue584(t *testing.T) {
 
 func TestIssue584Complex(t *testing.T) {
 	var (
-		conn, err = datastore_tests.GetConnectionTCP("issues", clickhouse.Settings{
+		conn, err = datastore_tests.GetConnectionTCP("issues", datastore.Settings{
 			"max_execution_time": 60,
-		}, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+		}, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 	)
 	require.NoError(t, err)

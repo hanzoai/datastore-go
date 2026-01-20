@@ -8,7 +8,7 @@ import (
 )
 
 func ProgressProfileLogs() error {
-	conn, err := GetStdOpenDBConnection(clickhouse.Native, clickhouse.Settings{
+	conn, err := GetStdOpenDBConnection(datastore.Native, datastore.Settings{
 		"send_logs_level": "trace",
 	}, nil, nil)
 	if err != nil {
@@ -16,12 +16,12 @@ func ProgressProfileLogs() error {
 	}
 	totalRows := uint64(0)
 	// use context to pass a call back for progress and profile info
-	ctx := clickhouse.Context(context.Background(), clickhouse.WithProgress(func(p *clickhouse.Progress) {
+	ctx := datastore.Context(context.Background(), datastore.WithProgress(func(p *datastore.Progress) {
 		fmt.Println("progress: ", p)
 		totalRows += p.Rows
-	}), clickhouse.WithProfileInfo(func(p *clickhouse.ProfileInfo) {
+	}), datastore.WithProfileInfo(func(p *datastore.ProfileInfo) {
 		fmt.Println("profile info: ", p)
-	}), clickhouse.WithLogs(func(log *clickhouse.Log) {
+	}), datastore.WithLogs(func(log *datastore.Log) {
 		fmt.Println("log info: ", log)
 	}))
 

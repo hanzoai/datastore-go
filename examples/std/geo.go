@@ -9,7 +9,7 @@ import (
 )
 
 func GeoInsertRead() error {
-	conn, err := GetStdOpenDBConnection(clickhouse.Native, clickhouse.Settings{
+	conn, err := GetStdOpenDBConnection(datastore.Native, datastore.Settings{
 		"allow_experimental_geo_types": 1,
 	}, nil, nil)
 	if err != nil {

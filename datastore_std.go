@@ -33,7 +33,7 @@ func (o *stdConnOpener) Driver() driver.Driver {
 		if o.opt.Debugf != nil {
 			debugf = o.opt.Debugf
 		} else {
-			debugf = log.New(os.Stdout, "[clickhouse-std] ", 0).Printf
+			debugf = log.New(os.Stdout, "[datastore-std] ", 0).Printf
 		}
 	}
 	return &stdDriver{
@@ -85,7 +85,7 @@ func (o *stdConnOpener) Connect(ctx context.Context) (_ driver.Conn, err error) 
 				if o.opt.Debugf != nil {
 					debugf = o.opt.Debugf
 				} else {
-					debugf = log.New(os.Stdout, fmt.Sprintf("[clickhouse-std][conn=%d][%s] ", num, o.opt.Addr[num]), 0).Printf
+					debugf = log.New(os.Stdout, fmt.Sprintf("[datastore-std][conn=%d][%s] ", num, o.opt.Addr[num]), 0).Printf
 				}
 			}
 			return &stdDriver{
@@ -104,7 +104,7 @@ var _ driver.Connector = (*stdConnOpener)(nil)
 
 func init() {
 	var debugf = func(format string, v ...any) {}
-	sql.Register("clickhouse", &stdDriver{debugf: debugf})
+	sql.Register("datastore", &stdDriver{debugf: debugf})
 }
 
 // isConnBrokenError returns true if the error class indicates that the
@@ -131,7 +131,7 @@ func Connector(opt *Options) driver.Connector {
 		if o.Debugf != nil {
 			debugf = o.Debugf
 		} else {
-			debugf = log.New(os.Stdout, "[clickhouse-std][opener] ", 0).Printf
+			debugf = log.New(os.Stdout, "[datastore-std][opener] ", 0).Printf
 		}
 	}
 	return &stdConnOpener{
@@ -162,7 +162,7 @@ func OpenDB(opt *Options) *sql.DB {
 		if o.Debugf != nil {
 			debugf = o.Debugf
 		} else {
-			debugf = log.New(os.Stdout, "[clickhouse-std][opener] ", 0).Printf
+			debugf = log.New(os.Stdout, "[datastore-std][opener] ", 0).Printf
 		}
 	}
 
@@ -201,7 +201,7 @@ func (std *stdDriver) Open(dsn string) (_ driver.Conn, err error) {
 	o := opt.setDefaults()
 	var debugf = func(format string, v ...any) {}
 	if o.Debug {
-		debugf = log.New(os.Stdout, "[clickhouse-std][opener] ", 0).Printf
+		debugf = log.New(os.Stdout, "[datastore-std][opener] ", 0).Printf
 	}
 	o.ClientInfo.Comment = []string{"database/sql"}
 	return (&stdConnOpener{opt: o, debugf: debugf}).Connect(context.Background())

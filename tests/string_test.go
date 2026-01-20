@@ -24,16 +24,16 @@ func (t testStr) String() string {
 }
 
 func TestSimpleString(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
-		conn, err := GetNativeConnection(t, protocol, nil, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
+		conn, err := GetNativeConnection(t, protocol, nil, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 		ctx := context.Background()
 
 		require.NoError(t, err)
 		require.NoError(t, conn.Ping(ctx))
 		if !CheckMinServerServerVersion(conn, 21, 9, 0) {
-			t.Skip(fmt.Errorf("unsupported clickhouse version"))
+			t.Skip(fmt.Errorf("unsupported datastore version"))
 			return
 		}
 		const ddl = `
@@ -69,16 +69,16 @@ func (s customStr) String() string {
 }
 
 func TestCustomString(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
-		conn, err := GetNativeConnection(t, protocol, nil, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
+		conn, err := GetNativeConnection(t, protocol, nil, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 		ctx := context.Background()
 
 		require.NoError(t, err)
 		require.NoError(t, conn.Ping(ctx))
 		if !CheckMinServerServerVersion(conn, 21, 9, 0) {
-			t.Skip(fmt.Errorf("unsupported clickhouse version"))
+			t.Skip(fmt.Errorf("unsupported datastore version"))
 			return
 		}
 		const ddl = `
@@ -113,14 +113,14 @@ func TestCustomString(t *testing.T) {
 }
 
 func TestString(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
-		conn, err := GetNativeConnection(t, protocol, nil, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
+		conn, err := GetNativeConnection(t, protocol, nil, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 		ctx := context.Background()
 		require.NoError(t, err)
 		if !CheckMinServerServerVersion(conn, 21, 9, 0) {
-			t.Skip(fmt.Errorf("unsupported clickhouse version"))
+			t.Skip(fmt.Errorf("unsupported datastore version"))
 			return
 		}
 		const ddl = `
@@ -269,10 +269,10 @@ func BenchmarkColumnarString(b *testing.B) {
 }
 
 func TestStringFlush(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		SkipOnHTTP(t, protocol, "Flush")
-		conn, err := GetNativeConnection(t, protocol, nil, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+		conn, err := GetNativeConnection(t, protocol, nil, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 		ctx := context.Background()
 		require.NoError(t, err)
@@ -328,16 +328,16 @@ func (c *testStringSerializer) Scan(src any) error {
 }
 
 func TestStringFromDriverValuerType(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
-		conn, err := GetNativeConnection(t, protocol, nil, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
+		conn, err := GetNativeConnection(t, protocol, nil, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 		ctx := context.Background()
 
 		require.NoError(t, err)
 		require.NoError(t, conn.Ping(ctx))
 		if !CheckMinServerServerVersion(conn, 21, 9, 0) {
-			t.Skip(fmt.Errorf("unsupported clickhouse version"))
+			t.Skip(fmt.Errorf("unsupported datastore version"))
 			return
 		}
 		const ddl = `
@@ -388,16 +388,16 @@ func (c *testStringPtrSerializer) Scan(src any) error {
 }
 
 func TestStringFromDriverValuerTypeNonStdReturn(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
-		conn, err := GetNativeConnection(t, protocol, nil, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
+		conn, err := GetNativeConnection(t, protocol, nil, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 		ctx := context.Background()
 
 		require.NoError(t, err)
 		require.NoError(t, conn.Ping(ctx))
 		if !CheckMinServerServerVersion(conn, 21, 9, 0) {
-			t.Skip(fmt.Errorf("unsupported clickhouse version"))
+			t.Skip(fmt.Errorf("unsupported datastore version"))
 			return
 		}
 		const ddl = `

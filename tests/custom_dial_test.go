@@ -22,7 +22,7 @@ func TestCustomDialContext(t *testing.T) {
 	var (
 		dialCount int
 	)
-	useSSL, err := strconv.ParseBool(GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	useSSL, err := strconv.ParseBool(GetEnv("DATASTORE_USE_SSL", "false"))
 	require.NoError(t, err)
 	port := env.Port
 	var tlsConfig *tls.Config
@@ -32,7 +32,7 @@ func TestCustomDialContext(t *testing.T) {
 	}
 	conn, err := datastore.Open(&datastore.Options{
 		Addr: []string{fmt.Sprintf("%s:%d", env.Host, port)},
-		Auth: clickhouse.Auth{
+		Auth: datastore.Auth{
 			Database: "default",
 			Username: env.Username,
 			Password: env.Password,
@@ -72,7 +72,7 @@ func TestCustomHTTPDialContext(t *testing.T) {
 	var (
 		dialCount int
 	)
-	useSSL, err := strconv.ParseBool(GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	useSSL, err := strconv.ParseBool(GetEnv("DATASTORE_USE_SSL", "false"))
 	require.NoError(t, err)
 	port := env.HttpPort
 	var tlsConfig *tls.Config
@@ -82,8 +82,8 @@ func TestCustomHTTPDialContext(t *testing.T) {
 	}
 	connector := datastore.Connector(&datastore.Options{
 		Addr:     []string{fmt.Sprintf("%s:%d", env.Host, port)},
-		Protocol: clickhouse.HTTP,
-		Auth: clickhouse.Auth{
+		Protocol: datastore.HTTP,
+		Auth: datastore.Auth{
 			Database: "default",
 			Username: env.Username,
 			Password: env.Password,

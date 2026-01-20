@@ -11,7 +11,7 @@ import (
 )
 
 func TestContextCancellationOfHeavyGeneratedInsert(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		SkipOnHTTP(t, protocol, "context cancel")
 
 		var (
@@ -46,7 +46,7 @@ func TestContextCancellationOfHeavyGeneratedInsert(t *testing.T) {
 }
 
 func TestContextCancellationOfHeavyOptimizeFinal(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		SkipOnHTTP(t, protocol, "context cancel")
 
 		var (
@@ -62,7 +62,7 @@ func TestContextCancellationOfHeavyOptimizeFinal(t *testing.T) {
 }
 
 func TestContextCancellationOfHeavyInsertFromS3(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		SkipOnHTTP(t, protocol, "context cancel")
 
 		var (
@@ -99,7 +99,7 @@ func TestContextCancellationOfHeavyInsertFromS3(t *testing.T) {
 	})
 }
 
-func SetupTestContextCancellationType1(t *testing.T, protocol clickhouse.Protocol, fillTableWithRandomData bool) (datastore.Conn, error) {
+func SetupTestContextCancellationType1(t *testing.T, protocol datastore.Protocol, fillTableWithRandomData bool) (datastore.Conn, error) {
 	var (
 		q1 = "CREATE DATABASE IF NOT EXISTS test_query_cancellation"
 		q2 = "DROP TABLE IF EXISTS test_query_cancellation.trips"
@@ -151,8 +151,8 @@ func SetupTestContextCancellationType1(t *testing.T, protocol clickhouse.Protoco
 		prepareQueries = append(prepareQueries, q4)
 	}
 
-	conn, err := GetNativeConnection(t, protocol, nil, nil, &clickhouse.Compression{
-		Method: clickhouse.CompressionLZ4,
+	conn, err := GetNativeConnection(t, protocol, nil, nil, &datastore.Compression{
+		Method: datastore.CompressionLZ4,
 	})
 
 	assert.Nil(t, err)

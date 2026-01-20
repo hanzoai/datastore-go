@@ -13,7 +13,7 @@ func MultiStdHost() error {
 	}
 	conn, err := datastore.Open(&datastore.Options{
 		Addr: []string{"127.0.0.1:9001", "127.0.0.1:9002", fmt.Sprintf("%s:%d", env.Host, env.Port)},
-		Auth: clickhouse.Auth{
+		Auth: datastore.Auth{
 			Database: env.Database,
 			Username: env.Username,
 			Password: env.Password,

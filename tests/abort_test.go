@@ -10,9 +10,9 @@ import (
 )
 
 func TestAbort(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
-		conn, err := GetNativeConnection(t, protocol, nil, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
+		conn, err := GetNativeConnection(t, protocol, nil, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 		require.NoError(t, err)
 		ctx := context.Background()
@@ -29,7 +29,7 @@ func TestAbort(t *testing.T) {
 		require.NoError(t, err)
 		require.NoError(t, batch.Abort())
 		if err := batch.Abort(); assert.Error(t, err) {
-			assert.Equal(t, clickhouse.ErrBatchAlreadySent, err)
+			assert.Equal(t, datastore.ErrBatchAlreadySent, err)
 		}
 		batch, err = conn.PrepareBatch(ctx, "INSERT INTO test_abort")
 		require.NoError(t, err)
@@ -43,17 +43,17 @@ func TestAbort(t *testing.T) {
 }
 
 func TestBatchClose(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
-		conn, err := GetNativeConnection(t, protocol, nil, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
+		conn, err := GetNativeConnection(t, protocol, nil, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 		require.NoError(t, err)
 		ctx := context.Background()
 
-		if protocol == clickhouse.HTTP {
+		if protocol == datastore.HTTP {
 			// For HTTP, provide specific column names since we can't parse out the null table function
-			ctx = clickhouse.Context(ctx,
-				clickhouse.WithColumnNamesAndTypes([]clickhouse.ColumnNameAndType{
+			ctx = datastore.Context(ctx,
+				datastore.WithColumnNamesAndTypes([]datastore.ColumnNameAndType{
 					{Name: "x", Type: "UInt64"},
 				}))
 		}

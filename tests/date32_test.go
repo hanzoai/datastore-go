@@ -15,14 +15,14 @@ import (
 )
 
 func TestDate32(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
-		conn, err := GetNativeConnection(t, protocol, nil, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
+		conn, err := GetNativeConnection(t, protocol, nil, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 		ctx := context.Background()
 		require.NoError(t, err)
 		if !CheckMinServerServerVersion(conn, 21, 9, 0) {
-			t.Skip(fmt.Errorf("unsupported clickhouse version"))
+			t.Skip(fmt.Errorf("unsupported datastore version"))
 			return
 		}
 		const ddl = `
@@ -119,10 +119,10 @@ func TestDate32(t *testing.T) {
 }
 
 func TestDate32Extremes(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		ctx := context.Background()
-		conn, err := GetNativeConnection(t, protocol, nil, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+		conn, err := GetNativeConnection(t, protocol, nil, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 		require.NoError(t, err)
 
@@ -150,14 +150,14 @@ func TestDate32Extremes(t *testing.T) {
 }
 
 func TestNullableDate32(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
-		conn, err := GetNativeConnection(t, protocol, nil, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
+		conn, err := GetNativeConnection(t, protocol, nil, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 		ctx := context.Background()
 		require.NoError(t, err)
 		if !CheckMinServerServerVersion(conn, 21, 9, 0) {
-			t.Skip(fmt.Errorf("unsupported clickhouse version"))
+			t.Skip(fmt.Errorf("unsupported datastore version"))
 			return
 		}
 		const ddl = `
@@ -211,14 +211,14 @@ func TestNullableDate32(t *testing.T) {
 }
 
 func TestColumnarDate32(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
-		conn, err := GetNativeConnection(t, protocol, nil, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
+		conn, err := GetNativeConnection(t, protocol, nil, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 		ctx := context.Background()
 		require.NoError(t, err)
 		if !CheckMinServerServerVersion(conn, 21, 9, 0) {
-			t.Skip(fmt.Errorf("unsupported clickhouse version"))
+			t.Skip(fmt.Errorf("unsupported datastore version"))
 			return
 		}
 		const ddl = `
@@ -286,14 +286,14 @@ func TestColumnarDate32(t *testing.T) {
 }
 
 func TestDate32Flush(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		SkipOnHTTP(t, protocol, "Flush")
-		conn, err := GetNativeConnection(t, protocol, nil, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+		conn, err := GetNativeConnection(t, protocol, nil, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 		ctx := context.Background()
 		if !CheckMinServerServerVersion(conn, 21, 9, 0) {
-			t.Skip(fmt.Errorf("unsupported clickhouse version"))
+			t.Skip(fmt.Errorf("unsupported datastore version"))
 			return
 		}
 		require.NoError(t, err)
@@ -334,9 +334,9 @@ func TestDate32Flush(t *testing.T) {
 }
 
 func TestDate32TZ(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
-		conn, err := GetNativeConnection(t, protocol, nil, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
+		conn, err := GetNativeConnection(t, protocol, nil, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 		ctx := context.Background()
 		const ddl = `
@@ -375,9 +375,9 @@ func TestDate32TZ(t *testing.T) {
 }
 
 func TestCustomDateTime32(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
-		conn, err := GetNativeConnection(t, protocol, nil, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
+		conn, err := GetNativeConnection(t, protocol, nil, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 		ctx := context.Background()
 		const ddl = `
@@ -404,9 +404,9 @@ func TestCustomDateTime32(t *testing.T) {
 func TestDate32WithUserLocation(t *testing.T) {
 	t.Skip("Date32 decode is broken in this scenario. row.Scan returns '1977-07-01 00:00:00 +0000' instead of '2022-07-01 00:00:00 +0000'. Needs further investigation.")
 
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
-		conn, err := GetNativeConnection(t, protocol, nil, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
+		conn, err := GetNativeConnection(t, protocol, nil, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 		ctx := context.Background()
 		require.NoError(t, err)
@@ -420,7 +420,7 @@ func TestDate32WithUserLocation(t *testing.T) {
 		require.NoError(t, conn.Exec(ctx, "INSERT INTO date_with_user_location SELECT toDate32(toStartOfMonth(toDate('2022-07-12')))"))
 
 		userLocation, _ := time.LoadLocation("Pacific/Pago_Pago")
-		queryCtx := clickhouse.Context(ctx, clickhouse.WithUserLocation(userLocation))
+		queryCtx := datastore.Context(ctx, datastore.WithUserLocation(userLocation))
 
 		var col1 time.Time
 		row := conn.QueryRow(queryCtx, "SELECT * FROM date_with_user_location")
@@ -450,13 +450,13 @@ func (c *testDate32Serializer) Scan(src any) error {
 }
 
 func TestDate32Valuer(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
-		conn, err := GetNativeConnection(t, protocol, nil, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
+		conn, err := GetNativeConnection(t, protocol, nil, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 		ctx := context.Background()
 		if !CheckMinServerServerVersion(conn, 21, 9, 0) {
-			t.Skip(fmt.Errorf("unsupported clickhouse version"))
+			t.Skip(fmt.Errorf("unsupported datastore version"))
 			return
 		}
 		require.NoError(t, err)

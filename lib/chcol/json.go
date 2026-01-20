@@ -132,7 +132,7 @@ func (o *JSON) Scan(value interface{}) error {
 	case map[string]any:
 		o.valuesByPath = vv
 	default:
-		return fmt.Errorf("JSON Scan value must be clickhouse.JSON or map[string]any")
+		return fmt.Errorf("JSON Scan value must be datastore.JSON or map[string]any")
 	}
 
 	return nil

@@ -15,9 +15,9 @@ import (
 )
 
 func TestNullableArray(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
-		conn, err := GetNativeConnection(t, protocol, nil, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
+		conn, err := GetNativeConnection(t, protocol, nil, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 		ctx := context.Background()
 		const ddl = `
@@ -43,7 +43,7 @@ func TestNullableArray(t *testing.T) {
 		}()
 		require.NoError(t, err)
 		if !CheckMinServerServerVersion(conn, 21, 12, 0) {
-			t.Skip(fmt.Errorf("unsupported clickhouse version"))
+			t.Skip(fmt.Errorf("unsupported datastore version"))
 			return
 		}
 		require.NoError(t, conn.Exec(ctx, ddl))

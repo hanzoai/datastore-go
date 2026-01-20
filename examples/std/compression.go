@@ -15,16 +15,16 @@ func CompressOpenDB() error {
 	}
 	conn := datastore.OpenDB(&datastore.Options{
 		Addr: []string{fmt.Sprintf("%s:%d", env.Host, env.HttpPort)},
-		Auth: clickhouse.Auth{
+		Auth: datastore.Auth{
 			Database: env.Database,
 			Username: env.Username,
 			Password: env.Password,
 		},
-		Compression: &clickhouse.Compression{
-			Method: clickhouse.CompressionBrotli,
+		Compression: &datastore.Compression{
+			Method: datastore.CompressionBrotli,
 			Level:  5,
 		},
-		Protocol: clickhouse.HTTP,
+		Protocol: datastore.HTTP,
 	})
 	defer func() {
 		conn.Exec("DROP TABLE example")

@@ -3,7 +3,7 @@ package std
 import "github.com/hanzoai/datastore-go"
 
 func Exec() error {
-	conn, err := GetStdOpenDBConnection(clickhouse.Native, nil, nil, nil)
+	conn, err := GetStdOpenDBConnection(datastore.Native, nil, nil, nil)
 	if err != nil {
 		return err
 	}

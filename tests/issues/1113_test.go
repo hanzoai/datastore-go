@@ -13,11 +13,11 @@ func Test1113(t *testing.T) {
 	t.Skip("Object JSON type is deprecated. Test is kept for a historical reference.")
 
 	var (
-		conn, err = datastore_tests.GetConnectionTCP("issues", clickhouse.Settings{
+		conn, err = datastore_tests.GetConnectionTCP("issues", datastore.Settings{
 			"max_execution_time":             60,
 			"allow_experimental_object_type": true,
-		}, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+		}, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 	)
 	ctx := context.Background()

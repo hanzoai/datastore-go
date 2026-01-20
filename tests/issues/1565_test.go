@@ -16,5 +16,5 @@ func TestIssue1565(t *testing.T) {
 	defer conn.Close()
 
 	row := conn.QueryRow(ctx, "SELECT map(['success', 'failure'], [10, 5]) as value")
-	require.ErrorContains(t, row.Err(), "clickhouse: unsupported column type")
+	require.ErrorContains(t, row.Err(), "datastore: unsupported column type")
 }

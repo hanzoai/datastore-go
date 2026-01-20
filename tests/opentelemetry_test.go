@@ -11,13 +11,13 @@ import (
 )
 
 func TestOpenTelemetry(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
-		conn, err := GetNativeConnection(t, protocol, nil, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
+		conn, err := GetNativeConnection(t, protocol, nil, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 		require.NoError(t, err)
 		var count uint64
-		rows := conn.QueryRow(clickhouse.Context(context.Background(), clickhouse.WithSpan(
+		rows := conn.QueryRow(datastore.Context(context.Background(), datastore.WithSpan(
 			trace.NewSpanContext(trace.SpanContextConfig{
 				SpanID:  trace.SpanID{1, 2, 3, 4, 5},
 				TraceID: trace.TraceID{5, 4, 3, 2, 1},

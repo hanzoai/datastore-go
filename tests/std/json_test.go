@@ -19,13 +19,13 @@ var jsonTestDate, _ = time.Parse(time.RFC3339, "2024-12-13T02:09:30.123Z")
 func setupJSONTest(t *testing.T) *sql.DB {
 	datastore_tests.SkipOnCloud(t, "cannot modify JSON settings on cloud")
 
-	conn, err := GetStdOpenDBConnection(clickhouse.Native, nil, nil, &clickhouse.Compression{
-		Method: clickhouse.CompressionLZ4,
+	conn, err := GetStdOpenDBConnection(datastore.Native, nil, nil, &datastore.Compression{
+		Method: datastore.CompressionLZ4,
 	})
 	require.NoError(t, err)
 
 	if !CheckMinServerVersion(conn, 24, 8, 0) {
-		t.Skip(fmt.Errorf("unsupported clickhouse version for JSON type"))
+		t.Skip(fmt.Errorf("unsupported datastore version for JSON type"))
 		return nil
 	}
 
@@ -83,9 +83,9 @@ func TestJSONPaths(t *testing.T) {
 	jsonRow.SetValueAtPath("Metadata.FieldB", "b")
 	jsonRow.SetValueAtPath("Metadata.FieldC.FieldD", "d")
 	jsonRow.SetValueAtPath("Timestamp", jsonTestDate)
-	jsonRow.SetValueAtPath("DynamicString", clickhouse.NewDynamic("str"))
-	jsonRow.SetValueAtPath("DynamicInt", clickhouse.NewDynamic(int64(48)))
-	jsonRow.SetValueAtPath("DynamicMap", clickhouse.NewDynamic(map[string]string{"a": "a", "b": "b"}))
+	jsonRow.SetValueAtPath("DynamicString", datastore.NewDynamic("str"))
+	jsonRow.SetValueAtPath("DynamicInt", datastore.NewDynamic(int64(48)))
+	jsonRow.SetValueAtPath("DynamicMap", datastore.NewDynamic(map[string]string{"a": "a", "b": "b"}))
 
 	_, err = batch.ExecContext(ctx, jsonRow)
 	require.NoError(t, err)
@@ -110,11 +110,11 @@ func TestJSONPaths(t *testing.T) {
 		}
 
 		// Allow Equal func to compare values without Dynamic wrapper
-		if v, ok := expectedValue.(clickhouse.Dynamic); ok {
+		if v, ok := expectedValue.(datastore.Dynamic); ok {
 			expectedValue = v.Any()
 		}
 
-		if v, ok := actualValue.(clickhouse.Dynamic); ok {
+		if v, ok := actualValue.(datastore.Dynamic); ok {
 			actualValue = v.Any()
 		}
 
@@ -386,12 +386,12 @@ func TestJSONNullableObjectScan(t *testing.T) {
 	rows, err := conn.QueryContext(ctx, "SELECT '{\"x\": 1}'::Nullable(JSON)")
 	require.NoError(t, err)
 
-	var row clickhouse.JSON
+	var row datastore.JSON
 	require.True(t, rows.Next())
 	err = rows.Scan(&row)
 	require.NoError(t, err)
 
-	val, ok := clickhouse.ExtractJSONPathAs[int64](&row, "x")
+	val, ok := datastore.ExtractJSONPathAs[int64](&row, "x")
 	require.True(t, ok)
 	require.Equal(t, int64(1), val)
 

@@ -107,7 +107,7 @@ func main() {
 	}()
 	conn, err := datastore_tests.GetConnectionWithOptions(&datastore.Options{
 		Addr: []string{"127.0.0.1:9000"},
-		Auth: clickhouse.Auth{
+		Auth: datastore.Auth{
 			Database: "default",
 			Username: "default",
 			Password: "",
@@ -115,8 +115,8 @@ func main() {
 		MaxOpenConns:    20,
 		MaxIdleConns:    15,
 		ConnMaxLifetime: 3 * time.Minute,
-		Compression: &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+		Compression: &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		},
 		// Debug: true,
 	})

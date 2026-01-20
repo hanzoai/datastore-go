@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func setupTime64Test(t *testing.T, protocol clickhouse.Protocol) datastore.Conn {
+func setupTime64Test(t *testing.T, protocol datastore.Protocol) datastore.Conn {
 	conn, err := GetNativeConnection(t, protocol, nil, nil, nil)
 	require.NoError(t, err)
 	if !CheckMinServerServerVersion(conn, 25, 6, 0) {
@@ -21,10 +21,10 @@ func setupTime64Test(t *testing.T, protocol clickhouse.Protocol) datastore.Conn 
 }
 
 func TestTime64(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		conn := setupTime64Test(t, protocol)
 
-		ctx := clickhouse.Context(context.Background(), clickhouse.WithSettings(clickhouse.Settings{
+		ctx := datastore.Context(context.Background(), datastore.WithSettings(datastore.Settings{
 			"enable_time_time64_type": 1,
 		}))
 
@@ -85,10 +85,10 @@ func TestTime64Precision(t *testing.T) {
 
 	for _, tt := range precisionTests {
 		t.Run(tt.name, func(t *testing.T) {
-			TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+			TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 				conn := setupTime64Test(t, protocol)
 
-				ctx := clickhouse.Context(context.Background(), clickhouse.WithSettings(clickhouse.Settings{
+				ctx := datastore.Context(context.Background(), datastore.WithSettings(datastore.Settings{
 					"enable_time_time64_type": 1,
 				}))
 
@@ -114,10 +114,10 @@ func TestTime64Precision(t *testing.T) {
 }
 
 func TestTime64EdgeCases(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		conn := setupTime64Test(t, protocol)
 
-		ctx := clickhouse.Context(context.Background(), clickhouse.WithSettings(clickhouse.Settings{
+		ctx := datastore.Context(context.Background(), datastore.WithSettings(datastore.Settings{
 			"enable_time_time64_type": 1,
 		}))
 
@@ -170,10 +170,10 @@ func TestTime64EdgeCases(t *testing.T) {
 }
 
 func TestTime64Array(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		conn := setupTime64Test(t, protocol)
 
-		ctx := clickhouse.Context(context.Background(), clickhouse.WithSettings(clickhouse.Settings{
+		ctx := datastore.Context(context.Background(), datastore.WithSettings(datastore.Settings{
 			"enable_time_time64_type": 1,
 		}))
 
@@ -207,10 +207,10 @@ func TestTime64Array(t *testing.T) {
 }
 
 func TestTime64Nullable(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		conn := setupTime64Test(t, protocol)
 
-		ctx := clickhouse.Context(context.Background(), clickhouse.WithSettings(clickhouse.Settings{
+		ctx := datastore.Context(context.Background(), datastore.WithSettings(datastore.Settings{
 			"enable_time_time64_type": 1,
 		}))
 
@@ -252,10 +252,10 @@ func TestTime64Nullable(t *testing.T) {
 }
 
 func TestTime64MultipleRows(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		conn := setupTime64Test(t, protocol)
 
-		ctx := clickhouse.Context(context.Background(), clickhouse.WithSettings(clickhouse.Settings{
+		ctx := datastore.Context(context.Background(), datastore.WithSettings(datastore.Settings{
 			"enable_time_time64_type": 1,
 		}))
 

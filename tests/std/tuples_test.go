@@ -17,20 +17,20 @@ import (
 var testDate, _ = time.Parse("2006-01-02 15:04:05.999999999 -0700 MST", "2022-05-25 17:20:57 +0100 WEST")
 
 func TestTuple(t *testing.T) {
-	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("DATASTORE_USE_SSL", "false"))
 	require.NoError(t, err)
 	var tlsConfig *tls.Config
 	if useSSL {
 		tlsConfig = &tls.Config{}
 	}
-	conn, err := GetStdOpenDBConnection(clickhouse.Native, nil, tlsConfig, nil)
+	conn, err := GetStdOpenDBConnection(datastore.Native, nil, tlsConfig, nil)
 	require.NoError(t, err)
 	loc, err := time.LoadLocation("Europe/Lisbon")
 	require.NoError(t, err)
 	localTime := testDate.In(loc)
 
 	if !CheckMinServerVersion(conn, 21, 9, 0) {
-		t.Skip(fmt.Errorf("unsupported clickhouse version"))
+		t.Skip(fmt.Errorf("unsupported datastore version"))
 		return
 	}
 	const ddl = `

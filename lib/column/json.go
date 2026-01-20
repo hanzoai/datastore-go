@@ -419,7 +419,7 @@ func (c *JSON) AppendRow(v any) error {
 			return nil
 		}
 
-		return fmt.Errorf("unsupported type \"%s\" for JSON column, must use string, []byte, *struct, map, or *clickhouse.JSON: %w", reflect.TypeOf(v).String(), err)
+		return fmt.Errorf("unsupported type \"%s\" for JSON column, must use string, []byte, *struct, map, or *datastore.JSON: %w", reflect.TypeOf(v).String(), err)
 	}
 }
 

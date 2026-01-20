@@ -28,7 +28,7 @@ func main() {
 	conn.SetMaxIdleConns(1)
 	conn.SetConnMaxLifetime(15 * time.Minute)
 	if err := conn.Ping(); err != nil {
-		if exception, ok := err.(*clickhouse.Exception); ok {
+		if exception, ok := err.(*datastore.Exception); ok {
 			fmt.Printf("[%d] %s \n%s\n", exception.Code, exception.Message, exception.StackTrace)
 		} else {
 			fmt.Println(err)

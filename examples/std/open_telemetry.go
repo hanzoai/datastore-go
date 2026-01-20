@@ -8,12 +8,12 @@ import (
 )
 
 func OpenTelemetry() error {
-	conn, err := GetStdOpenDBConnection(clickhouse.Native, nil, nil, nil)
+	conn, err := GetStdOpenDBConnection(datastore.Native, nil, nil, nil)
 	if err != nil {
 		return err
 	}
 	var count uint64
-	rows := conn.QueryRowContext(clickhouse.Context(context.Background(), clickhouse.WithSpan(
+	rows := conn.QueryRowContext(datastore.Context(context.Background(), datastore.WithSpan(
 		trace.NewSpanContext(trace.SpanContextConfig{
 			SpanID:  trace.SpanID{1, 2, 3, 4, 5},
 			TraceID: trace.TraceID{5, 4, 3, 2, 1},

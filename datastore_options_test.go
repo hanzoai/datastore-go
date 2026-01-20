@@ -44,7 +44,7 @@ func TestParseDSN(t *testing.T) {
 				TLS:      nil,
 				Addr:     []string{"127.0.0.1"},
 				Settings: Settings{},
-				scheme:   "clickhouse",
+				scheme:   "datastore",
 			},
 			"",
 		},
@@ -71,7 +71,7 @@ func TestParseDSN(t *testing.T) {
 				Auth: Auth{
 					Database: "test_database",
 				},
-				scheme: "clickhouse",
+				scheme: "datastore",
 			},
 			"",
 		},
@@ -102,7 +102,7 @@ func TestParseDSN(t *testing.T) {
 					Database: "test_database",
 					Username: "user",
 				},
-				scheme: "clickhouse",
+				scheme: "datastore",
 			},
 			"",
 		},
@@ -119,7 +119,7 @@ func TestParseDSN(t *testing.T) {
 					Username: "joe",
 					Password: "Ys31",
 				},
-				scheme: "clickhouse",
+				scheme: "datastore",
 			},
 			"",
 		},
@@ -135,7 +135,7 @@ func TestParseDSN(t *testing.T) {
 					Database: "test_database",
 				},
 				Debug:  true,
-				scheme: "clickhouse",
+				scheme: "datastore",
 			},
 			"",
 		},
@@ -152,7 +152,7 @@ func TestParseDSN(t *testing.T) {
 				Auth: Auth{
 					Database: "test_database",
 				},
-				scheme: "clickhouse",
+				scheme: "datastore",
 			},
 			"",
 		},
@@ -169,7 +169,7 @@ func TestParseDSN(t *testing.T) {
 				Auth: Auth{
 					Database: "test_database",
 				},
-				scheme: "clickhouse",
+				scheme: "datastore",
 			},
 			"",
 		},
@@ -186,7 +186,7 @@ func TestParseDSN(t *testing.T) {
 				Auth: Auth{
 					Database: "test_database",
 				},
-				scheme: "clickhouse",
+				scheme: "datastore",
 			},
 			"",
 		},
@@ -203,7 +203,7 @@ func TestParseDSN(t *testing.T) {
 				Auth: Auth{
 					Database: "test_database",
 				},
-				scheme: "clickhouse",
+				scheme: "datastore",
 			},
 			"",
 		},
@@ -233,7 +233,7 @@ func TestParseDSN(t *testing.T) {
 				Auth: Auth{
 					Database: "test_database",
 				},
-				scheme: "clickhouse",
+				scheme: "datastore",
 			},
 			"",
 		},
@@ -252,7 +252,7 @@ func TestParseDSN(t *testing.T) {
 				Auth: Auth{
 					Database: "test_database",
 				},
-				scheme: "clickhouse",
+				scheme: "datastore",
 			},
 			"",
 		},
@@ -271,7 +271,7 @@ func TestParseDSN(t *testing.T) {
 				Auth: Auth{
 					Database: "test_database",
 				},
-				scheme: "clickhouse",
+				scheme: "datastore",
 			},
 			"",
 		},
@@ -290,7 +290,7 @@ func TestParseDSN(t *testing.T) {
 				Auth: Auth{
 					Database: "test_database",
 				},
-				scheme: "clickhouse",
+				scheme: "datastore",
 			},
 			"",
 		},
@@ -309,7 +309,7 @@ func TestParseDSN(t *testing.T) {
 				Auth: Auth{
 					Database: "test_database",
 				},
-				scheme: "clickhouse",
+				scheme: "datastore",
 			},
 			"",
 		},
@@ -328,7 +328,7 @@ func TestParseDSN(t *testing.T) {
 				Auth: Auth{
 					Database: "test_database",
 				},
-				scheme: "clickhouse",
+				scheme: "datastore",
 			},
 			"",
 		},
@@ -347,7 +347,7 @@ func TestParseDSN(t *testing.T) {
 				Auth: Auth{
 					Database: "test_database",
 				},
-				scheme: "clickhouse",
+				scheme: "datastore",
 			},
 			"",
 		},
@@ -366,7 +366,7 @@ func TestParseDSN(t *testing.T) {
 				Auth: Auth{
 					Database: "test_database",
 				},
-				scheme: "clickhouse",
+				scheme: "datastore",
 			},
 			"",
 		},
@@ -382,7 +382,7 @@ func TestParseDSN(t *testing.T) {
 				Auth: Auth{
 					Database: "test_database",
 				},
-				scheme: "clickhouse",
+				scheme: "datastore",
 			},
 			"",
 		},
@@ -410,7 +410,7 @@ func TestParseDSN(t *testing.T) {
 				Auth: Auth{
 					Database: "test_database",
 				},
-				scheme: "clickhouse",
+				scheme: "datastore",
 			},
 			"",
 		},
@@ -431,7 +431,7 @@ func TestParseDSN(t *testing.T) {
 				Auth: Auth{
 					Database: "test_database",
 				},
-				scheme: "clickhouse",
+				scheme: "datastore",
 			},
 			"",
 		},
@@ -448,7 +448,7 @@ func TestParseDSN(t *testing.T) {
 				Auth: Auth{
 					Database: "test_database",
 				},
-				scheme: "clickhouse",
+				scheme: "datastore",
 			},
 			"",
 		},

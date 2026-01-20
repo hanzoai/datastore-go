@@ -13,8 +13,8 @@ import (
 
 func TestIssue548(t *testing.T) {
 	var (
-		conn, err = datastore_tests.GetConnectionTCP("issues", nil, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+		conn, err = datastore_tests.GetConnectionTCP("issues", nil, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 	)
 

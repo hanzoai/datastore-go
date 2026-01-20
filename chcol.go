@@ -2,7 +2,7 @@ package datastore
 
 import "github.com/hanzoai/datastore-go/lib/chcol"
 
-// Re-export chcol types/funcs to top level clickhouse package
+// Re-export chcol types/funcs to top level datastore package
 
 type (
 	// Variant represents a ClickHouse Variant type that can hold multiple possible types

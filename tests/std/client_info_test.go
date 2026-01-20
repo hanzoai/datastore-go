@@ -18,10 +18,10 @@ import (
 func TestClientInfo(t *testing.T) {
 	expectedClientProduct := fmt.Sprintf(
 		"%s/%d.%d.%d (database/sql; lv:go/%s; os:%s)",
-		clickhouse.ClientName,
-		clickhouse.ClientVersionMajor,
-		clickhouse.ClientVersionMinor,
-		clickhouse.ClientVersionPatch,
+		datastore.ClientName,
+		datastore.ClientVersionMajor,
+		datastore.ClientVersionMinor,
+		datastore.ClientVersionPatch,
 		runtime.Version()[2:],
 		runtime.GOOS,
 	)
@@ -32,13 +32,13 @@ func TestClientInfo(t *testing.T) {
 		additionalOpts     url.Values
 	}{
 		"no additional products": {
-			// e.g. clickhouse-go/2.5.1 (database/sql; lv:go/1.19.3; os:darwin)
+			// e.g. datastore-go/1.0.5.1 (database/sql; lv:go/1.19.3; os:darwin)
 			expectedClientProduct,
 			context.Background(),
 			nil,
 		},
 		"one additional product": {
-			// e.g. tests/dev clickhouse-go/2.5.1 (database/sql; lv:go/1.19.3; os:darwin)
+			// e.g. tests/dev datastore-go/1.0.5.1 (database/sql; lv:go/1.19.3; os:darwin)
 			fmt.Sprintf("tests/dev %s", expectedClientProduct),
 			context.Background(),
 			url.Values{
@@ -46,7 +46,7 @@ func TestClientInfo(t *testing.T) {
 			},
 		},
 		"two additional products": {
-			// e.g. product/version tests/dev clickhouse-go/2.5.1 (database/sql; lv:go/1.19.3; os:darwin)
+			// e.g. product/version tests/dev datastore-go/1.0.5.1 (database/sql; lv:go/1.19.3; os:darwin)
 			fmt.Sprintf("product/version tests/dev %s", expectedClientProduct),
 			context.Background(),
 			url.Values{
@@ -54,17 +54,17 @@ func TestClientInfo(t *testing.T) {
 			},
 		},
 		"additional product from context": {
-			// e.g. ctxProduct/1.2.3 clickhouse-go/2.41.0 (database/sql; ctxComment; lv:go/1.25.5 X:nodwarf5; os:linux)
+			// e.g. ctxProduct/1.2.3 datastore-go/1.0.41.0 (database/sql; ctxComment; lv:go/1.25.5 X:nodwarf5; os:linux)
 			fmt.Sprintf(
 				"ctxProduct/1.2.3 %s/%d.%d.%d (database/sql; ctxComment; lv:go/%s; os:%s)",
-				clickhouse.ClientName,
-				clickhouse.ClientVersionMajor,
-				clickhouse.ClientVersionMinor,
-				clickhouse.ClientVersionPatch,
+				datastore.ClientName,
+				datastore.ClientVersionMajor,
+				datastore.ClientVersionMinor,
+				datastore.ClientVersionPatch,
 				runtime.Version()[2:],
 				runtime.GOOS,
 			),
-			clickhouse.Context(context.Background(), clickhouse.WithClientInfo(clickhouse.ClientInfo{
+			datastore.Context(context.Background(), datastore.WithClientInfo(datastore.ClientInfo{
 				Products: []struct {
 					Name    string
 					Version string
@@ -80,8 +80,8 @@ func TestClientInfo(t *testing.T) {
 		},
 	}
 
-	dsns := []clickhouse.Protocol{clickhouse.Native, clickhouse.HTTP}
-	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	dsns := []datastore.Protocol{datastore.Native, datastore.HTTP}
+	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("DATASTORE_USE_SSL", "false"))
 	require.NoError(t, err)
 	for _, protocol := range dsns {
 		t.Run(fmt.Sprintf("%s protocol", protocol.String()), func(t *testing.T) {

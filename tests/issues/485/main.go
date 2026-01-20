@@ -15,7 +15,7 @@ func example() error {
 		ctx       = context.Background()
 		conn, err = datastore_tests.GetConnectionWithOptions(&datastore.Options{
 			Addr: []string{"127.0.0.1:9000"},
-			Auth: clickhouse.Auth{
+			Auth: datastore.Auth{
 				Database: "default",
 				Username: "default",
 				Password: "",

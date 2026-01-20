@@ -17,7 +17,7 @@ import (
 var testDate, _ = time.Parse("2006-01-02 15:04:05.999999999 -0700 MST", "2022-05-25 17:20:57 +0100 WEST")
 
 func TestTuple(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		conn, err := GetNativeConnection(t, protocol, nil, nil, nil)
 		ctx := context.Background()
 		require.NoError(t, err)
@@ -26,7 +26,7 @@ func TestTuple(t *testing.T) {
 		localTime := testDate.In(loc)
 
 		if !CheckMinServerServerVersion(conn, 21, 9, 0) {
-			t.Skip(fmt.Errorf("unsupported clickhouse version"))
+			t.Skip(fmt.Errorf("unsupported datastore version"))
 			return
 		}
 		const ddl = `
@@ -103,13 +103,13 @@ func TestTuple(t *testing.T) {
 }
 
 func TestNamedTupleWithSlice(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		conn, err := GetNativeConnection(t, protocol, nil, nil, nil)
 		ctx := context.Background()
 		require.NoError(t, err)
 		// https://github.com/ClickHouse/ClickHouse/pull/36544
 		if !CheckMinServerServerVersion(conn, 22, 5, 0) {
-			t.Skip(fmt.Errorf("unsupported clickhouse version"))
+			t.Skip(fmt.Errorf("unsupported datastore version"))
 			return
 		}
 		const ddl = "CREATE TABLE test_tuple (Col1 Tuple(name String, `1` Int64)) Engine MergeTree() ORDER BY tuple()"
@@ -138,13 +138,13 @@ func TestNamedTupleWithSlice(t *testing.T) {
 }
 
 func TestNamedTupleWithTypedSlice(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		conn, err := GetNativeConnection(t, protocol, nil, nil, nil)
 		ctx := context.Background()
 		require.NoError(t, err)
 		// https://github.com/ClickHouse/ClickHouse/pull/36544
 		if !CheckMinServerServerVersion(conn, 22, 5, 0) {
-			t.Skip(fmt.Errorf("unsupported clickhouse version"))
+			t.Skip(fmt.Errorf("unsupported datastore version"))
 			return
 		}
 		const ddl = "CREATE TABLE test_tuple (Col1 Tuple(name String, city String), Col2 Int32) Engine MergeTree() ORDER BY tuple()"
@@ -175,13 +175,13 @@ func TestNamedTupleWithTypedSlice(t *testing.T) {
 
 // named tuples work with maps
 func TestNamedTupleWithMap(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		conn, err := GetNativeConnection(t, protocol, nil, nil, nil)
 		ctx := context.Background()
 		require.NoError(t, err)
 		// https://github.com/ClickHouse/ClickHouse/pull/36544
 		if !CheckMinServerServerVersion(conn, 22, 5, 0) {
-			t.Skip(fmt.Errorf("unsupported clickhouse version"))
+			t.Skip(fmt.Errorf("unsupported datastore version"))
 			return
 		}
 		const ddl = "CREATE TABLE test_tuple (Col1 Tuple(name String, id Int64)) Engine MergeTree() ORDER BY tuple()"
@@ -209,13 +209,13 @@ func TestNamedTupleWithMap(t *testing.T) {
 
 // named tuples work with typed maps
 func TestNamedTupleWithTypedMap(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		conn, err := GetNativeConnection(t, protocol, nil, nil, nil)
 		ctx := context.Background()
 		require.NoError(t, err)
 		// https://github.com/ClickHouse/ClickHouse/pull/36544
 		if !CheckMinServerServerVersion(conn, 22, 5, 0) {
-			t.Skip(fmt.Errorf("unsupported clickhouse version"))
+			t.Skip(fmt.Errorf("unsupported datastore version"))
 			return
 		}
 		const ddl = "CREATE TABLE test_tuple (Col1 Tuple(id Int64, code Int64)) Engine MergeTree() ORDER BY tuple()"
@@ -243,13 +243,13 @@ func TestNamedTupleWithTypedMap(t *testing.T) {
 
 // named tuples work with typed structs
 func TestNamedTupleWithStruct(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		conn, err := GetNativeConnection(t, protocol, nil, nil, nil)
 		ctx := context.Background()
 		require.NoError(t, err)
 		// https://github.com/ClickHouse/ClickHouse/pull/36544
 		if !CheckMinServerServerVersion(conn, 22, 5, 0) {
-			t.Skip(fmt.Errorf("unsupported clickhouse version"))
+			t.Skip(fmt.Errorf("unsupported datastore version"))
 			return
 		}
 		const ddl = "CREATE TABLE test_tuple (Col1 Tuple(Id Int64, Code Int64)) Engine MergeTree() ORDER BY tuple()"
@@ -285,13 +285,13 @@ func TestNamedTupleWithStruct(t *testing.T) {
 
 // named tuples work with typed structs tags
 func TestNamedTupleWithStructTags(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		conn, err := GetNativeConnection(t, protocol, nil, nil, nil)
 		require.NoError(t, err)
 		ctx := context.Background()
 		// https://github.com/ClickHouse/ClickHouse/pull/36544
 		if !CheckMinServerServerVersion(conn, 22, 5, 0) {
-			t.Skip(fmt.Errorf("unsupported clickhouse version"))
+			t.Skip(fmt.Errorf("unsupported datastore version"))
 			return
 		}
 		const ddl = "CREATE TABLE test_tuple (Col1 Tuple(id Int64, code Int64)) Engine MergeTree() ORDER BY tuple()"
@@ -327,8 +327,8 @@ func TestNamedTupleWithStructTags(t *testing.T) {
 
 // named tuples will not work with unexported fields
 func TestNamedTupleWithUnexportedStructField(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
-		if protocol == clickhouse.HTTP {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
+		if protocol == datastore.HTTP {
 			t.Skip("Difference in error message formatting")
 		}
 
@@ -337,7 +337,7 @@ func TestNamedTupleWithUnexportedStructField(t *testing.T) {
 		require.NoError(t, err)
 		// https://github.com/ClickHouse/ClickHouse/pull/36544
 		if !CheckMinServerServerVersion(conn, 22, 5, 0) {
-			t.Skip(fmt.Errorf("unsupported clickhouse version"))
+			t.Skip(fmt.Errorf("unsupported datastore version"))
 			return
 		}
 		const ddl = "CREATE TABLE test_tuple (Col1 Tuple(id Int64, code Int64)) Engine MergeTree() ORDER BY tuple()"
@@ -362,8 +362,8 @@ func TestNamedTupleWithUnexportedStructField(t *testing.T) {
 
 // named tuples will not work with too many fields
 func TestNamedTupleWithTooManyFields(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
-		if protocol == clickhouse.HTTP {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
+		if protocol == datastore.HTTP {
 			t.Skip("Difference in error message formatting")
 		}
 
@@ -372,7 +372,7 @@ func TestNamedTupleWithTooManyFields(t *testing.T) {
 		require.NoError(t, err)
 		// https://github.com/ClickHouse/ClickHouse/pull/36544
 		if !CheckMinServerServerVersion(conn, 22, 5, 0) {
-			t.Skip(fmt.Errorf("unsupported clickhouse version"))
+			t.Skip(fmt.Errorf("unsupported datastore version"))
 			return
 		}
 		const ddl = "CREATE TABLE test_tuple (Col1 Tuple(id Int64, code Int64)) Engine MergeTree() ORDER BY tuple()"
@@ -398,8 +398,8 @@ func TestNamedTupleWithTooManyFields(t *testing.T) {
 
 // named tuples will not work with invalid tags
 func TestNamedTupleWithDuplicateTags(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
-		if protocol == clickhouse.HTTP {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
+		if protocol == datastore.HTTP {
 			t.Skip("Difference in error message formatting")
 		}
 
@@ -408,7 +408,7 @@ func TestNamedTupleWithDuplicateTags(t *testing.T) {
 		require.NoError(t, err)
 		// https://github.com/ClickHouse/ClickHouse/pull/36544
 		if !CheckMinServerServerVersion(conn, 22, 5, 0) {
-			t.Skip(fmt.Errorf("unsupported clickhouse version"))
+			t.Skip(fmt.Errorf("unsupported datastore version"))
 			return
 		}
 		const ddl = "CREATE TABLE test_tuple (Col1 Tuple(id Int64, code Int64)) Engine MergeTree() ORDER BY tuple()"
@@ -433,13 +433,13 @@ func TestNamedTupleWithDuplicateTags(t *testing.T) {
 
 // test column names which need escaping
 func TestNamedTupleWithEscapedColumns(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		conn, err := GetNativeConnection(t, protocol, nil, nil, nil)
 		ctx := context.Background()
 		require.NoError(t, err)
 		// https://github.com/ClickHouse/ClickHouse/pull/36544
 		if !CheckMinServerServerVersion(conn, 22, 5, 0) {
-			t.Skip(fmt.Errorf("unsupported clickhouse version"))
+			t.Skip(fmt.Errorf("unsupported datastore version"))
 			return
 		}
 		const ddl = "CREATE TABLE test_tuple (Col1 Tuple(`56` String, `a22\\`` Int64)) Engine MergeTree() ORDER BY tuple()"
@@ -462,13 +462,13 @@ func TestNamedTupleWithEscapedColumns(t *testing.T) {
 }
 
 func TestNamedTupleIncomplete(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		conn, err := GetNativeConnection(t, protocol, nil, nil, nil)
 		ctx := context.Background()
 		require.NoError(t, err)
 		// https://github.com/ClickHouse/ClickHouse/pull/36544
 		if !CheckMinServerServerVersion(conn, 22, 5, 0) {
-			t.Skip(fmt.Errorf("unsupported clickhouse version"))
+			t.Skip(fmt.Errorf("unsupported datastore version"))
 			return
 		}
 		const ddl = "CREATE TABLE test_tuple (Col1 Tuple(name String, id Int64)) Engine MergeTree() ORDER BY tuple()"
@@ -486,13 +486,13 @@ func TestNamedTupleIncomplete(t *testing.T) {
 
 // unnamed tuples will not work with maps - keys cannot be attributed to fields
 func TestUnNamedTupleWithMap(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		conn, err := GetNativeConnection(t, protocol, nil, nil, nil)
 		ctx := context.Background()
 		require.NoError(t, err)
 		// https://github.com/ClickHouse/ClickHouse/pull/36544
 		if !CheckMinServerServerVersion(conn, 22, 5, 0) {
-			t.Skip(fmt.Errorf("unsupported clickhouse version"))
+			t.Skip(fmt.Errorf("unsupported datastore version"))
 			return
 		}
 		const ddl = "CREATE TABLE test_tuple (Col1 Tuple(String, Int64)) Engine MergeTree() ORDER BY tuple()"
@@ -525,13 +525,13 @@ func TestUnNamedTupleWithMap(t *testing.T) {
 
 // unnamed tuples will not work with structs - keys cannot be attributed to fields
 func TestUnNamedTupleWithStruct(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		conn, err := GetNativeConnection(t, protocol, nil, nil, nil)
 		ctx := context.Background()
 		require.NoError(t, err)
 		// https://github.com/ClickHouse/ClickHouse/pull/36544
 		if !CheckMinServerServerVersion(conn, 22, 5, 0) {
-			t.Skip(fmt.Errorf("unsupported clickhouse version"))
+			t.Skip(fmt.Errorf("unsupported datastore version"))
 			return
 		}
 		const ddl = "CREATE TABLE test_tuple (Col1 Tuple(String, Int64)) Engine MergeTree() ORDER BY tuple()"
@@ -559,12 +559,12 @@ func TestUnNamedTupleWithStruct(t *testing.T) {
 }
 
 func TestColumnarTuple(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		conn, err := GetNativeConnection(t, protocol, nil, nil, nil)
 		ctx := context.Background()
 		require.NoError(t, err)
 		if !CheckMinServerServerVersion(conn, 21, 9, 0) {
-			t.Skip(fmt.Errorf("unsupported clickhouse version"))
+			t.Skip(fmt.Errorf("unsupported datastore version"))
 			return
 		}
 		const ddl = `
@@ -646,13 +646,13 @@ func TestColumnarTuple(t *testing.T) {
 }
 
 func TestTupleFlush(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		SkipOnHTTP(t, protocol, "Flush")
 		conn, err := GetNativeConnection(t, protocol, nil, nil, nil)
 		ctx := context.Background()
 		require.NoError(t, err)
 		if !CheckMinServerServerVersion(conn, 21, 9, 0) {
-			t.Skip(fmt.Errorf("unsupported clickhouse version"))
+			t.Skip(fmt.Errorf("unsupported datastore version"))
 			return
 		}
 		const ddl = `
@@ -710,12 +710,12 @@ func (c *testTupleSerializer) Scan(src any) error {
 }
 
 func TestTupleValuer(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		conn, err := GetNativeConnection(t, protocol, nil, nil, nil)
 		ctx := context.Background()
 		require.NoError(t, err)
 		if !CheckMinServerServerVersion(conn, 21, 9, 0) {
-			t.Skip(fmt.Errorf("unsupported clickhouse version"))
+			t.Skip(fmt.Errorf("unsupported datastore version"))
 			return
 		}
 		const ddl = `

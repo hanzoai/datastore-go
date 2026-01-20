@@ -10,24 +10,24 @@ import (
 )
 
 func TestZSTDCompression(t *testing.T) {
-	CompressionTest(t, compress.LevelZero, clickhouse.CompressionZSTD)
+	CompressionTest(t, compress.LevelZero, datastore.CompressionZSTD)
 }
 
 func TestLZ4Compression(t *testing.T) {
-	CompressionTest(t, compress.Level(3), clickhouse.CompressionLZ4)
+	CompressionTest(t, compress.Level(3), datastore.CompressionLZ4)
 }
 
 func TestLZ4HCCompression(t *testing.T) {
-	CompressionTest(t, compress.LevelLZ4HCDefault, clickhouse.CompressionLZ4HC)
+	CompressionTest(t, compress.LevelLZ4HCDefault, datastore.CompressionLZ4HC)
 }
 
 func TestNoCompression(t *testing.T) {
-	CompressionTest(t, compress.LevelZero, clickhouse.CompressionNone)
+	CompressionTest(t, compress.LevelZero, datastore.CompressionNone)
 }
 
-func CompressionTest(t *testing.T, level compress.Level, method clickhouse.CompressionMethod) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
-		conn, err := GetNativeConnection(t, protocol, nil, nil, &clickhouse.Compression{
+func CompressionTest(t *testing.T, level compress.Level, method datastore.CompressionMethod) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
+		conn, err := GetNativeConnection(t, protocol, nil, nil, &datastore.Compression{
 			Method: method,
 			Level:  int(level),
 		})

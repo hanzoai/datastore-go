@@ -15,8 +15,8 @@ import (
 )
 
 func TestStdExternalTable(t *testing.T) {
-	dsns := map[string]clickhouse.Protocol{"Native": clickhouse.Native, "Http": clickhouse.HTTP}
-	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	dsns := map[string]datastore.Protocol{"Native": datastore.Native, "Http": datastore.HTTP}
+	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("DATASTORE_USE_SSL", "false"))
 	require.NoError(t, err)
 	for name, protocol := range dsns {
 		t.Run(fmt.Sprintf("%s Protocol", name), func(t *testing.T) {
@@ -40,8 +40,8 @@ func TestStdExternalTable(t *testing.T) {
 			}
 			conn, err := GetStdDSNConnection(protocol, useSSL, nil)
 			require.NoError(t, err)
-			ctx := clickhouse.Context(context.Background(),
-				clickhouse.WithExternalTable(table1, table2),
+			ctx := datastore.Context(context.Background(),
+				datastore.WithExternalTable(table1, table2),
 			)
 			rows, err := conn.QueryContext(ctx, "SELECT * FROM std_external_table_1")
 			require.NoError(t, err)

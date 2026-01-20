@@ -14,15 +14,15 @@ import (
 
 func TestIssue615(t *testing.T) {
 	var (
-		conn, err = datastore_tests.GetConnectionTCP("issues", clickhouse.Settings{
+		conn, err = datastore_tests.GetConnectionTCP("issues", datastore.Settings{
 			"max_execution_time": 60,
-		}, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+		}, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 	)
 	require.NoError(t, err)
 	if !datastore_tests.CheckMinServerServerVersion(conn, 22, 0, 0) {
-		t.Skip(fmt.Errorf("unsupported clickhouse version"))
+		t.Skip(fmt.Errorf("unsupported datastore version"))
 	}
 	require.NoError(t, err)
 	if err := conn.Exec(
@@ -48,7 +48,7 @@ func TestIssue615(t *testing.T) {
 	require.NoError(t, batch.Append("second", ts2))
 	require.NoError(t, batch.Append("third", ts3))
 	require.NoError(t, batch.Send())
-	rows, err := conn.Query(context.Background(), "SELECT id, ts from issue_615 where ts > @TS ORDER BY ts ASC", clickhouse.Named("TS", ts2))
+	rows, err := conn.Query(context.Background(), "SELECT id, ts from issue_615 where ts > @TS ORDER BY ts ASC", datastore.Named("TS", ts2))
 	require.NoError(t, err)
 	i := 0
 	for rows.Next() {
@@ -64,7 +64,7 @@ func TestIssue615(t *testing.T) {
 	// loss of precision - should only get 1 result
 	assert.Equal(t, 2, i)
 	// use DateNamed to guarantee precision
-	rows, err = conn.Query(context.Background(), "SELECT id, ts from issue_615 where ts > @TS ORDER BY ts ASC", clickhouse.DateNamed("TS", ts2, clickhouse.NanoSeconds))
+	rows, err = conn.Query(context.Background(), "SELECT id, ts from issue_615 where ts > @TS ORDER BY ts ASC", datastore.DateNamed("TS", ts2, datastore.NanoSeconds))
 	require.NoError(t, err)
 	i = 0
 	for rows.Next() {
@@ -82,7 +82,7 @@ func TestIssue615(t *testing.T) {
 	assert.Equal(t, 1, i)
 	// test with timezone
 	loc, _ := time.LoadLocation("Asia/Shanghai")
-	rows, err = conn.Query(context.Background(), "SELECT id, ts from issue_615 where ts > @TS ORDER BY ts ASC", clickhouse.DateNamed("TS", ts2.In(loc), clickhouse.MilliSeconds))
+	rows, err = conn.Query(context.Background(), "SELECT id, ts from issue_615 where ts > @TS ORDER BY ts ASC", datastore.DateNamed("TS", ts2.In(loc), datastore.MilliSeconds))
 	require.NoError(t, err)
 	i = 0
 	for rows.Next() {

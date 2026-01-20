@@ -7,7 +7,7 @@ import (
 )
 
 func QueryWithParameters() error {
-	conn, err := GetStdOpenDBConnection(clickhouse.Native, nil, nil, nil)
+	conn, err := GetStdOpenDBConnection(datastore.Native, nil, nil, nil)
 	if err != nil {
 		return err
 	}
@@ -18,12 +18,12 @@ func QueryWithParameters() error {
 
 	row := conn.QueryRow(
 		"SELECT {column:Identifier} v, {str:String} s, {array:Array(String)} a FROM {database:Identifier}.{table:Identifier} LIMIT 1 OFFSET 100",
-		clickhouse.Named("num", "42"),
-		clickhouse.Named("str", "hello"),
-		clickhouse.Named("array", "['a', 'b', 'c']"),
-		clickhouse.Named("column", "number"),
-		clickhouse.Named("database", "system"),
-		clickhouse.Named("table", "numbers"),
+		datastore.Named("num", "42"),
+		datastore.Named("str", "hello"),
+		datastore.Named("array", "['a', 'b', 'c']"),
+		datastore.Named("column", "number"),
+		datastore.Named("database", "system"),
+		datastore.Named("table", "numbers"),
 	)
 	var (
 		col1 uint64

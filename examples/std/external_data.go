@@ -10,7 +10,7 @@ import (
 )
 
 func ExternalData() error {
-	conn, err := GetStdOpenDBConnection(clickhouse.Native, nil, nil, nil)
+	conn, err := GetStdOpenDBConnection(datastore.Native, nil, nil, nil)
 	if err != nil {
 		return err
 	}
@@ -39,8 +39,8 @@ func ExternalData() error {
 	for i := 0; i < 10; i++ {
 		table2.Append(uint8(i), fmt.Sprintf("value_%d", i), time.Now())
 	}
-	ctx := clickhouse.Context(context.Background(),
-		clickhouse.WithExternalTable(table1, table2),
+	ctx := datastore.Context(context.Background(),
+		datastore.WithExternalTable(table1, table2),
 	)
 	rows, err := conn.QueryContext(ctx, "SELECT * FROM external_table_1")
 	if err != nil {

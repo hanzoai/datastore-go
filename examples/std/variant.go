@@ -10,13 +10,13 @@ import (
 func VariantExample() error {
 	ctx := context.Background()
 
-	conn, err := GetStdOpenDBConnection(clickhouse.Native, nil, nil, nil)
+	conn, err := GetStdOpenDBConnection(datastore.Native, nil, nil, nil)
 	if err != nil {
 		return err
 	}
 
 	if !CheckMinServerVersion(conn, 24, 4, 0) {
-		fmt.Print("unsupported clickhouse version for Variant type")
+		fmt.Print("unsupported datastore version for Variant type")
 		return nil
 	}
 
@@ -70,11 +70,11 @@ func VariantExample() error {
 		return err
 	}
 
-	if _, err = batch.ExecContext(ctx, clickhouse.NewVariant("example variant")); err != nil {
+	if _, err = batch.ExecContext(ctx, datastore.NewVariant("example variant")); err != nil {
 		return err
 	}
 
-	if _, err = batch.ExecContext(ctx, clickhouse.NewVariantWithType("example variant with specific type", "String")); err != nil {
+	if _, err = batch.ExecContext(ctx, datastore.NewVariantWithType("example variant with specific type", "String")); err != nil {
 		return err
 	}
 
@@ -94,7 +94,7 @@ func VariantExample() error {
 	}
 
 	for i := 0; rows.Next(); i++ {
-		var row clickhouse.Variant
+		var row datastore.Variant
 		err := rows.Scan(&row)
 		if err != nil {
 			return fmt.Errorf("failed to scan row index %d: %w", i, err)
@@ -120,7 +120,7 @@ func VariantExample() error {
 	}
 
 	for i := 0; rows.Next(); i++ {
-		var row clickhouse.Variant
+		var row datastore.Variant
 		err := rows.Scan(&row)
 		if err != nil {
 			return fmt.Errorf("failed to scan row index %d: %w", i, err)

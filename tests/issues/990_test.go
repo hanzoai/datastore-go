@@ -6,7 +6,7 @@ import (
 	"github.com/hanzoai/datastore-go"
 	"github.com/hanzoai/datastore-go/ext"
 	datastore_tests "github.com/hanzoai/datastore-go/tests"
-	clickhouse_std_tests "github.com/hanzoai/datastore-go/tests/std"
+	datastore_std_tests "github.com/hanzoai/datastore-go/tests/std"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"strconv"
@@ -15,9 +15,9 @@ import (
 )
 
 func Test990(t *testing.T) {
-	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("DATASTORE_USE_SSL", "false"))
 	require.NoError(t, err)
-	conn, err := clickhouse_std_tests.GetDSNConnection("issues", clickhouse.HTTP, useSSL, nil)
+	conn, err := datastore_std_tests.GetDSNConnection("issues", datastore.HTTP, useSSL, nil)
 
 	for i := 0; i < 10; i++ {
 		externalTableNameA, externalTableNameB := fmt.Sprintf("external_table_%v_a", i), fmt.Sprintf("external_table_%v_b", i)
@@ -41,8 +41,8 @@ func Test990(t *testing.T) {
 		}
 		require.NoError(t, err)
 
-		ctx := clickhouse.Context(context.Background(),
-			clickhouse.WithExternalTable(table1, table2),
+		ctx := datastore.Context(context.Background(),
+			datastore.WithExternalTable(table1, table2),
 		)
 
 		rows, err := conn.QueryContext(ctx, fmt.Sprintf("SELECT * FROM %v", externalTableNameA))

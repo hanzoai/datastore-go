@@ -17,7 +17,7 @@ func TestMain(m *testing.M) {
 	seed := time.Now().UnixNano()
 	fmt.Printf("using random seed %d for %s tests\n", seed, TestSet)
 	rand.Seed(seed)
-	useDocker, err := strconv.ParseBool(datastore_tests.GetEnv("CLICKHOUSE_USE_DOCKER", "true"))
+	useDocker, err := strconv.ParseBool(datastore_tests.GetEnv("DATASTORE_USE_DOCKER", "true"))
 	if err != nil {
 		panic(err)
 	}

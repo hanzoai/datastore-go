@@ -8,7 +8,7 @@ import (
 )
 
 func EphemeralColumnNative() error {
-	conn, err := GetStdOpenDBConnection(clickhouse.Native, nil, nil, nil)
+	conn, err := GetStdOpenDBConnection(datastore.Native, nil, nil, nil)
 	if err != nil {
 		return fmt.Errorf("Failed to connect: %v\n", err)
 	}

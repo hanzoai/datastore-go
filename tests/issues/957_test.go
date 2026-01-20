@@ -17,7 +17,7 @@ func Test957(t *testing.T) {
 	require.NoError(t, err)
 
 	// when the client is configured to use the test environment
-	opts := datastore_tests.ClientOptionsFromEnv(testEnv, clickhouse.Settings{}, false)
+	opts := datastore_tests.ClientOptionsFromEnv(testEnv, datastore.Settings{}, false)
 	// and the client is configured to have only 1 connection
 	opts.MaxIdleConns = 2
 	opts.MaxOpenConns = 1

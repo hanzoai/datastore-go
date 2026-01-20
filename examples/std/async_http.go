@@ -8,7 +8,7 @@ import (
 )
 
 func AsyncInsertHTTP() error {
-	conn, err := GetStdOpenDBConnection(clickhouse.HTTP, nil, nil, nil)
+	conn, err := GetStdOpenDBConnection(datastore.HTTP, nil, nil, nil)
 	if err != nil {
 		return err
 	}
@@ -26,7 +26,7 @@ func AsyncInsertHTTP() error {
 	if _, err := conn.Exec(ddl); err != nil {
 		return err
 	}
-	ctx := clickhouse.Context(context.Background(), clickhouse.WithAsync(false))
+	ctx := datastore.Context(context.Background(), datastore.WithAsync(false))
 	{
 		for i := 0; i < 100; i++ {
 			_, err := conn.ExecContext(ctx, `INSERT INTO example VALUES (
@@ -41,7 +41,7 @@ func AsyncInsertHTTP() error {
 }
 
 func AsyncInsertHTTP_WithPrepare() error {
-	conn, err := GetStdOpenDBConnection(clickhouse.HTTP, nil, nil, nil)
+	conn, err := GetStdOpenDBConnection(datastore.HTTP, nil, nil, nil)
 	if err != nil {
 		return err
 	}
@@ -59,7 +59,7 @@ func AsyncInsertHTTP_WithPrepare() error {
 	if _, err := conn.Exec(ddl); err != nil {
 		return err
 	}
-	ctx := clickhouse.Context(context.Background(), clickhouse.WithAsync(false))
+	ctx := datastore.Context(context.Background(), datastore.WithAsync(false))
 
 	s, err := conn.PrepareContext(ctx, `INSERT INTO example VALUES (?, ?, ?, ?)`)
 	if err != nil {

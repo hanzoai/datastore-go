@@ -15,7 +15,7 @@ type SomeStruct struct {
 }
 
 // SomeStructs implements sql.Scanner and driver.Valuer interfaces.
-// We want to save slice as a JSON object to clickhouse. We're using Nullable(String) for this purpose.
+// We want to save slice as a JSON object to datastore. We're using Nullable(String) for this purpose.
 type SomeStructs []SomeStruct
 
 func (ss *SomeStructs) Scan(src any) error {

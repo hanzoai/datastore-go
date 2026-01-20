@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"github.com/hanzoai/datastore-go"
 	datastore_tests "github.com/hanzoai/datastore-go/tests"
-	clickhouse_std_tests "github.com/hanzoai/datastore-go/tests/std"
+	datastore_std_tests "github.com/hanzoai/datastore-go/tests/std"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"strconv"
@@ -13,9 +13,9 @@ import (
 )
 
 func TestIssue164(t *testing.T) {
-	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("DATASTORE_USE_SSL", "false"))
 	require.NoError(t, err)
-	conn, err := clickhouse_std_tests.GetDSNConnection("issues", clickhouse.Native, useSSL, nil)
+	conn, err := datastore_std_tests.GetDSNConnection("issues", datastore.Native, useSSL, nil)
 	require.NoError(t, err)
 	const ddl = `
 		CREATE TABLE issue_164 (

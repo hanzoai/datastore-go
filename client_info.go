@@ -12,8 +12,8 @@ import (
 const ClientName = "datastore-go"
 
 const (
-	ClientVersionMajor       = 2
-	ClientVersionMinor       = 42
+	ClientVersionMajor       = 1
+	ClientVersionMinor       = 0
 	ClientVersionPatch       = 0
 	ClientTCPProtocolVersion = proto.DBMS_TCP_PROTOCOL_VERSION
 )

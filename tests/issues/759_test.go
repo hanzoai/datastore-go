@@ -13,10 +13,10 @@ import (
 
 func Test759(t *testing.T) {
 	var (
-		conn, err = datastore_tests.GetConnectionTCP("issues", clickhouse.Settings{
+		conn, err = datastore_tests.GetConnectionTCP("issues", datastore.Settings{
 			"max_execution_time": 60,
-		}, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+		}, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 	)
 	require.NoError(t, err)
@@ -28,7 +28,7 @@ func Test759(t *testing.T) {
 }
 
 func testWith(t *testing.T, conn driver.Conn, timeWant time.Time) {
-	date := clickhouse.DateNamed("Time", timeWant, clickhouse.NanoSeconds)
+	date := datastore.DateNamed("Time", timeWant, datastore.NanoSeconds)
 	r := conn.QueryRow(context.TODO(), "SELECT @Time", date)
 
 	var timeGot time.Time

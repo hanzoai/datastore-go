@@ -55,7 +55,7 @@ type UnsupportedColumnTypeError struct {
 }
 
 func (e *UnsupportedColumnTypeError) Error() string {
-	return fmt.Sprintf("clickhouse: unsupported column type %q", e.t)
+	return fmt.Sprintf("datastore: unsupported column type %q", e.t)
 }
 
 type Interface interface {

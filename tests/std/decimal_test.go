@@ -14,15 +14,15 @@ import (
 )
 
 func TestStdDecimal(t *testing.T) {
-	dsns := map[string]clickhouse.Protocol{"Native": clickhouse.Native, "Http": clickhouse.HTTP}
-	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	dsns := map[string]datastore.Protocol{"Native": datastore.Native, "Http": datastore.HTTP}
+	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("DATASTORE_USE_SSL", "false"))
 	require.NoError(t, err)
 	for name, protocol := range dsns {
 		t.Run(fmt.Sprintf("%s Protocol", name), func(t *testing.T) {
 			conn, err := GetStdDSNConnection(protocol, useSSL, nil)
 			require.NoError(t, err)
 			if !CheckMinServerVersion(conn, 21, 1, 0) {
-				t.Skip(fmt.Errorf("unsupported clickhouse version"))
+				t.Skip(fmt.Errorf("unsupported datastore version"))
 				return
 			}
 			const ddl = `

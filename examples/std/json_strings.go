@@ -10,13 +10,13 @@ import (
 func JSONStringExample() error {
 	ctx := context.Background()
 
-	conn, err := GetStdOpenDBConnection(clickhouse.Native, nil, nil, nil)
+	conn, err := GetStdOpenDBConnection(datastore.Native, nil, nil, nil)
 	if err != nil {
 		return err
 	}
 
 	if !CheckMinServerVersion(conn, 24, 10, 0) {
-		fmt.Print("unsupported clickhouse version for JSON type")
+		fmt.Print("unsupported datastore version for JSON type")
 		return nil
 	}
 

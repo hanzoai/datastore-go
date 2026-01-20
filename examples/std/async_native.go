@@ -8,7 +8,7 @@ import (
 )
 
 func AsyncInsertNative() error {
-	conn, err := GetStdOpenDBConnection(clickhouse.Native, nil, nil, nil)
+	conn, err := GetStdOpenDBConnection(datastore.Native, nil, nil, nil)
 	if err != nil {
 		return err
 	}
@@ -26,7 +26,7 @@ func AsyncInsertNative() error {
 	if _, err := conn.Exec(ddl); err != nil {
 		return err
 	}
-	ctx := clickhouse.Context(context.Background(), clickhouse.WithAsync(false))
+	ctx := datastore.Context(context.Background(), datastore.WithAsync(false))
 	{
 		for i := 0; i < 100; i++ {
 			_, err := conn.ExecContext(ctx, `INSERT INTO example VALUES (
@@ -41,7 +41,7 @@ func AsyncInsertNative() error {
 }
 
 func AsyncInsertNative_WithPrepare() error {
-	conn, err := GetStdOpenDBConnection(clickhouse.Native, nil, nil, nil)
+	conn, err := GetStdOpenDBConnection(datastore.Native, nil, nil, nil)
 	if err != nil {
 		return err
 	}
@@ -65,7 +65,7 @@ func AsyncInsertNative_WithPrepare() error {
 		return err
 	}
 
-	ctx := clickhouse.Context(context.Background(), clickhouse.WithAsync(false))
+	ctx := datastore.Context(context.Background(), datastore.WithAsync(false))
 	{
 		for i := 0; i < 100; i++ {
 			_, err := s.ExecContext(ctx, i, "Golang SQL database driver", []uint8{1, 2, 3, 4, 5, 6, 7, 8, 9}, time.Now())

@@ -19,8 +19,8 @@ import (
 )
 
 func TestStdConn(t *testing.T) {
-	dsns := map[string]clickhouse.Protocol{"Native": clickhouse.Native, "Http": clickhouse.HTTP}
-	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	dsns := map[string]datastore.Protocol{"Native": datastore.Native, "Http": datastore.HTTP}
+	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("DATASTORE_USE_SSL", "false"))
 	require.NoError(t, err)
 	for name, protocol := range dsns {
 		t.Run(fmt.Sprintf("%s Protocol", name), func(t *testing.T) {
@@ -51,7 +51,7 @@ func TestStdConnFailoverRandom(t *testing.T) {
 func testStdConnFailover(t *testing.T, openStrategy string) {
 	env, err := GetStdTestEnvironment()
 	require.NoError(t, err)
-	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("DATASTORE_USE_SSL", "false"))
 	require.NoError(t, err)
 	nativePort := env.Port
 	httpPort := env.HttpPort
@@ -92,7 +92,7 @@ func TestStdPingDeadline(t *testing.T) {
 		"Native": fmt.Sprintf("datastore://%s:%s:%s:%d", env.Username, env.Password, env.Host, env.Port),
 		"Http":   fmt.Sprintf("http://%s:%s:%s:%d", env.Username, env.Password, env.Host, env.HttpPort),
 	}
-	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("DATASTORE_USE_SSL", "false"))
 	require.NoError(t, err)
 	if useSSL {
 		dsns = map[string]string{
@@ -118,7 +118,7 @@ func TestStdConnAuth(t *testing.T) {
 	require.NoError(t, err)
 	dsns := map[string]string{"Native": fmt.Sprintf("datastore://%s:%d?username=%s&password=%s", env.Host, env.Port, env.Username, env.Password),
 		"Http": fmt.Sprintf("http://%s:%d?username=%s&password=%s", env.Host, env.HttpPort, env.Username, env.Password)}
-	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("DATASTORE_USE_SSL", "false"))
 	require.NoError(t, err)
 	if useSSL {
 		dsns = map[string]string{"Native": fmt.Sprintf("datastore://%s:%d?username=%s&password=%s&secure=true", env.Host, env.SslPort, env.Username, env.Password),
@@ -140,7 +140,7 @@ func TestStdHTTPEmptyResponse(t *testing.T) {
 	require.NoError(t, err)
 	dsns := map[string]string{"Native": fmt.Sprintf("datastore://%s:%d?username=%s&password=%s", env.Host, env.Port, env.Username, env.Password),
 		"Http": fmt.Sprintf("http://%s:%d?username=%s&password=%s", env.Host, env.HttpPort, env.Username, env.Password)}
-	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("DATASTORE_USE_SSL", "false"))
 	require.NoError(t, err)
 	if useSSL {
 		dsns = map[string]string{"Native": fmt.Sprintf("datastore://%s:%d?username=%s&password=%s&secure=true", env.Host, env.SslPort, env.Username, env.Password),
@@ -187,7 +187,7 @@ func TestStdHTTPEmptyResponse(t *testing.T) {
 func TestStdConnector(t *testing.T) {
 	env, err := GetStdTestEnvironment()
 	require.NoError(t, err)
-	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("DATASTORE_USE_SSL", "false"))
 	require.NoError(t, err)
 	port := env.Port
 	var tlsConfig *tls.Config
@@ -197,13 +197,13 @@ func TestStdConnector(t *testing.T) {
 	}
 	connector := datastore.Connector(&datastore.Options{
 		Addr: []string{fmt.Sprintf("%s:%d", env.Host, port)},
-		Auth: clickhouse.Auth{
+		Auth: datastore.Auth{
 			Database: "default",
 			Username: env.Username,
 			Password: env.Password,
 		},
-		Compression: &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+		Compression: &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		},
 		TLS: tlsConfig,
 	})
@@ -221,7 +221,7 @@ func TestBlockBufferSize(t *testing.T) {
 	require.NoError(t, err)
 	dsns := map[string]string{"Native": fmt.Sprintf("datastore://%s:%d?username=%s&password=%s", env.Host, env.Port, env.Username, env.Password),
 		"Http": fmt.Sprintf("http://%s:%d?username=%s&password=%s", env.Host, env.HttpPort, env.Username, env.Password)}
-	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("DATASTORE_USE_SSL", "false"))
 	require.NoError(t, err)
 	if useSSL {
 		dsns = map[string]string{"Native": fmt.Sprintf("datastore://%s:%d?username=%s&password=%s&secure=true", env.Host, env.SslPort, env.Username, env.Password),
@@ -252,7 +252,7 @@ func TestMaxExecutionTime(t *testing.T) {
 	require.NoError(t, err)
 	dsns := map[string]string{"Native": fmt.Sprintf("datastore://%s:%d?username=%s&password=%s", env.Host, env.Port, env.Username, env.Password),
 		"Http": fmt.Sprintf("http://%s:%d?username=%s&password=%s", env.Host, env.HttpPort, env.Username, env.Password)}
-	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("DATASTORE_USE_SSL", "false"))
 	require.NoError(t, err)
 	if useSSL {
 		dsns = map[string]string{"Native": fmt.Sprintf("datastore://%s:%d?username=%s&password=%s&secure=true", env.Host, env.SslPort, env.Username, env.Password),
@@ -292,18 +292,18 @@ func TestHttpConnWithOptions(t *testing.T) {
 	require.NoError(t, err)
 	conn := GetConnectionWithOptions(&datastore.Options{
 		Addr:     []string{fmt.Sprintf("%s:%d", env.Host, nginxEnv.HttpPort)},
-		Protocol: clickhouse.HTTP,
-		Auth: clickhouse.Auth{
+		Protocol: datastore.HTTP,
+		Auth: datastore.Auth{
 			Database: env.Database,
 			Username: env.Username,
 			Password: env.Password,
 		},
-		Settings: clickhouse.Settings{
+		Settings: datastore.Settings{
 			"max_execution_time": 60,
 		},
 		DialTimeout: 5 * time.Second,
-		Compression: &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+		Compression: &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		},
 		HttpUrlPath: "clickhouse",
 	})
@@ -322,7 +322,7 @@ func TestEmptyDatabaseConfig(t *testing.T) {
 		"Native": fmt.Sprintf("datastore://%s:%d?username=%s&password=%s", env.Host, env.Port, env.Username, env.Password),
 		"Http":   fmt.Sprintf("http://%s:%d?username=%s&password=%s", env.Host, env.HttpPort, env.Username, env.Password),
 	}
-	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("DATASTORE_USE_SSL", "false"))
 	require.NoError(t, err)
 	if useSSL {
 		dsns = map[string]string{
@@ -379,9 +379,9 @@ func TestHTTPProxy(t *testing.T) {
 	defer logs.Close()
 	scanner := bufio.NewScanner(logs)
 
-	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("DATASTORE_USE_SSL", "false"))
 	require.NoError(t, err)
-	conn, err := GetStdDSNConnection(clickhouse.HTTP, useSSL, nil)
+	conn, err := GetStdDSNConnection(datastore.HTTP, useSSL, nil)
 
 	require.NoError(t, err)
 	defer conn.Close()
@@ -402,13 +402,13 @@ func TestHTTPProxy(t *testing.T) {
 func TestCustomSettings(t *testing.T) {
 	datastore_tests.SkipOnCloud(t)
 
-	dsns := map[string]clickhouse.Protocol{"Native": clickhouse.Native, "Http": clickhouse.HTTP}
+	dsns := map[string]datastore.Protocol{"Native": datastore.Native, "Http": datastore.HTTP}
 	for name, protocol := range dsns {
 		t.Run(fmt.Sprintf("%s Protocol", name), func(t *testing.T) {
 			conn, err := GetStdOpenDBConnection(
 				protocol,
-				clickhouse.Settings{
-					"custom_setting": clickhouse.CustomSetting{"custom_value"},
+				datastore.Settings{
+					"custom_setting": datastore.CustomSetting{"custom_value"},
 				},
 				nil,
 				nil,
@@ -430,8 +430,8 @@ func TestCustomSettings(t *testing.T) {
 			})
 
 			t.Run("get custom setting value from query context", func(t *testing.T) {
-				ctx := clickhouse.Context(context.Background(), clickhouse.WithSettings(clickhouse.Settings{
-					"custom_query_setting": clickhouse.CustomSetting{"custom_query_value"},
+				ctx := datastore.Context(context.Background(), datastore.WithSettings(datastore.Settings{
+					"custom_query_setting": datastore.CustomSetting{"custom_query_value"},
 				}))
 
 				row := conn.QueryRowContext(ctx, "SELECT getSetting('custom_query_setting')")
@@ -448,10 +448,10 @@ func TestCustomSettings(t *testing.T) {
 func TestStdJWTAuth(t *testing.T) {
 	datastore_tests.SkipNotCloud(t)
 
-	protocols := map[string]clickhouse.Protocol{"Native": clickhouse.Native, "Http": clickhouse.HTTP}
+	protocols := map[string]datastore.Protocol{"Native": datastore.Native, "Http": datastore.HTTP}
 	for name, protocol := range protocols {
 		t.Run(fmt.Sprintf("%s Protocol", name), func(t *testing.T) {
-			jwt := datastore_tests.GetEnv("CLICKHOUSE_JWT", "")
+			jwt := datastore_tests.GetEnv("DATASTORE_JWT", "")
 			getJWT := func(ctx context.Context) (string, error) {
 				return jwt, nil
 			}
@@ -484,10 +484,10 @@ func TestJWTAuthHTTPOverride(t *testing.T) {
 	datastore_tests.SkipNotCloud(t)
 
 	getJWT := func(ctx context.Context) (string, error) {
-		return datastore_tests.GetEnv("CLICKHOUSE_JWT", ""), nil
+		return datastore_tests.GetEnv("DATASTORE_JWT", ""), nil
 	}
 
-	conn, err := GetOpenDBConnectionJWT(testSet, clickhouse.HTTP, nil, &tls.Config{}, getJWT)
+	conn, err := GetOpenDBConnectionJWT(testSet, datastore.HTTP, nil, &tls.Config{}, getJWT)
 	require.NoError(t, err)
 	conn.SetMaxOpenConns(1)
 	conn.SetConnMaxLifetime(1000 * time.Millisecond)
@@ -498,7 +498,7 @@ func TestJWTAuthHTTPOverride(t *testing.T) {
 	require.NoError(t, conn.PingContext(context.Background()))
 
 	// Break the token via temporary override
-	ctx := clickhouse.Context(context.Background(), clickhouse.WithJWT("broken_jwt"))
+	ctx := datastore.Context(context.Background(), datastore.WithJWT("broken_jwt"))
 	// Next ping with context should fail
 	require.Error(t, conn.PingContext(ctx))
 

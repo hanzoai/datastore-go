@@ -15,7 +15,7 @@ import (
 func Test1395(t *testing.T) {
 	testEnv, err := datastore_tests.GetTestEnvironment("issues")
 	require.NoError(t, err)
-	opts := datastore_tests.ClientOptionsFromEnv(testEnv, clickhouse.Settings{}, false)
+	opts := datastore_tests.ClientOptionsFromEnv(testEnv, datastore.Settings{}, false)
 	conn, err := sql.Open("datastore", datastore_tests.OptionsToDSN(&opts))
 	require.NoError(t, err)
 

@@ -13,16 +13,16 @@ import (
 
 func Test870(t *testing.T) {
 	var (
-		conn, err = datastore_tests.GetConnectionTCP("issues", clickhouse.Settings{
+		conn, err = datastore_tests.GetConnectionTCP("issues", datastore.Settings{
 			"max_execution_time": 60,
 			"flatten_nested":     0,
-		}, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+		}, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 	)
 
 	if !datastore_tests.CheckMinServerServerVersion(conn, 22, 8, 0) {
-		t.Skip(fmt.Errorf("unsupported clickhouse version"))
+		t.Skip(fmt.Errorf("unsupported datastore version"))
 		return
 	}
 
@@ -53,7 +53,7 @@ func Test870(t *testing.T) {
 	}
 	require.NoError(t, batch.Send())
 
-	queryCtx := clickhouse.Context(ctx, clickhouse.WithParameters(clickhouse.Parameters{
+	queryCtx := datastore.Context(ctx, datastore.WithParameters(datastore.Parameters{
 		"groupBy":   "Col1",
 		"stringVal": "lorem ipsum",
 	}))

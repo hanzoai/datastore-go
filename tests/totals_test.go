@@ -10,13 +10,13 @@ import (
 )
 
 func TestWithTotals(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
-		if protocol == clickhouse.HTTP {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
+		if protocol == datastore.HTTP {
 			t.Skip("Only test Totals for Native")
 		}
 
-		conn, err := GetNativeConnection(t, protocol, nil, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+		conn, err := GetNativeConnection(t, protocol, nil, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 		ctx := context.Background()
 		require.NoError(t, err)

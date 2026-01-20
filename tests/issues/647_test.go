@@ -16,7 +16,7 @@ import (
 func TestIssue647(t *testing.T) {
 	env, err := GetIssuesTestEnvironment()
 	require.NoError(t, err)
-	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("DATASTORE_USE_SSL", "false"))
 	require.NoError(t, err)
 	var tlsConfig *tls.Config
 	port := env.Port
@@ -26,7 +26,7 @@ func TestIssue647(t *testing.T) {
 	}
 	options := &datastore.Options{
 		Addr: []string{fmt.Sprintf("%s:%d", env.Host, port)},
-		Auth: clickhouse.Auth{
+		Auth: datastore.Auth{
 			Database: "default",
 			Username: env.Username,
 			Password: env.Password,
@@ -46,7 +46,7 @@ func TestIssue647(t *testing.T) {
 func TestIssue647_OpenDB(t *testing.T) {
 	env, err := GetIssuesTestEnvironment()
 	require.NoError(t, err)
-	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("DATASTORE_USE_SSL", "false"))
 	require.NoError(t, err)
 	var tlsConfig *tls.Config
 	port := env.Port
@@ -56,7 +56,7 @@ func TestIssue647_OpenDB(t *testing.T) {
 	}
 	options := &datastore.Options{
 		Addr: []string{fmt.Sprintf("%s:%d", env.Host, port)},
-		Auth: clickhouse.Auth{
+		Auth: datastore.Auth{
 			Database: "default",
 			Username: env.Username,
 			Password: env.Password,
@@ -76,7 +76,7 @@ func TestIssue647_OpenDB(t *testing.T) {
 func Test647_Connector(t *testing.T) {
 	env, err := GetIssuesTestEnvironment()
 	require.NoError(t, err)
-	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("DATASTORE_USE_SSL", "false"))
 	require.NoError(t, err)
 	var tlsConfig *tls.Config
 	port := env.Port
@@ -86,7 +86,7 @@ func Test647_Connector(t *testing.T) {
 	}
 	options := &datastore.Options{
 		Addr: []string{fmt.Sprintf("%s:%d", env.Host, port)},
-		Auth: clickhouse.Auth{
+		Auth: datastore.Auth{
 			Database: "default",
 			Username: env.Username,
 			Password: env.Password,

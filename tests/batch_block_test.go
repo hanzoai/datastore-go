@@ -16,7 +16,7 @@ import (
 func TestBatchAppendRows(t *testing.T) {
 	te, err := GetTestEnvironment(testSet)
 	require.NoError(t, err)
-	opts := ClientOptionsFromEnv(te, clickhouse.Settings{}, false)
+	opts := ClientOptionsFromEnv(te, datastore.Settings{}, false)
 
 	conn, err := GetConnectionWithOptions(&opts)
 	require.NoError(t, err)
@@ -52,7 +52,7 @@ func TestBatchAppendRows(t *testing.T) {
 
 // TestBatchColumns tests Batch.Columns() method functionality
 func TestBatchColumns(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		conn, err := GetNativeConnection(t, protocol, nil, nil, nil)
 		require.NoError(t, err)
 

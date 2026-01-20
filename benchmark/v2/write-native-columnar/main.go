@@ -55,7 +55,7 @@ func main() {
 		ctx       = context.Background()
 		conn, err = datastore.Open(&datastore.Options{
 			Addr: []string{"127.0.0.1:9000"},
-			Auth: clickhouse.Auth{
+			Auth: datastore.Auth{
 				Database: "default",
 				Username: "default",
 				Password: "",

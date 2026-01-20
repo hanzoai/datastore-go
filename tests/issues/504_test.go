@@ -14,8 +14,8 @@ import (
 func TestIssue504(t *testing.T) {
 	var (
 		ctx       = context.Background()
-		conn, err = datastore_tests.GetConnectionTCP("issues", nil, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+		conn, err = datastore_tests.GetConnectionTCP("issues", nil, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 	)
 	require.NoError(t, err)
@@ -40,7 +40,7 @@ func TestIssue504(t *testing.T) {
 		)
 		WHERE (Col1, Col2) IN (@GS)
 		`
-	err = conn.Select(ctx, &result, query, clickhouse.Named("GS", []clickhouse.GroupSet{
+	err = conn.Select(ctx, &result, query, datastore.Named("GS", []datastore.GroupSet{
 		{Value: []any{"A", 2}},
 		{Value: []any{"A", 4}},
 	}))

@@ -9,13 +9,13 @@ import (
 func DynamicExample() error {
 	ctx := context.Background()
 
-	conn, err := GetStdOpenDBConnection(clickhouse.Native, nil, nil, nil)
+	conn, err := GetStdOpenDBConnection(datastore.Native, nil, nil, nil)
 	if err != nil {
 		return err
 	}
 
 	if !CheckMinServerVersion(conn, 25, 6, 0) {
-		fmt.Print("unsupported clickhouse version for Dynamic type")
+		fmt.Print("unsupported datastore version for Dynamic type")
 		return nil
 	}
 
@@ -69,11 +69,11 @@ func DynamicExample() error {
 		return err
 	}
 
-	if _, err = batch.ExecContext(ctx, clickhouse.NewDynamic("example dynamic")); err != nil {
+	if _, err = batch.ExecContext(ctx, datastore.NewDynamic("example dynamic")); err != nil {
 		return err
 	}
 
-	if _, err = batch.ExecContext(ctx, clickhouse.NewDynamicWithType("example dynamic with specific type", "String")); err != nil {
+	if _, err = batch.ExecContext(ctx, datastore.NewDynamicWithType("example dynamic with specific type", "String")); err != nil {
 		return err
 	}
 
@@ -93,7 +93,7 @@ func DynamicExample() error {
 	}
 
 	for i := 0; rows.Next(); i++ {
-		var row clickhouse.Dynamic
+		var row datastore.Dynamic
 		err := rows.Scan(&row)
 		if err != nil {
 			return fmt.Errorf("failed to scan row index %d: %w", i, err)
@@ -119,7 +119,7 @@ func DynamicExample() error {
 	}
 
 	for i := 0; rows.Next(); i++ {
-		var row clickhouse.Dynamic
+		var row datastore.Dynamic
 		err := rows.Scan(&row)
 		if err != nil {
 			return fmt.Errorf("failed to scan row index %d: %w", i, err)

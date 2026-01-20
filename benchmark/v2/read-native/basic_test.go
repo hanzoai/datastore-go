@@ -12,7 +12,7 @@ import (
 func getConnection() datastore.Conn {
 	conn, err := datastore.Open(&datastore.Options{
 		Addr: []string{"127.0.0.1:9000"},
-		Auth: clickhouse.Auth{
+		Auth: datastore.Auth{
 			Database: "default",
 			Username: "default",
 			Password: "",
@@ -22,8 +22,8 @@ func getConnection() datastore.Conn {
 		MaxOpenConns:    10,
 		MaxIdleConns:    5,
 		ConnMaxLifetime: time.Hour,
-		Compression: &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+		Compression: &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		},
 		BlockBufferSize: 100,
 	})

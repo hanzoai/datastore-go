@@ -18,7 +18,7 @@ import (
 func TestStdCustomDial(t *testing.T) {
 	env, err := GetStdTestEnvironment()
 	require.NoError(t, err)
-	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("DATASTORE_USE_SSL", "false"))
 	require.NoError(t, err)
 	port := env.Port
 	var tlsConfig *tls.Config
@@ -30,17 +30,17 @@ func TestStdCustomDial(t *testing.T) {
 		dialCount int
 		conn      = datastore.OpenDB(&datastore.Options{
 			Addr: []string{fmt.Sprintf("%s:%d", env.Host, port)},
-			Auth: clickhouse.Auth{
+			Auth: datastore.Auth{
 				Database: "default",
 				Username: env.Username,
 				Password: env.Password,
 			},
-			Settings: clickhouse.Settings{
+			Settings: datastore.Settings{
 				"max_execution_time": 60,
 			},
 			DialTimeout: 5 * time.Second,
-			Compression: &clickhouse.Compression{
-				Method: clickhouse.CompressionLZ4,
+			Compression: &datastore.Compression{
+				Method: datastore.CompressionLZ4,
 			},
 			DialContext: func(ctx context.Context, addr string) (net.Conn, error) {
 				dialCount++

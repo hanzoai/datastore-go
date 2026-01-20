@@ -8,7 +8,7 @@ import (
 )
 
 func EphemeralColumnHTTP() error {
-	conn, err := GetStdOpenDBConnection(clickhouse.HTTP, nil, nil, nil)
+	conn, err := GetStdOpenDBConnection(datastore.HTTP, nil, nil, nil)
 	if err != nil {
 		return fmt.Errorf("Failed to connect: %v\n", err)
 	}

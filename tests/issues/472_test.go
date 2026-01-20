@@ -15,8 +15,8 @@ import (
 func TestIssue472(t *testing.T) {
 	var (
 		ctx       = context.Background()
-		conn, err = datastore_tests.GetConnectionTCP("issues", nil, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+		conn, err = datastore_tests.GetConnectionTCP("issues", nil, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 	)
 	require.NoError(t, err)
@@ -54,7 +54,7 @@ func TestIssue472(t *testing.T) {
 								AND (EventType = $2 or EventType = $3)
 								AND ControllerRevision = $4 LIMIT 1`
 
-	ctx = clickhouse.Context(context.Background(), clickhouse.WithSettings(clickhouse.Settings{
+	ctx = datastore.Context(context.Background(), datastore.WithSettings(datastore.Settings{
 		"max_block_size": 10,
 	}))
 	require.NoError(t, conn.Select(ctx, &records, query, podUID, "Test", "", 1))

@@ -15,8 +15,8 @@ import (
 )
 
 func TestStdDate(t *testing.T) {
-	dsns := map[string]clickhouse.Protocol{"Native": clickhouse.Native, "Http": clickhouse.HTTP}
-	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	dsns := map[string]datastore.Protocol{"Native": datastore.Native, "Http": datastore.HTTP}
+	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("DATASTORE_USE_SSL", "false"))
 	require.NoError(t, err)
 	for name, protocol := range dsns {
 		t.Run(fmt.Sprintf("%s Protocol", name), func(t *testing.T) {
@@ -101,8 +101,8 @@ func TestStdDate(t *testing.T) {
 func TestDateWithUserLocation(t *testing.T) {
 	ctx := context.Background()
 
-	dsns := map[string]clickhouse.Protocol{"Native": clickhouse.Native, "Http": clickhouse.HTTP}
-	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	dsns := map[string]datastore.Protocol{"Native": datastore.Native, "Http": datastore.HTTP}
+	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("DATASTORE_USE_SSL", "false"))
 	require.NoError(t, err)
 	for name, protocol := range dsns {
 		t.Run(fmt.Sprintf("%s Protocol", name), func(t *testing.T) {
@@ -121,7 +121,7 @@ func TestDateWithUserLocation(t *testing.T) {
 			require.NoError(t, err)
 
 			userLocation, _ := time.LoadLocation("Pacific/Pago_Pago")
-			queryCtx := clickhouse.Context(ctx, clickhouse.WithUserLocation(userLocation))
+			queryCtx := datastore.Context(ctx, datastore.WithUserLocation(userLocation))
 
 			var col1 time.Time
 			row := conn.QueryRowContext(queryCtx, "SELECT * FROM date_with_user_location")

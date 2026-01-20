@@ -40,7 +40,7 @@ var randSeed = time.Now().UnixNano()
 const defaultClickHouseVersion = "latest"
 
 func GetClickHouseTestVersion() string {
-	return GetEnv("CLICKHOUSE_VERSION", defaultClickHouseVersion)
+	return GetEnv("DATASTORE_VERSION", defaultClickHouseVersion)
 }
 
 type ClickHouseTestEnvironment struct {
@@ -60,7 +60,7 @@ type ClickHouseTestEnvironment struct {
 }
 
 func (env *ClickHouseTestEnvironment) setVersion() {
-	useSSL, err := strconv.ParseBool(GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	useSSL, err := strconv.ParseBool(GetEnv("DATASTORE_USE_SSL", "false"))
 	if err != nil {
 		panic(err)
 	}
@@ -70,14 +70,14 @@ func (env *ClickHouseTestEnvironment) setVersion() {
 		tlsConfig = &tls.Config{}
 		port = env.SslPort
 	}
-	timeout, err := strconv.Atoi(GetEnv("CLICKHOUSE_DIAL_TIMEOUT", "10"))
+	timeout, err := strconv.Atoi(GetEnv("DATASTORE_DIAL_TIMEOUT", "10"))
 	if err != nil {
 		panic(err)
 	}
 	conn, err := datastore.Open(&datastore.Options{
 		Addr:     []string{fmt.Sprintf("%s:%d", env.Host, port)},
 		Settings: nil,
-		Auth: clickhouse.Auth{
+		Auth: datastore.Auth{
 			Database: "default",
 			Username: env.Username,
 			Password: env.Password,
@@ -113,12 +113,12 @@ func CreateClickHouseTestEnvironment(testSet string) (ClickHouseTestEnvironment,
 	// attempt use docker for CI
 	provider, err := testcontainers.ProviderDefault.GetProvider()
 	if err != nil {
-		fmt.Printf("Docker is not running and no clickhouse connections details were provided. Skipping tests: %s\n", err)
+		fmt.Printf("Docker is not running and no datastore connections details were provided. Skipping tests: %s\n", err)
 		os.Exit(0)
 	}
 	err = provider.Health(ctx)
 	if err != nil {
-		fmt.Printf("Docker is not running and no clickhouse connections details were provided. Skipping IT tests: %s\n", err)
+		fmt.Printf("Docker is not running and no datastore connections details were provided. Skipping IT tests: %s\n", err)
 		os.Exit(0)
 	}
 	fmt.Println("Using Docker for integration tests")
@@ -141,7 +141,7 @@ func CreateClickHouseTestEnvironment(testSet string) (ClickHouseTestEnvironment,
 	if err := binary.Write(buf, binary.LittleEndian, time.Now().UnixNano()); err != nil {
 		return ClickHouseTestEnvironment{}, err
 	}
-	containerName := fmt.Sprintf("clickhouse-go-%x", md5.Sum(buf.Bytes()))
+	containerName := fmt.Sprintf("datastore-go-%x", md5.Sum(buf.Bytes()))
 
 	req := testcontainers.ContainerRequest{
 		Image:        fmt.Sprintf("clickhouse/clickhouse-server:%s", GetClickHouseTestVersion()),
@@ -164,9 +164,9 @@ func CreateClickHouseTestEnvironment(testSet string) (ClickHouseTestEnvironment,
 		},
 	}
 
-	var clickhouseContainer testcontainers.Container
+	var datastoreContainer testcontainers.Container
 	for attempt := 0; attempt < 3; attempt++ {
-		clickhouseContainer, err = testcontainers.GenericContainer(ctx, testcontainers.GenericContainerRequest{
+		datastoreContainer, err = testcontainers.GenericContainer(ctx, testcontainers.GenericContainerRequest{
 			ContainerRequest: req,
 			Started:          true,
 		})
@@ -182,13 +182,13 @@ func CreateClickHouseTestEnvironment(testSet string) (ClickHouseTestEnvironment,
 		return ClickHouseTestEnvironment{}, err
 	}
 
-	p, _ := clickhouseContainer.MappedPort(ctx, "9000")
-	hp, _ := clickhouseContainer.MappedPort(ctx, "8123")
-	sslPort, _ := clickhouseContainer.MappedPort(ctx, "9440")
-	hps, _ := clickhouseContainer.MappedPort(ctx, "8443")
-	ip, _ := clickhouseContainer.ContainerIP(ctx)
+	p, _ := datastoreContainer.MappedPort(ctx, "9000")
+	hp, _ := datastoreContainer.MappedPort(ctx, "8123")
+	sslPort, _ := datastoreContainer.MappedPort(ctx, "9440")
+	hps, _ := datastoreContainer.MappedPort(ctx, "8443")
+	ip, _ := datastoreContainer.ContainerIP(ctx)
 	testEnv := ClickHouseTestEnvironment{
-		ContainerID: clickhouseContainer.GetContainerID(),
+		ContainerID: datastoreContainer.GetContainerID(),
 		Port:        p.Int(),
 		HttpPort:    hp.Int(),
 		SslPort:     sslPort.Int(),
@@ -196,9 +196,9 @@ func CreateClickHouseTestEnvironment(testSet string) (ClickHouseTestEnvironment,
 		Host:        "127.0.0.1",
 		Username:    "tester",
 		Password:    "ClickHouse",
-		Container:   clickhouseContainer,
+		Container:   datastoreContainer,
 		ContainerIP: ip,
-		Database:    GetEnv("CLICKHOUSE_DATABASE", getDatabaseName(testSet)),
+		Database:    GetEnv("DATASTORE_DATABASE", getDatabaseName(testSet)),
 	}
 	testEnv.setVersion()
 
@@ -217,7 +217,7 @@ func SetTestEnvironment(testSet string, environment ClickHouseTestEnvironment) {
 }
 
 func GetTestEnvironment(testSet string) (ClickHouseTestEnvironment, error) {
-	useDocker, err := strconv.ParseBool(GetEnv("CLICKHOUSE_USE_DOCKER", "true"))
+	useDocker, err := strconv.ParseBool(GetEnv("DATASTORE_USE_DOCKER", "true"))
 	if err != nil {
 		return ClickHouseTestEnvironment{}, err
 	}
@@ -236,19 +236,19 @@ func GetTestEnvironment(testSet string) (ClickHouseTestEnvironment, error) {
 }
 
 func GetExternalTestEnvironment(testSet string) (ClickHouseTestEnvironment, error) {
-	port, err := strconv.Atoi(GetEnv("CLICKHOUSE_PORT", "9000"))
+	port, err := strconv.Atoi(GetEnv("DATASTORE_PORT", "9000"))
 	if err != nil {
 		return ClickHouseTestEnvironment{}, nil
 	}
-	httpPort, err := strconv.Atoi(GetEnv("CLICKHOUSE_HTTP_PORT", "8123"))
+	httpPort, err := strconv.Atoi(GetEnv("DATASTORE_HTTP_PORT", "8123"))
 	if err != nil {
 		return ClickHouseTestEnvironment{}, nil
 	}
-	sslPort, err := strconv.Atoi(GetEnv("CLICKHOUSE_SSL_PORT", "9440"))
+	sslPort, err := strconv.Atoi(GetEnv("DATASTORE_SSL_PORT", "9440"))
 	if err != nil {
 		return ClickHouseTestEnvironment{}, nil
 	}
-	httpsPort, err := strconv.Atoi(GetEnv("CLICKHOUSE_HTTPS_PORT", "8443"))
+	httpsPort, err := strconv.Atoi(GetEnv("DATASTORE_HTTPS_PORT", "8443"))
 	if err != nil {
 		return ClickHouseTestEnvironment{}, nil
 	}
@@ -257,23 +257,23 @@ func GetExternalTestEnvironment(testSet string) (ClickHouseTestEnvironment, erro
 		HttpPort:  httpPort,
 		SslPort:   sslPort,
 		HttpsPort: httpsPort,
-		Username:  GetEnv("CLICKHOUSE_USERNAME", "default"),
-		Password:  GetEnv("CLICKHOUSE_PASSWORD", ""),
-		JWT:       GetEnv("CLICKHOUSE_JWT", ""),
-		Host:      GetEnv("CLICKHOUSE_HOST", "localhost"),
-		Database:  GetEnv("CLICKHOUSE_DATABASE", getDatabaseName(testSet)),
+		Username:  GetEnv("DATASTORE_USERNAME", "default"),
+		Password:  GetEnv("DATASTORE_PASSWORD", ""),
+		JWT:       GetEnv("DATASTORE_JWT", ""),
+		Host:      GetEnv("DATASTORE_HOST", "localhost"),
+		Database:  GetEnv("DATASTORE_DATABASE", getDatabaseName(testSet)),
 	}
 	env.setVersion()
 	return env, nil
 }
 
-func ClientOptionsFromEnv(env ClickHouseTestEnvironment, settings clickhouse.Settings, useHTTP bool) datastore.Options {
-	timeout, err := strconv.Atoi(GetEnv("CLICKHOUSE_DIAL_TIMEOUT", "10"))
+func ClientOptionsFromEnv(env ClickHouseTestEnvironment, settings datastore.Settings, useHTTP bool) datastore.Options {
+	timeout, err := strconv.Atoi(GetEnv("DATASTORE_DIAL_TIMEOUT", "10"))
 	if err != nil {
 		timeout = 10
 	}
 
-	useSSL, err := strconv.ParseBool(GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	useSSL, err := strconv.ParseBool(GetEnv("DATASTORE_USE_SSL", "false"))
 	if err != nil {
 		panic(err)
 	}
@@ -291,35 +291,35 @@ func ClientOptionsFromEnv(env ClickHouseTestEnvironment, settings clickhouse.Set
 		}
 	}
 
-	protocol := clickhouse.Native
+	protocol := datastore.Native
 	if useHTTP {
-		protocol = clickhouse.HTTP
+		protocol = datastore.HTTP
 	}
 
 	return datastore.Options{
 		Addr:     []string{fmt.Sprintf("%s:%d", env.Host, port)},
 		Protocol: protocol,
 		Settings: settings,
-		Auth: clickhouse.Auth{
+		Auth: datastore.Auth{
 			Database: env.Database,
 			Username: env.Username,
 			Password: env.Password,
 		},
 		DialTimeout: time.Duration(timeout) * time.Second,
 		TLS:         tlsConfig,
-		Compression: &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+		Compression: &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		},
 	}
 }
 
-func TestClientWithDefaultOptions(env ClickHouseTestEnvironment, settings clickhouse.Settings) (driver.Conn, error) {
+func TestClientWithDefaultOptions(env ClickHouseTestEnvironment, settings datastore.Settings) (driver.Conn, error) {
 	opts := ClientOptionsFromEnv(env, settings, false)
 	return datastore.Open(&opts)
 }
 
-func TestClientDefaultSettings(env ClickHouseTestEnvironment) clickhouse.Settings {
-	settings := clickhouse.Settings{}
+func TestClientDefaultSettings(env ClickHouseTestEnvironment) datastore.Settings {
+	settings := datastore.Settings{}
 
 	if proto.CheckMinVersion(proto.Version{
 		Major: 22,
@@ -328,7 +328,7 @@ func TestClientDefaultSettings(env ClickHouseTestEnvironment) clickhouse.Setting
 	}, env.Version) {
 		settings["database_replicated_enforce_synchronous_settings"] = "1"
 	}
-	settings["insert_quorum"], _ = strconv.Atoi(GetEnv("CLICKHOUSE_QUORUM_INSERT", "1"))
+	settings["insert_quorum"], _ = strconv.Atoi(GetEnv("DATASTORE_QUORUM_INSERT", "1"))
 	settings["insert_quorum_parallel"] = 0
 	settings["select_sequential_consistency"] = 1
 
@@ -339,7 +339,7 @@ func TestClientWithDefaultSettings(env ClickHouseTestEnvironment) (driver.Conn, 
 	return TestClientWithDefaultOptions(env, TestClientDefaultSettings(env))
 }
 
-func TestDatabaseSQLClientWithDefaultOptions(env ClickHouseTestEnvironment, settings clickhouse.Settings) (*sql.DB, error) {
+func TestDatabaseSQLClientWithDefaultOptions(env ClickHouseTestEnvironment, settings datastore.Settings) (*sql.DB, error) {
 	opts := ClientOptionsFromEnv(env, settings, false)
 	return sql.Open("datastore", OptionsToDSN(&opts))
 }
@@ -348,23 +348,23 @@ func TestDatabaseSQLClientWithDefaultSettings(env ClickHouseTestEnvironment) (*s
 	return TestDatabaseSQLClientWithDefaultOptions(env, TestClientDefaultSettings(env))
 }
 
-func GetConnection(testSet string, t *testing.T, protocol clickhouse.Protocol, settings clickhouse.Settings, tlsConfig *tls.Config, compression *clickhouse.Compression) (driver.Conn, error) {
+func GetConnection(testSet string, t *testing.T, protocol datastore.Protocol, settings datastore.Settings, tlsConfig *tls.Config, compression *datastore.Compression) (driver.Conn, error) {
 	env, err := GetTestEnvironment(testSet)
 	if err != nil {
 		return nil, err
 	}
 
 	switch protocol {
-	case clickhouse.Native:
+	case datastore.Native:
 		return getConnection(env, env.Database, settings, tlsConfig, compression)
-	case clickhouse.HTTP:
+	case datastore.HTTP:
 		return getHTTPConnection(env, t.Name(), env.Database, settings, tlsConfig, compression)
 	default:
 		return nil, fmt.Errorf("unknown protocol: %s", protocol)
 	}
 }
 
-func GetConnectionTCP(testSet string, settings clickhouse.Settings, tlsConfig *tls.Config, compression *clickhouse.Compression) (driver.Conn, error) {
+func GetConnectionTCP(testSet string, settings datastore.Settings, tlsConfig *tls.Config, compression *datastore.Compression) (driver.Conn, error) {
 	env, err := GetTestEnvironment(testSet)
 	if err != nil {
 		return nil, err
@@ -373,7 +373,7 @@ func GetConnectionTCP(testSet string, settings clickhouse.Settings, tlsConfig *t
 	return getConnection(env, env.Database, settings, tlsConfig, compression)
 }
 
-func GetConnectionHTTP(testSet string, sessionName string, settings clickhouse.Settings, tlsConfig *tls.Config, compression *clickhouse.Compression) (driver.Conn, error) {
+func GetConnectionHTTP(testSet string, sessionName string, settings datastore.Settings, tlsConfig *tls.Config, compression *datastore.Compression) (driver.Conn, error) {
 	env, err := GetTestEnvironment(testSet)
 	if err != nil {
 		return nil, err
@@ -382,7 +382,7 @@ func GetConnectionHTTP(testSet string, sessionName string, settings clickhouse.S
 	return getHTTPConnection(env, sessionName, env.Database, settings, tlsConfig, compression)
 }
 
-func GetJWTConnection(testSet string, settings clickhouse.Settings, tlsConfig *tls.Config, maxConnLifetime time.Duration, jwtFunc clickhouse.GetJWTFunc) (driver.Conn, error) {
+func GetJWTConnection(testSet string, settings datastore.Settings, tlsConfig *tls.Config, maxConnLifetime time.Duration, jwtFunc datastore.GetJWTFunc) (driver.Conn, error) {
 	env, err := GetTestEnvironment(testSet)
 	if err != nil {
 		return nil, err
@@ -392,7 +392,7 @@ func GetJWTConnection(testSet string, settings clickhouse.Settings, tlsConfig *t
 
 func GetConnectionWithOptions(options *datastore.Options) (driver.Conn, error) {
 	if options.Settings == nil {
-		options.Settings = clickhouse.Settings{}
+		options.Settings = datastore.Settings{}
 	}
 	conn, err := datastore.Open(options)
 	if err != nil {
@@ -402,7 +402,7 @@ func GetConnectionWithOptions(options *datastore.Options) (driver.Conn, error) {
 	if CheckMinServerServerVersion(conn, 22, 8, 0) {
 		options.Settings["database_replicated_enforce_synchronous_settings"] = "1"
 	}
-	options.Settings["insert_quorum"], err = strconv.Atoi(GetEnv("CLICKHOUSE_QUORUM_INSERT", "1"))
+	options.Settings["insert_quorum"], err = strconv.Atoi(GetEnv("DATASTORE_QUORUM_INSERT", "1"))
 	options.Settings["insert_quorum_parallel"] = 0
 	options.Settings["select_sequential_consistency"] = 1
 	if err != nil {
@@ -411,8 +411,8 @@ func GetConnectionWithOptions(options *datastore.Options) (driver.Conn, error) {
 	return datastore.Open(options)
 }
 
-func getConnection(env ClickHouseTestEnvironment, database string, settings clickhouse.Settings, tlsConfig *tls.Config, compression *clickhouse.Compression) (driver.Conn, error) {
-	useSSL, err := strconv.ParseBool(GetEnv("CLICKHOUSE_USE_SSL", "false"))
+func getConnection(env ClickHouseTestEnvironment, database string, settings datastore.Settings, tlsConfig *tls.Config, compression *datastore.Compression) (driver.Conn, error) {
+	useSSL, err := strconv.ParseBool(GetEnv("DATASTORE_USE_SSL", "false"))
 	if err != nil {
 		panic(err)
 	}
@@ -422,7 +422,7 @@ func getConnection(env ClickHouseTestEnvironment, database string, settings clic
 		port = env.SslPort
 	}
 	if settings == nil {
-		settings = clickhouse.Settings{}
+		settings = datastore.Settings{}
 	}
 	if proto.CheckMinVersion(proto.Version{
 		Major: 22,
@@ -438,23 +438,23 @@ func getConnection(env ClickHouseTestEnvironment, database string, settings clic
 	}, env.Version) {
 		settings["output_format_native_use_flattened_dynamic_and_json_serialization"] = "1"
 	}
-	settings["insert_quorum"], err = strconv.Atoi(GetEnv("CLICKHOUSE_QUORUM_INSERT", "1"))
+	settings["insert_quorum"], err = strconv.Atoi(GetEnv("DATASTORE_QUORUM_INSERT", "1"))
 	settings["insert_quorum_parallel"] = 0
 	settings["select_sequential_consistency"] = 1
 	if err != nil {
 		return nil, err
 	}
 
-	timeout, err := strconv.Atoi(GetEnv("CLICKHOUSE_DIAL_TIMEOUT", "10"))
+	timeout, err := strconv.Atoi(GetEnv("DATASTORE_DIAL_TIMEOUT", "10"))
 	if err != nil {
 		return nil, err
 	}
 
 	conn, err := datastore.Open(&datastore.Options{
-		Protocol: clickhouse.Native,
+		Protocol: datastore.Native,
 		Addr:     []string{fmt.Sprintf("%s:%d", env.Host, port)},
 		Settings: settings,
-		Auth: clickhouse.Auth{
+		Auth: datastore.Auth{
 			Database: database,
 			Username: env.Username,
 			Password: env.Password,
@@ -466,8 +466,8 @@ func getConnection(env ClickHouseTestEnvironment, database string, settings clic
 	return conn, err
 }
 
-func getHTTPConnection(env ClickHouseTestEnvironment, sessionName string, database string, settings clickhouse.Settings, tlsConfig *tls.Config, compression *clickhouse.Compression) (driver.Conn, error) {
-	useSSL, err := strconv.ParseBool(GetEnv("CLICKHOUSE_USE_SSL", "false"))
+func getHTTPConnection(env ClickHouseTestEnvironment, sessionName string, database string, settings datastore.Settings, tlsConfig *tls.Config, compression *datastore.Compression) (driver.Conn, error) {
+	useSSL, err := strconv.ParseBool(GetEnv("DATASTORE_USE_SSL", "false"))
 	if err != nil {
 		panic(err)
 	}
@@ -477,7 +477,7 @@ func getHTTPConnection(env ClickHouseTestEnvironment, sessionName string, databa
 		port = env.HttpsPort
 	}
 	if settings == nil {
-		settings = clickhouse.Settings{}
+		settings = datastore.Settings{}
 	}
 	if proto.CheckMinVersion(proto.Version{
 		Major: 22,
@@ -493,14 +493,14 @@ func getHTTPConnection(env ClickHouseTestEnvironment, sessionName string, databa
 	}, env.Version) {
 		settings["output_format_native_use_flattened_dynamic_and_json_serialization"] = "1"
 	}
-	settings["insert_quorum"], err = strconv.Atoi(GetEnv("CLICKHOUSE_QUORUM_INSERT", "1"))
+	settings["insert_quorum"], err = strconv.Atoi(GetEnv("DATASTORE_QUORUM_INSERT", "1"))
 	settings["insert_quorum_parallel"] = 0
 	settings["select_sequential_consistency"] = 1
 	if err != nil {
 		return nil, err
 	}
 
-	timeout, err := strconv.Atoi(GetEnv("CLICKHOUSE_DIAL_TIMEOUT", "10"))
+	timeout, err := strconv.Atoi(GetEnv("DATASTORE_DIAL_TIMEOUT", "10"))
 	if err != nil {
 		return nil, err
 	}
@@ -510,10 +510,10 @@ func getHTTPConnection(env ClickHouseTestEnvironment, sessionName string, databa
 	settings["session_id"] = sessionName
 
 	conn, err := datastore.Open(&datastore.Options{
-		Protocol: clickhouse.HTTP,
+		Protocol: datastore.HTTP,
 		Addr:     []string{fmt.Sprintf("%s:%d", env.Host, port)},
 		Settings: settings,
-		Auth: clickhouse.Auth{
+		Auth: datastore.Auth{
 			Database: database,
 			Username: env.Username,
 			Password: env.Password,
@@ -529,8 +529,8 @@ func getHTTPConnection(env ClickHouseTestEnvironment, sessionName string, databa
 	return conn, err
 }
 
-func getJWTConnection(env ClickHouseTestEnvironment, database string, settings clickhouse.Settings, tlsConfig *tls.Config, maxConnLifetime time.Duration, jwtFunc clickhouse.GetJWTFunc) (driver.Conn, error) {
-	useSSL, err := strconv.ParseBool(GetEnv("CLICKHOUSE_USE_SSL", "false"))
+func getJWTConnection(env ClickHouseTestEnvironment, database string, settings datastore.Settings, tlsConfig *tls.Config, maxConnLifetime time.Duration, jwtFunc datastore.GetJWTFunc) (driver.Conn, error) {
+	useSSL, err := strconv.ParseBool(GetEnv("DATASTORE_USE_SSL", "false"))
 	if err != nil {
 		panic(err)
 	}
@@ -540,7 +540,7 @@ func getJWTConnection(env ClickHouseTestEnvironment, database string, settings c
 		port = env.SslPort
 	}
 	if settings == nil {
-		settings = clickhouse.Settings{}
+		settings = datastore.Settings{}
 	}
 	if proto.CheckMinVersion(proto.Version{
 		Major: 22,
@@ -549,14 +549,14 @@ func getJWTConnection(env ClickHouseTestEnvironment, database string, settings c
 	}, env.Version) {
 		settings["database_replicated_enforce_synchronous_settings"] = "1"
 	}
-	settings["insert_quorum"], err = strconv.Atoi(GetEnv("CLICKHOUSE_QUORUM_INSERT", "1"))
+	settings["insert_quorum"], err = strconv.Atoi(GetEnv("DATASTORE_QUORUM_INSERT", "1"))
 	settings["insert_quorum_parallel"] = 0
 	settings["select_sequential_consistency"] = 1
 	if err != nil {
 		return nil, err
 	}
 
-	timeout, err := strconv.Atoi(GetEnv("CLICKHOUSE_DIAL_TIMEOUT", "10"))
+	timeout, err := strconv.Atoi(GetEnv("DATASTORE_DIAL_TIMEOUT", "10"))
 	if err != nil {
 		return nil, err
 	}
@@ -564,7 +564,7 @@ func getJWTConnection(env ClickHouseTestEnvironment, database string, settings c
 	conn, err := datastore.Open(&datastore.Options{
 		Addr:     []string{fmt.Sprintf("%s:%d", env.Host, port)},
 		Settings: settings,
-		Auth: clickhouse.Auth{
+		Auth: datastore.Auth{
 			Database: database,
 		},
 		GetJWT:          jwtFunc,
@@ -642,7 +642,7 @@ func dropTable(client driver.Conn, table string) error {
 }
 
 func getDatabaseName(testSet string) string {
-	return fmt.Sprintf("clickhouse-go-%s-%s-%d", testSet, testUUID, testTimestamp)
+	return fmt.Sprintf("datastore-go-%s-%s-%d", testSet, testUUID, testTimestamp)
 }
 
 func getRowsCount(t *testing.T, conn driver.Conn, table string) uint64 {
@@ -740,12 +740,12 @@ type NginxReverseHTTPProxyTestEnvironment struct {
 	NginxContainer testcontainers.Container `json:"-"`
 }
 
-func CreateNginxReverseProxyTestEnvironment(clickhouseEnv ClickHouseTestEnvironment) (NginxReverseHTTPProxyTestEnvironment, error) {
+func CreateNginxReverseProxyTestEnvironment(datastoreEnv ClickHouseTestEnvironment) (NginxReverseHTTPProxyTestEnvironment, error) {
 	// create a nginx Container as a reverse proxy
 	ctx := context.Background()
 	nginxReq := testcontainers.ContainerRequest{
 		Image:        "nginx",
-		Name:         fmt.Sprintf("nginx-clickhouse-go-%d", time.Now().UnixNano()),
+		Name:         fmt.Sprintf("nginx-datastore-go-%d", time.Now().UnixNano()),
 		ExposedPorts: []string{"80/tcp"},
 		WaitingFor:   wait.ForListeningPort("80/tcp").WithStartupTimeout(time.Second * time.Duration(120)),
 		Cmd:          []string{},
@@ -763,8 +763,8 @@ func CreateNginxReverseProxyTestEnvironment(clickhouseEnv ClickHouseTestEnvironm
 	if err != nil {
 		return NginxReverseHTTPProxyTestEnvironment{}, err
 	}
-	// replace upstream clickhouse endpoint
-	nginxConf = []byte(strings.Replace(string(nginxConf), "<upstream_http_endpoint>", fmt.Sprintf("%v:8123", clickhouseEnv.ContainerIP), -1))
+	// replace upstream datastore endpoint
+	nginxConf = []byte(strings.Replace(string(nginxConf), "<upstream_http_endpoint>", fmt.Sprintf("%v:8123", datastoreEnv.ContainerIP), -1))
 	err = nginxContainer.CopyToContainer(ctx, nginxConf, "/etc/nginx/nginx.conf", 700)
 	if err != nil {
 		return NginxReverseHTTPProxyTestEnvironment{}, err
@@ -805,7 +805,7 @@ func CreateTinyProxyTestEnvironment(t *testing.T) (TinyProxyTestEnvironment, err
 
 	req := testcontainers.ContainerRequest{
 		Image:        "monokal/tinyproxy",
-		Name:         fmt.Sprintf("tinyproxy-clickhouse-go-%d", time.Now().UnixNano()),
+		Name:         fmt.Sprintf("tinyproxy-datastore-go-%d", time.Now().UnixNano()),
 		ExposedPorts: []string{"8888/tcp"},
 		WaitingFor:   wait.ForListeningPort("8888/tcp").WithStartupTimeout(time.Second * time.Duration(120)),
 		Cmd:          []string{"--enable-debug", "ANY"},
@@ -824,12 +824,12 @@ func CreateTinyProxyTestEnvironment(t *testing.T) (TinyProxyTestEnvironment, err
 	}, nil
 }
 
-func TestProtocols(rootT *testing.T, testFunc func(t *testing.T, protocol clickhouse.Protocol)) {
+func TestProtocols(rootT *testing.T, testFunc func(t *testing.T, protocol datastore.Protocol)) {
 	rootT.Run("Native", func(t *testing.T) {
-		testFunc(t, clickhouse.Native)
+		testFunc(t, datastore.Native)
 	})
 	rootT.Run("HTTP", func(t *testing.T) {
-		testFunc(t, clickhouse.HTTP)
+		testFunc(t, datastore.HTTP)
 	})
 }
 
@@ -848,8 +848,8 @@ func CleanupNativeConn(t *testing.T, conn driver.Conn) {
 func OptionsToDSN(o *datastore.Options) string {
 	var u url.URL
 
-	if o.Protocol == clickhouse.Native {
-		u.Scheme = "clickhouse"
+	if o.Protocol == datastore.Native {
+		u.Scheme = "datastore"
 	} else {
 		if o.TLS != nil {
 			u.Scheme = "https"
@@ -961,7 +961,7 @@ func Runtime(m *testing.M, ts string) (exitCode int) {
 	ResetRandSeed()
 	fmt.Printf("using random seed %d for %s tests\n", randSeed, ts)
 
-	useDocker, err := strconv.ParseBool(GetEnv("CLICKHOUSE_USE_DOCKER", "true"))
+	useDocker, err := strconv.ParseBool(GetEnv("DATASTORE_USE_DOCKER", "true"))
 	if err != nil {
 		panic(err)
 	}

@@ -1,12 +1,12 @@
 services:
-  clickhouse:
+  datastore:
     environment:
-      CLICKHOUSE_SKIP_USER_SETUP: 1
+      DATASTORE_SKIP_USER_SETUP: 1
     networks:
-      - clickhouse
-    hostname: clickhouse
-    container_name: clickhouse
-    image: 'clickhouse/clickhouse-server:${CLICKHOUSE_VERSION-25.12-alpine}'
+      - datastore
+    hostname: datastore
+    container_name: datastore-server
+    image: 'hanzoai/datastore-server:${DATASTORE_VERSION-latest}'
     ports:
       - 127.0.0.1:8123:8123
       - 127.0.0.1:9000:9000
@@ -25,4 +25,4 @@ services:
       timeout: 5s
       retries: 5
 networks:
-  clickhouse: null
+  datastore: null

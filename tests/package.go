@@ -45,8 +45,8 @@ func SkipNotCloud(t *testing.T, reasons ...string) {
 }
 
 // SkipOnHTTP skips the test if the protocol is HTTP
-func SkipOnHTTP(t *testing.T, protocol clickhouse.Protocol, reasons ...string) {
-	if protocol == clickhouse.HTTP {
+func SkipOnHTTP(t *testing.T, protocol datastore.Protocol, reasons ...string) {
+	if protocol == datastore.HTTP {
 		t.Skip(append(
 			[]string{"Skipping HTTP test:"},
 			reasons...,

@@ -12,7 +12,7 @@ import (
 func TestBatchContextCancellation(t *testing.T) {
 	te, err := GetTestEnvironment(testSet)
 	require.NoError(t, err)
-	opts := ClientOptionsFromEnv(te, clickhouse.Settings{}, false)
+	opts := ClientOptionsFromEnv(te, datastore.Settings{}, false)
 	opts.MaxOpenConns = 1
 	conn, err := GetConnectionWithOptions(&opts)
 	require.NoError(t, err)
@@ -39,7 +39,7 @@ func TestBatchContextCancellation(t *testing.T) {
 func TestBatchCloseConnectionReleased(t *testing.T) {
 	te, err := GetTestEnvironment(testSet)
 	require.NoError(t, err)
-	opts := ClientOptionsFromEnv(te, clickhouse.Settings{}, false)
+	opts := ClientOptionsFromEnv(te, datastore.Settings{}, false)
 	opts.MaxOpenConns = 1
 	conn, err := GetConnectionWithOptions(&opts)
 	require.NoError(t, err)
@@ -60,7 +60,7 @@ func TestBatchCloseConnectionReleased(t *testing.T) {
 func TestBatchSendConnectionReleased(t *testing.T) {
 	te, err := GetTestEnvironment(testSet)
 	require.NoError(t, err)
-	opts := ClientOptionsFromEnv(te, clickhouse.Settings{}, false)
+	opts := ClientOptionsFromEnv(te, datastore.Settings{}, false)
 	opts.MaxOpenConns = 1
 	conn, err := GetConnectionWithOptions(&opts)
 	require.NoError(t, err)
@@ -88,7 +88,7 @@ func TestBatchSendConnectionReleased(t *testing.T) {
 func TestBatchCloseConnectionHold(t *testing.T) {
 	te, err := GetTestEnvironment(testSet)
 	require.NoError(t, err)
-	opts := ClientOptionsFromEnv(te, clickhouse.Settings{}, false)
+	opts := ClientOptionsFromEnv(te, datastore.Settings{}, false)
 	opts.MaxOpenConns = 1
 	opts.DialTimeout = 2 * time.Second // Lower timeout for faster acquire error
 	conn, err := GetConnectionWithOptions(&opts)
@@ -103,5 +103,5 @@ func TestBatchCloseConnectionHold(t *testing.T) {
 	// batch.Close() should be called here
 
 	// assert if connection is blocked if close is not called.
-	require.ErrorIs(t, conn.Exec(context.Background(), "SELECT 1"), clickhouse.ErrAcquireConnTimeout)
+	require.ErrorIs(t, conn.Exec(context.Background(), "SELECT 1"), datastore.ErrAcquireConnTimeout)
 }

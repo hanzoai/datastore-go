@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"github.com/hanzoai/datastore-go"
 	datastore_tests "github.com/hanzoai/datastore-go/tests"
-	clickhouse_std_tests "github.com/hanzoai/datastore-go/tests/std"
+	datastore_std_tests "github.com/hanzoai/datastore-go/tests/std"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"strconv"
@@ -17,7 +17,7 @@ import (
 func TestIssue570(t *testing.T) {
 	env, err := GetIssuesTestEnvironment()
 	require.NoError(t, err)
-	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("DATASTORE_USE_SSL", "false"))
 	require.NoError(t, err)
 	var tlsConfig *tls.Config
 	dsn := fmt.Sprintf("datastore://%s:%s@%s:%d/default", env.Username, env.Password,
@@ -31,9 +31,9 @@ func TestIssue570(t *testing.T) {
 	}
 	require.NoError(t, err)
 	// using ParseDNS - defaults shouldn't be set for maxOpenConnections etc
-	options, err := clickhouse.ParseDSN(dsn)
+	options, err := datastore.ParseDSN(dsn)
 	assert.NoError(t, err)
-	conn := clickhouse_std_tests.GetConnectionWithOptions(options)
+	conn := datastore_std_tests.GetConnectionWithOptions(options)
 	conn.SetMaxOpenConns(5)
 	conn.SetMaxIdleConns(10)
 	assert.NoError(t, conn.Ping())
@@ -42,18 +42,18 @@ func TestIssue570(t *testing.T) {
 	// check we can pass Options
 	options = &datastore.Options{
 		Addr: []string{fmt.Sprintf("%s:%d", env.Host, port)},
-		Auth: clickhouse.Auth{
+		Auth: datastore.Auth{
 			Database: "default",
 			Username: env.Username,
 			Password: env.Password,
 		},
-		Compression: &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+		Compression: &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		},
 		DialTimeout: time.Second,
 		TLS:         tlsConfig,
 	}
-	conn = clickhouse_std_tests.GetConnectionWithOptions(options)
+	conn = datastore_std_tests.GetConnectionWithOptions(options)
 	assert.NoError(t, conn.Ping())
 
 	// check we can open with a DSN

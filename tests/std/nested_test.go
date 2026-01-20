@@ -12,19 +12,19 @@ import (
 )
 
 func TestStdNested(t *testing.T) {
-	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("CLICKHOUSE_USE_SSL", "false"))
+	useSSL, err := strconv.ParseBool(datastore_tests.GetEnv("DATASTORE_USE_SSL", "false"))
 	require.NoError(t, err)
 	var tlsConfig *tls.Config
 	if useSSL {
 		tlsConfig = &tls.Config{}
 	}
-	conn, err := GetStdOpenDBConnection(clickhouse.Native, clickhouse.Settings{
+	conn, err := GetStdOpenDBConnection(datastore.Native, datastore.Settings{
 		"flatten_nested": 0,
 	}, tlsConfig, nil)
 	require.NoError(t, err)
 	conn.Exec("DROP TABLE std_nested_test")
 	if !CheckMinServerVersion(conn, 22, 1, 0) {
-		t.Skip(fmt.Errorf("unsupported clickhouse version"))
+		t.Skip(fmt.Errorf("unsupported datastore version"))
 		return
 	}
 	const ddl = `

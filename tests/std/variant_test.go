@@ -18,13 +18,13 @@ var variantTestDate, _ = time.Parse(time.RFC3339, "2024-12-13T02:09:30.123Z")
 func setupVariantTest(t *testing.T) *sql.DB {
 	datastore_tests.SkipOnCloud(t, "cannot modify Variant settings on cloud")
 
-	conn, err := GetStdOpenDBConnection(clickhouse.Native, nil, nil, &clickhouse.Compression{
-		Method: clickhouse.CompressionLZ4,
+	conn, err := GetStdOpenDBConnection(datastore.Native, nil, nil, &datastore.Compression{
+		Method: datastore.CompressionLZ4,
 	})
 	require.NoError(t, err)
 
 	if !CheckMinServerVersion(conn, 24, 4, 0) {
-		t.Skip(fmt.Errorf("unsupported clickhouse version for Variant type"))
+		t.Skip(fmt.Errorf("unsupported datastore version for Variant type"))
 		return nil
 	}
 
@@ -78,21 +78,21 @@ func TestVariant(t *testing.T) {
 	_, err = batch.ExecContext(ctx, true)
 	require.NoError(t, err)
 	colInt64 := int64(42)
-	_, err = batch.ExecContext(ctx, clickhouse.NewVariantWithType(colInt64, "Int64"))
+	_, err = batch.ExecContext(ctx, datastore.NewVariantWithType(colInt64, "Int64"))
 	require.NoError(t, err)
 	colString := "test"
-	_, err = batch.ExecContext(ctx, clickhouse.NewVariantWithType(colString, "String"))
+	_, err = batch.ExecContext(ctx, datastore.NewVariantWithType(colString, "String"))
 	require.NoError(t, err)
-	_, err = batch.ExecContext(ctx, clickhouse.NewVariantWithType(variantTestDate, "DateTime64(3)"))
+	_, err = batch.ExecContext(ctx, datastore.NewVariantWithType(variantTestDate, "DateTime64(3)"))
 	require.NoError(t, err)
 	var colNil any = nil
 	_, err = batch.ExecContext(ctx, colNil)
 	require.NoError(t, err)
 	colSliceString := []string{"a", "b"}
-	_, err = batch.ExecContext(ctx, clickhouse.NewVariantWithType(colSliceString, "Array(String)"))
+	_, err = batch.ExecContext(ctx, datastore.NewVariantWithType(colSliceString, "Array(String)"))
 	require.NoError(t, err)
 	colSliceUInt8 := []uint8{0xA, 0xB, 0xC}
-	_, err = batch.ExecContext(ctx, clickhouse.NewVariantWithType(colSliceUInt8, "Array(UInt8)"))
+	_, err = batch.ExecContext(ctx, datastore.NewVariantWithType(colSliceUInt8, "Array(UInt8)"))
 	require.NoError(t, err)
 	colSliceMapStringString := []map[string]string{{"key1": "value1", "key2": "value2"}, {"key3": "value3"}}
 	_, err = batch.ExecContext(ctx, colSliceMapStringString)
@@ -186,7 +186,7 @@ func TestVariant_ScanWithType(t *testing.T) {
 
 	_, err = batch.ExecContext(ctx, true)
 	require.NoError(t, err)
-	_, err = batch.ExecContext(ctx, clickhouse.NewVariantWithType(int64(42), "Int64"))
+	_, err = batch.ExecContext(ctx, datastore.NewVariantWithType(int64(42), "Int64"))
 	require.NoError(t, err)
 	_, err = batch.ExecContext(ctx, nil)
 	require.NoError(t, err)

@@ -10,28 +10,28 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func setupJSONTest(t *testing.T, protocol clickhouse.Protocol) driver.Conn {
+func setupJSONTest(t *testing.T, protocol datastore.Protocol) driver.Conn {
 	SkipOnCloud(t, "cannot modify JSON settings on cloud")
 
-	conn, err := GetNativeConnection(t, protocol, clickhouse.Settings{
+	conn, err := GetNativeConnection(t, protocol, datastore.Settings{
 		"max_execution_time":              60,
 		"allow_experimental_variant_type": true,
 		"allow_experimental_dynamic_type": true,
 		"allow_experimental_json_type":    true,
-	}, nil, &clickhouse.Compression{
-		Method: clickhouse.CompressionLZ4,
+	}, nil, &datastore.Compression{
+		Method: datastore.CompressionLZ4,
 	})
 	require.NoError(t, err)
 
 	if !CheckMinServerServerVersion(conn, 24, 8, 0) {
-		t.Skip("unsupported clickhouse version for JSON type")
+		t.Skip("unsupported datastore version for JSON type")
 	}
 
 	return conn
 }
 
 func TestJSONPaths(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		conn := setupJSONTest(t, protocol)
 		ctx := context.Background()
 
@@ -56,7 +56,7 @@ func TestJSONPaths(t *testing.T) {
 		rows, err := conn.Query(ctx, "SELECT c FROM test_json_paths")
 		require.NoError(t, err)
 
-		var row clickhouse.JSON
+		var row datastore.JSON
 
 		require.True(t, rows.Next())
 		err = rows.Scan(&row)
@@ -71,11 +71,11 @@ func TestJSONPaths(t *testing.T) {
 			}
 
 			// Allow Equal func to compare values without Dynamic wrapper
-			if v, ok := expectedValue.(clickhouse.Dynamic); ok {
+			if v, ok := expectedValue.(datastore.Dynamic); ok {
 				expectedValue = v.Any()
 			}
 
-			if v, ok := actualValue.(clickhouse.Dynamic); ok {
+			if v, ok := actualValue.(datastore.Dynamic); ok {
 				actualValue = v.Any()
 			}
 
@@ -88,7 +88,7 @@ func TestJSONPaths(t *testing.T) {
 }
 
 func TestJSONArray(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		conn := setupJSONTest(t, protocol)
 		ctx := context.Background()
 
@@ -105,7 +105,7 @@ func TestJSONArray(t *testing.T) {
 		batch, err := conn.PrepareBatch(ctx, "INSERT INTO test_json_array (c)")
 		require.NoError(t, err)
 
-		arrJsonRow := []*clickhouse.JSON{clickhouse.NewJSON(), BuildTestJSONPaths()}
+		arrJsonRow := []*datastore.JSON{datastore.NewJSON(), BuildTestJSONPaths()}
 
 		require.NoError(t, batch.Append(arrJsonRow))
 		require.NoError(t, batch.Send())
@@ -113,7 +113,7 @@ func TestJSONArray(t *testing.T) {
 		rows, err := conn.Query(ctx, "SELECT c FROM test_json_array")
 		require.NoError(t, err)
 
-		var arrRow []*clickhouse.JSON
+		var arrRow []*datastore.JSON
 
 		require.True(t, rows.Next())
 		err = rows.Scan(&arrRow)
@@ -123,7 +123,7 @@ func TestJSONArray(t *testing.T) {
 		actualValuesByPathEmpty := arrRow[0].ValuesByPath()
 		for _, actualValue := range actualValuesByPathEmpty {
 			// Allow Nil func to compare values without Dynamic wrapper
-			if v, ok := actualValue.(clickhouse.Dynamic); ok {
+			if v, ok := actualValue.(datastore.Dynamic); ok {
 				actualValue = v.Any()
 			}
 
@@ -139,11 +139,11 @@ func TestJSONArray(t *testing.T) {
 			}
 
 			// Allow Equal func to compare values without Dynamic wrapper
-			if v, ok := expectedValue.(clickhouse.Dynamic); ok {
+			if v, ok := expectedValue.(datastore.Dynamic); ok {
 				expectedValue = v.Any()
 			}
 
-			if v, ok := actualValue.(clickhouse.Dynamic); ok {
+			if v, ok := actualValue.(datastore.Dynamic); ok {
 				actualValue = v.Any()
 			}
 
@@ -156,7 +156,7 @@ func TestJSONArray(t *testing.T) {
 }
 
 func TestJSONEmptyArray(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		conn := setupJSONTest(t, protocol)
 		ctx := context.Background()
 
@@ -177,14 +177,14 @@ func TestJSONEmptyArray(t *testing.T) {
 		batch, err := conn.PrepareBatch(ctx, "INSERT INTO test_json_empty_array (c)")
 		require.NoError(t, err)
 
-		var arrJsonRow []*clickhouse.JSON
+		var arrJsonRow []*datastore.JSON
 		require.NoError(t, batch.Append(arrJsonRow))
 		require.NoError(t, batch.Send())
 
 		rows, err := conn.Query(ctx, "SELECT c FROM test_json_empty_array")
 		require.NoError(t, err)
 
-		var arrRow []*clickhouse.JSON
+		var arrRow []*datastore.JSON
 
 		require.True(t, rows.Next())
 		err = rows.Scan(&arrRow)
@@ -197,7 +197,7 @@ func TestJSONEmptyArray(t *testing.T) {
 }
 
 func TestJSONStruct(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		conn := setupJSONTest(t, protocol)
 		ctx := context.Background()
 
@@ -265,7 +265,7 @@ func TestJSONStruct(t *testing.T) {
 }
 
 func TestJSONFastStruct(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		conn := setupJSONTest(t, protocol)
 		ctx := context.Background()
 
@@ -303,7 +303,7 @@ func TestJSONFastStruct(t *testing.T) {
 }
 
 func TestJSONString(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		conn := setupJSONTest(t, protocol)
 		ctx := context.Background()
 
@@ -358,7 +358,7 @@ func TestJSONString(t *testing.T) {
 }
 
 func TestJSON_BatchFlush(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		SkipOnHTTP(t, protocol, "Flush")
 		conn := setupJSONTest(t, protocol)
 		ctx := context.Background()
@@ -376,9 +376,9 @@ func TestJSON_BatchFlush(t *testing.T) {
 		batch, err := conn.PrepareBatch(ctx, "INSERT INTO test_json_batch_flush (c)")
 		require.NoError(t, err)
 
-		vals := make([]*clickhouse.JSON, 0, 1000)
+		vals := make([]*datastore.JSON, 0, 1000)
 		for i := 0; i < 1000; i++ {
-			row := clickhouse.NewJSON()
+			row := datastore.NewJSON()
 			if i%2 == 0 {
 				row.SetValueAtPath("a", int64(i))
 				row.SetValueAtPath("b", i%5 == 0)
@@ -398,42 +398,42 @@ func TestJSON_BatchFlush(t *testing.T) {
 
 		i := 0
 		for rows.Next() {
-			var row clickhouse.JSON
+			var row datastore.JSON
 			err = rows.Scan(&row)
 			require.NoError(t, err)
 
 			if i%2 == 0 {
 				valA, ok := row.ValueAtPath("a")
 				require.Equal(t, true, ok)
-				_, ok = valA.(clickhouse.Dynamic)
+				_, ok = valA.(datastore.Dynamic)
 				require.Equal(t, true, ok)
 
-				require.Equal(t, int64(i), valA.(clickhouse.Dynamic).Any())
-				require.Equal(t, "Int64", valA.(clickhouse.Dynamic).Type())
+				require.Equal(t, int64(i), valA.(datastore.Dynamic).Any())
+				require.Equal(t, "Int64", valA.(datastore.Dynamic).Type())
 
 				valB, ok := row.ValueAtPath("b")
 				require.Equal(t, true, ok)
-				_, ok = valB.(clickhouse.Dynamic)
+				_, ok = valB.(datastore.Dynamic)
 				require.Equal(t, true, ok)
 
-				require.Equal(t, i%5 == 0, valB.(clickhouse.Dynamic).Any())
-				require.Equal(t, "Bool", valB.(clickhouse.Dynamic).Type())
+				require.Equal(t, i%5 == 0, valB.(datastore.Dynamic).Any())
+				require.Equal(t, "Bool", valB.(datastore.Dynamic).Type())
 			} else {
 				valC, ok := row.ValueAtPath("c")
 				require.Equal(t, true, ok)
-				_, ok = valC.(clickhouse.Dynamic)
+				_, ok = valC.(datastore.Dynamic)
 				require.Equal(t, true, ok)
 
-				require.Equal(t, int64(-i), valC.(clickhouse.Dynamic).Any())
-				require.Equal(t, "Int64", valC.(clickhouse.Dynamic).Type())
+				require.Equal(t, int64(-i), valC.(datastore.Dynamic).Any())
+				require.Equal(t, "Int64", valC.(datastore.Dynamic).Type())
 
 				valD, ok := row.ValueAtPath("d")
 				require.Equal(t, true, ok)
-				_, ok = valD.(clickhouse.Dynamic)
+				_, ok = valD.(datastore.Dynamic)
 				require.Equal(t, true, ok)
 
-				require.Equal(t, i%5 != 0, valD.(clickhouse.Dynamic).Any())
-				require.Equal(t, "Bool", valD.(clickhouse.Dynamic).Type())
+				require.Equal(t, i%5 != 0, valD.(datastore.Dynamic).Any())
+				require.Equal(t, "Bool", valD.(datastore.Dynamic).Type())
 			}
 
 			i++
@@ -445,7 +445,7 @@ func TestJSON_BatchFlush(t *testing.T) {
 
 // https://github.com/grafana/clickhouse-datasource/issues/1168
 func TestJSONArrayDynamic(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		conn := setupJSONTest(t, protocol)
 		ctx := context.Background()
 
@@ -459,7 +459,7 @@ func TestJSONArrayDynamic(t *testing.T) {
 }
 
 func TestJSONArrayVariant(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		conn := setupJSONTest(t, protocol)
 		ctx := context.Background()
 
@@ -473,7 +473,7 @@ func TestJSONArrayVariant(t *testing.T) {
 }
 
 func TestJSONLowCardinalityNullableString(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		conn := setupJSONTest(t, protocol)
 		ctx := context.Background()
 
@@ -482,11 +482,11 @@ func TestJSONLowCardinalityNullableString(t *testing.T) {
 
 		require.True(t, rows.Next())
 
-		var row clickhouse.JSON
+		var row datastore.JSON
 		err = rows.Scan(&row)
 		require.NoError(t, err)
 
-		xStr, ok := clickhouse.ExtractJSONPathAs[*string](&row, "x")
+		xStr, ok := datastore.ExtractJSONPathAs[*string](&row, "x")
 		require.True(t, ok)
 		require.Equal(t, "test", *xStr)
 
@@ -496,7 +496,7 @@ func TestJSONLowCardinalityNullableString(t *testing.T) {
 }
 
 func TestJSONNullableObjectScan(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		conn := setupJSONTest(t, protocol)
 
 		if !CheckMinServerServerVersion(conn, 25, 2, 0) {
@@ -509,11 +509,11 @@ func TestJSONNullableObjectScan(t *testing.T) {
 
 		require.True(t, rows.Next())
 
-		var row clickhouse.JSON
+		var row datastore.JSON
 		err = rows.Scan(&row)
 		require.NoError(t, err)
 
-		xStr, ok := clickhouse.ExtractJSONPathAs[string](&row, "x")
+		xStr, ok := datastore.ExtractJSONPathAs[string](&row, "x")
 		require.True(t, ok)
 		require.Equal(t, "test", xStr)
 
@@ -523,7 +523,7 @@ func TestJSONNullableObjectScan(t *testing.T) {
 }
 
 func TestJSONNullableStringsScan(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		conn := setupJSONTest(t, protocol)
 
 		if !CheckMinServerServerVersion(conn, 25, 2, 0) {

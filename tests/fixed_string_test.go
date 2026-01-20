@@ -27,9 +27,9 @@ func (bin *BinFixedString) UnmarshalBinary(b []byte) error {
 }
 
 func TestFixedString(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
-		conn, err := GetNativeConnection(t, protocol, nil, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
+		conn, err := GetNativeConnection(t, protocol, nil, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 		ctx := context.Background()
 		require.NoError(t, err)
@@ -102,9 +102,9 @@ func TestFixedString(t *testing.T) {
 }
 
 func TestEmptyFixedString(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
-		conn, err := GetNativeConnection(t, protocol, nil, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
+		conn, err := GetNativeConnection(t, protocol, nil, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 		ctx := context.Background()
 		require.NoError(t, err)
@@ -143,15 +143,15 @@ func TestEmptyFixedString(t *testing.T) {
 }
 
 func TestOverflowFixedString(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		conn, err := GetNativeConnection(t, protocol, nil, nil, nil)
 		require.NoError(t, err)
 
 		ctx := context.Background()
-		if protocol == clickhouse.HTTP {
+		if protocol == datastore.HTTP {
 			// For HTTP, provide specific column names since we can't parse out the null table function
-			ctx = clickhouse.Context(ctx,
-				clickhouse.WithColumnNamesAndTypes([]clickhouse.ColumnNameAndType{
+			ctx = datastore.Context(ctx,
+				datastore.WithColumnNamesAndTypes([]datastore.ColumnNameAndType{
 					{Name: "x", Type: "FixedString(16)"},
 				}))
 		}
@@ -168,15 +168,15 @@ func TestOverflowFixedString(t *testing.T) {
 }
 
 func TestPaddedFixedString(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
 		conn, err := GetNativeConnection(t, protocol, nil, nil, nil)
 		require.NoError(t, err)
 
 		ctx := context.Background()
-		if protocol == clickhouse.HTTP {
+		if protocol == datastore.HTTP {
 			// For HTTP, provide specific column names since we can't parse out the null table function
-			ctx = clickhouse.Context(ctx,
-				clickhouse.WithColumnNamesAndTypes([]clickhouse.ColumnNameAndType{
+			ctx = datastore.Context(ctx,
+				datastore.WithColumnNamesAndTypes([]datastore.ColumnNameAndType{
 					{Name: "x", Type: "FixedString(16)"},
 				}))
 		}
@@ -191,9 +191,9 @@ func TestPaddedFixedString(t *testing.T) {
 }
 
 func TestNullableFixedString(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
-		conn, err := GetNativeConnection(t, protocol, nil, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
+		conn, err := GetNativeConnection(t, protocol, nil, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 		ctx := context.Background()
 		require.NoError(t, err)
@@ -245,9 +245,9 @@ func TestNullableFixedString(t *testing.T) {
 }
 
 func TestColumnarFixedString(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
-		conn, err := GetNativeConnection(t, protocol, nil, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
+		conn, err := GetNativeConnection(t, protocol, nil, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 		ctx := context.Background()
 		require.NoError(t, err)
@@ -321,8 +321,8 @@ func TestColumnarFixedString(t *testing.T) {
 }
 
 func BenchmarkFixedString(b *testing.B) {
-	conn, err := GetNativeConnectionTCP(nil, nil, &clickhouse.Compression{
-		Method: clickhouse.CompressionLZ4,
+	conn, err := GetNativeConnectionTCP(nil, nil, &datastore.Compression{
+		Method: datastore.CompressionLZ4,
 	})
 	ctx := context.Background()
 	if err != nil {
@@ -357,8 +357,8 @@ func BenchmarkFixedString(b *testing.B) {
 }
 
 func BenchmarkColumnarFixedString(b *testing.B) {
-	conn, err := GetNativeConnectionTCP(nil, nil, &clickhouse.Compression{
-		Method: clickhouse.CompressionLZ4,
+	conn, err := GetNativeConnectionTCP(nil, nil, &datastore.Compression{
+		Method: datastore.CompressionLZ4,
 	})
 	ctx := context.Background()
 	if err != nil {
@@ -402,9 +402,9 @@ func BenchmarkColumnarFixedString(b *testing.B) {
 }
 
 func TestFixedStringFlush(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
-		conn, err := GetNativeConnection(t, protocol, nil, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
+		conn, err := GetNativeConnection(t, protocol, nil, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 		ctx := context.Background()
 		require.NoError(t, err)
@@ -442,16 +442,16 @@ func TestFixedStringFlush(t *testing.T) {
 }
 
 func TestFixedStringFromDriverValuerType(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
-		conn, err := GetNativeConnection(t, protocol, nil, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
+		conn, err := GetNativeConnection(t, protocol, nil, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 		ctx := context.Background()
 
 		require.NoError(t, err)
 		require.NoError(t, conn.Ping(ctx))
 		if !CheckMinServerServerVersion(conn, 21, 9, 0) {
-			t.Skip(fmt.Errorf("unsupported clickhouse version"))
+			t.Skip(fmt.Errorf("unsupported datastore version"))
 			return
 		}
 		const ddl = `
@@ -501,16 +501,16 @@ func (c *testFixedStringPtrSerializer) Scan(src any) error {
 }
 
 func TestFixedStringFromDriverValuerTypeNonStdReturn(t *testing.T) {
-	TestProtocols(t, func(t *testing.T, protocol clickhouse.Protocol) {
-		conn, err := GetNativeConnection(t, protocol, nil, nil, &clickhouse.Compression{
-			Method: clickhouse.CompressionLZ4,
+	TestProtocols(t, func(t *testing.T, protocol datastore.Protocol) {
+		conn, err := GetNativeConnection(t, protocol, nil, nil, &datastore.Compression{
+			Method: datastore.CompressionLZ4,
 		})
 		ctx := context.Background()
 
 		require.NoError(t, err)
 		require.NoError(t, conn.Ping(ctx))
 		if !CheckMinServerServerVersion(conn, 21, 9, 0) {
-			t.Skip(fmt.Errorf("unsupported clickhouse version"))
+			t.Skip(fmt.Errorf("unsupported datastore version"))
 			return
 		}
 		const ddl = `
