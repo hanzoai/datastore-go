@@ -3,16 +3,17 @@ name: Tests cloud
 permissions: write-all
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
-  pull_request:
-    types: [opened, labeled, synchronize, reopened]
+    inputs:
+      run_tests:
+        description: 'Confirm cloud tests (requires valid HANZO_DATASTORE_* secrets)'
+        required: true
+        default: 'true'
+        type: boolean
 
 jobs:
   test:
-    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'tests:run-cloud'))
+    if: github.event.inputs.run_tests == 'true'
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -29,6 +30,16 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: ${{ matrix.go }}
+
+      - name: Validate secrets
+        env:
+          DATASTORE_HOST: ${{ secrets.HANZO_DATASTORE_HOST }}
+        run: |
+          if [ "$DATASTORE_HOST" = "PLACEHOLDER" ] || [ -z "$DATASTORE_HOST" ]; then
+            echo "::error::HANZO_DATASTORE_HOST secret is not configured. Please set valid Hanzo Cloud credentials."
+            exit 1
+          fi
+          echo "Secrets validated"
 
       - name: Tests
         env:
