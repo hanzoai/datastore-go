@@ -10,9 +10,9 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/hanzoai/datastore-go/lib/column"
-	"github.com/hanzoai/datastore-go/lib/driver"
-	"github.com/hanzoai/datastore-go/lib/proto"
+	"github.com/hanzoai/datastore-go/v2/lib/column"
+	"github.com/hanzoai/datastore-go/v2/lib/driver"
+	"github.com/hanzoai/datastore-go/v2/lib/proto"
 )
 
 var insertMatch = regexp.MustCompile(`(?i)(?:(?:--[^\n]*|#![^\n]*|#\s[^\n]*)\n\s*)*(INSERT\s+INTO\s+[^( ]+(?:\s*\([^()]*(?:\([^()]*\)[^()]*)*\))?)(?:\s*VALUES)?`)

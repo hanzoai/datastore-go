@@ -3,7 +3,7 @@ package datastore
 import (
 	"context"
 
-	"github.com/hanzoai/datastore-go/lib/proto"
+	"github.com/hanzoai/datastore-go/v2/lib/proto"
 )
 
 func (c *connect) asyncInsert(ctx context.Context, query string, wait bool, args ...any) error {

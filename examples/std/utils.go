@@ -3,9 +3,9 @@ package std
 import (
 	"crypto/tls"
 	"database/sql"
-	"github.com/hanzoai/datastore-go"
-	datastore_tests "github.com/hanzoai/datastore-go/tests"
-	datastore_tests_std "github.com/hanzoai/datastore-go/tests/std"
+	"github.com/hanzoai/datastore-go/v2"
+	datastore_tests "github.com/hanzoai/datastore-go/v2/tests"
+	datastore_tests_std "github.com/hanzoai/datastore-go/v2/tests/std"
 )
 
 const TestSet string = "examples_std_api"

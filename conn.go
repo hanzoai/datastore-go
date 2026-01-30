@@ -5,7 +5,7 @@ import (
 	"crypto/tls"
 	"errors"
 	"fmt"
-	"github.com/hanzoai/datastore-go/lib/column"
+	"github.com/hanzoai/datastore-go/v2/lib/column"
 	"io"
 	"log"
 	"net"
@@ -14,11 +14,11 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/hanzoai/datastore-go/resources"
+	"github.com/hanzoai/datastore-go/v2/resources"
 
 	"github.com/ClickHouse/ch-go/compress"
 	chproto "github.com/ClickHouse/ch-go/proto"
-	"github.com/hanzoai/datastore-go/lib/proto"
+	"github.com/hanzoai/datastore-go/v2/lib/proto"
 )
 
 func dial(ctx context.Context, addr string, num int, opt *Options) (*connect, error) {

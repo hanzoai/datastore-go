@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/hanzoai/datastore-go/lib/chcol"
+	"github.com/hanzoai/datastore-go/v2/lib/chcol"
 )
 
 // Decoding (Scanning)

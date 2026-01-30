@@ -6,7 +6,7 @@ import (
 	"log"
 	"time"
 
-	_ "github.com/hanzoai/datastore-go"
+	_ "github.com/hanzoai/datastore-go/v2"
 )
 
 func benchmarkRead(conn *sql.DB) error {

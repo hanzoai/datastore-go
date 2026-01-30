@@ -3,8 +3,8 @@ package tests
 import (
 	"context"
 	"fmt"
-	"github.com/hanzoai/datastore-go"
-	"github.com/hanzoai/datastore-go/lib/driver"
+	"github.com/hanzoai/datastore-go/v2"
+	"github.com/hanzoai/datastore-go/v2/lib/driver"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 	"testing"

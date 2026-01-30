@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"io"
 
-	"github.com/hanzoai/datastore-go/lib/proto"
+	"github.com/hanzoai/datastore-go/v2/lib/proto"
 )
 
 type rows struct {

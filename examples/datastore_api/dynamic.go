@@ -3,7 +3,7 @@ package datastore_api
 import (
 	"context"
 	"fmt"
-	"github.com/hanzoai/datastore-go"
+	"github.com/hanzoai/datastore-go/v2"
 )
 
 func DynamicExample() error {

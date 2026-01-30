@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/hanzoai/datastore-go"
-	"github.com/hanzoai/datastore-go/ext"
+	"github.com/hanzoai/datastore-go/v2"
+	"github.com/hanzoai/datastore-go/v2/ext"
 )
 
 func ExternalData() error {

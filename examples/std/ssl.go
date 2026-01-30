@@ -8,7 +8,7 @@ import (
 	"os"
 	"path"
 
-	"github.com/hanzoai/datastore-go"
+	"github.com/hanzoai/datastore-go/v2"
 )
 
 func ConnectSSL() error {

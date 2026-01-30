@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/hanzoai/datastore-go/lib/proto"
+	"github.com/hanzoai/datastore-go/v2/lib/proto"
 )
 
 type Log struct {

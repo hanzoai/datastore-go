@@ -9,10 +9,10 @@ import (
 	"testing"
 
 	"github.com/ClickHouse/ch-go/proto"
-	"github.com/hanzoai/datastore-go/lib/column"
+	"github.com/hanzoai/datastore-go/v2/lib/column"
 	"github.com/stretchr/testify/require"
 
-	"github.com/hanzoai/datastore-go"
+	"github.com/hanzoai/datastore-go/v2"
 	"github.com/stretchr/testify/assert"
 )
 

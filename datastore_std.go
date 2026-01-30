@@ -15,8 +15,8 @@ import (
 	"sync/atomic"
 	"syscall"
 
-	"github.com/hanzoai/datastore-go/lib/column"
-	chdriver "github.com/hanzoai/datastore-go/lib/driver"
+	"github.com/hanzoai/datastore-go/v2/lib/column"
+	chdriver "github.com/hanzoai/datastore-go/v2/lib/driver"
 )
 
 var globalConnID int64

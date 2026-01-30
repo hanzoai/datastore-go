@@ -6,7 +6,7 @@ import (
 	"log"
 	"reflect"
 
-	_ "github.com/hanzoai/datastore-go"
+	_ "github.com/hanzoai/datastore-go/v2"
 )
 
 func main() {

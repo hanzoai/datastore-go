@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/ClickHouse/ch-go/proto"
-	"github.com/hanzoai/datastore-go/lib/column"
+	"github.com/hanzoai/datastore-go/v2/lib/column"
 	"sort"
 )
 

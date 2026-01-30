@@ -1,10 +1,10 @@
 package std
 
 import (
-	"github.com/hanzoai/datastore-go"
+	"github.com/hanzoai/datastore-go/v2"
 	"time"
 
-	_ "github.com/hanzoai/datastore-go"
+	_ "github.com/hanzoai/datastore-go/v2"
 	"github.com/google/uuid"
 )
 

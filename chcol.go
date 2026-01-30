@@ -1,6 +1,6 @@
 package datastore
 
-import "github.com/hanzoai/datastore-go/lib/chcol"
+import "github.com/hanzoai/datastore-go/v2/lib/chcol"
 
 // Re-export chcol types/funcs to top level datastore package
 

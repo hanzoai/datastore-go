@@ -3,13 +3,13 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	datastore_tests "github.com/hanzoai/datastore-go/tests/std"
+	datastore_tests "github.com/hanzoai/datastore-go/v2/tests/std"
 	"log"
 	"net/http"
 	_ "net/http/pprof"
 	"time"
 
-	"github.com/hanzoai/datastore-go"
+	"github.com/hanzoai/datastore-go/v2"
 )
 
 var conn *sql.DB

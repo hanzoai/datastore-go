@@ -7,8 +7,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/hanzoai/datastore-go"
-	datastore_tests "github.com/hanzoai/datastore-go/tests"
+	"github.com/hanzoai/datastore-go/v2"
+	datastore_tests "github.com/hanzoai/datastore-go/v2/tests"
 	"github.com/stretchr/testify/assert"
 )
 

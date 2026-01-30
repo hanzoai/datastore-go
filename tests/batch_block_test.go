@@ -7,8 +7,8 @@ import (
 	"github.com/stretchr/testify/require"
 	"golang.org/x/net/context"
 
-	"github.com/hanzoai/datastore-go"
-	"github.com/hanzoai/datastore-go/lib/column"
+	"github.com/hanzoai/datastore-go/v2"
+	"github.com/hanzoai/datastore-go/v2/lib/column"
 )
 
 // TestBatchAppendRows tests experimental batch rows blocks append feature.

@@ -7,8 +7,8 @@ import (
 	"syscall"
 	"testing"
 
-	"github.com/hanzoai/datastore-go/lib/driver"
-	"github.com/hanzoai/datastore-go/tests"
+	"github.com/hanzoai/datastore-go/v2/lib/driver"
+	"github.com/hanzoai/datastore-go/v2/tests"
 	"github.com/docker/docker/api/types/container"
 	"github.com/stretchr/testify/require"
 	"github.com/testcontainers/testcontainers-go"

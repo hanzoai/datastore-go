@@ -6,7 +6,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/hanzoai/datastore-go"
+	"github.com/hanzoai/datastore-go/v2"
 )
 
 const ddl = `

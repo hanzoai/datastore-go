@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	datastore_tests "github.com/hanzoai/datastore-go/tests"
+	datastore_tests "github.com/hanzoai/datastore-go/v2/tests"
 	"log"
 	"os"
 	"os/signal"
@@ -12,8 +12,8 @@ import (
 	"net/http"
 	_ "net/http/pprof"
 
-	"github.com/hanzoai/datastore-go"
-	"github.com/hanzoai/datastore-go/lib/driver"
+	"github.com/hanzoai/datastore-go/v2"
+	"github.com/hanzoai/datastore-go/v2/lib/driver"
 	"github.com/google/uuid"
 	_ "github.com/mkevac/debugcharts"
 )

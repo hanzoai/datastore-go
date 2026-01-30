@@ -6,7 +6,7 @@ import (
 	"slices"
 	"time"
 
-	"github.com/hanzoai/datastore-go/ext"
+	"github.com/hanzoai/datastore-go/v2/ext"
 	"go.opentelemetry.io/otel/trace"
 )
 

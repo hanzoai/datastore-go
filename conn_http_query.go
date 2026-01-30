@@ -9,7 +9,7 @@ import (
 	"io"
 
 	chproto "github.com/ClickHouse/ch-go/proto"
-	"github.com/hanzoai/datastore-go/lib/proto"
+	"github.com/hanzoai/datastore-go/v2/lib/proto"
 )
 
 // capturingReader wraps a reader and captures all data that passes through it

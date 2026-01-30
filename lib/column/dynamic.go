@@ -9,7 +9,7 @@ import (
 	"strings"
 
 	"github.com/ClickHouse/ch-go/proto"
-	"github.com/hanzoai/datastore-go/lib/chcol"
+	"github.com/hanzoai/datastore-go/v2/lib/chcol"
 )
 
 const DynamicSerializationVersion = 3

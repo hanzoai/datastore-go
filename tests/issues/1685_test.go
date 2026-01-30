@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
-	"github.com/hanzoai/datastore-go"
-	"github.com/hanzoai/datastore-go/tests"
+	"github.com/hanzoai/datastore-go/v2"
+	"github.com/hanzoai/datastore-go/v2/tests"
 	"github.com/stretchr/testify/require"
 )
 

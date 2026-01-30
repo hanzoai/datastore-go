@@ -3,8 +3,8 @@ package std
 import (
 	"database/sql"
 	"fmt"
-	"github.com/hanzoai/datastore-go"
-	datastore_tests "github.com/hanzoai/datastore-go/tests/std"
+	"github.com/hanzoai/datastore-go/v2"
+	datastore_tests "github.com/hanzoai/datastore-go/v2/tests/std"
 	"time"
 )
 

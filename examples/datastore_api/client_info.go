@@ -2,7 +2,7 @@ package datastore_api
 
 import (
 	"context"
-	"github.com/hanzoai/datastore-go"
+	"github.com/hanzoai/datastore-go/v2"
 )
 
 func ClientInfo() error {

@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/hanzoai/datastore-go/internal/circular"
+	"github.com/hanzoai/datastore-go/v2/internal/circular"
 )
 
 var errQueueEmpty = errors.New("datastore: connection pool queue is empty")

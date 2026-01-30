@@ -3,11 +3,11 @@ package std
 import (
 	"context"
 	"database/sql"
-	datastore_tests "github.com/hanzoai/datastore-go/tests"
+	datastore_tests "github.com/hanzoai/datastore-go/v2/tests"
 
 	"fmt"
-	"github.com/hanzoai/datastore-go"
-	"github.com/hanzoai/datastore-go/lib/chcol"
+	"github.com/hanzoai/datastore-go/v2"
+	"github.com/hanzoai/datastore-go/v2/lib/chcol"
 	"github.com/stretchr/testify/require"
 	"testing"
 	"time"

@@ -2,7 +2,7 @@ package resources
 
 import (
 	_ "embed"
-	"github.com/hanzoai/datastore-go/lib/proto"
+	"github.com/hanzoai/datastore-go/v2/lib/proto"
 	"go.yaml.in/yaml/v3"
 	"strings"
 )

@@ -1,7 +1,7 @@
 package tests
 
 import (
-	"github.com/hanzoai/datastore-go"
+	"github.com/hanzoai/datastore-go/v2"
 	"os"
 	"strings"
 	"testing"

@@ -11,10 +11,10 @@ import (
 
 	_ "time/tzdata"
 
-	"github.com/hanzoai/datastore-go/contributors"
-	"github.com/hanzoai/datastore-go/lib/column"
-	"github.com/hanzoai/datastore-go/lib/driver"
-	"github.com/hanzoai/datastore-go/lib/proto"
+	"github.com/hanzoai/datastore-go/v2/contributors"
+	"github.com/hanzoai/datastore-go/v2/lib/column"
+	"github.com/hanzoai/datastore-go/v2/lib/driver"
+	"github.com/hanzoai/datastore-go/v2/lib/proto"
 )
 
 type Conn = driver.Conn

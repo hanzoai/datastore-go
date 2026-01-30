@@ -3,7 +3,7 @@ package datastore_api
 import (
 	"context"
 	"errors"
-	"github.com/hanzoai/datastore-go/lib/driver"
+	"github.com/hanzoai/datastore-go/v2/lib/driver"
 )
 
 func BatchWithReleaseConnection() error {

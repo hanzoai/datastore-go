@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/hanzoai/datastore-go/lib/column/orderedmap"
+	"github.com/hanzoai/datastore-go/v2/lib/column/orderedmap"
 )
 
 func MapInsertRead() error {

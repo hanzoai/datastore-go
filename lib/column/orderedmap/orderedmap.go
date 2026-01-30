@@ -2,7 +2,7 @@ package orderedmap
 
 import (
 	"cmp"
-	"github.com/hanzoai/datastore-go/lib/column"
+	"github.com/hanzoai/datastore-go/v2/lib/column"
 	"slices"
 )
 

@@ -9,8 +9,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hanzoai/datastore-go/lib/column"
-	"github.com/hanzoai/datastore-go/lib/driver"
+	"github.com/hanzoai/datastore-go/v2/lib/column"
+	"github.com/hanzoai/datastore-go/v2/lib/driver"
 )
 
 var (

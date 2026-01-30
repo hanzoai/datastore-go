@@ -3,9 +3,9 @@ package datastore
 import (
 	"context"
 	"fmt"
-	"github.com/hanzoai/datastore-go/lib/column"
-	"github.com/hanzoai/datastore-go/lib/driver"
-	"github.com/hanzoai/datastore-go/lib/proto"
+	"github.com/hanzoai/datastore-go/v2/lib/column"
+	"github.com/hanzoai/datastore-go/v2/lib/driver"
+	"github.com/hanzoai/datastore-go/v2/lib/proto"
 	"io"
 	"os"
 	"slices"

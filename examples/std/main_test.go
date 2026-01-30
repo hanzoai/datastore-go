@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	datastore_tests "github.com/hanzoai/datastore-go/tests"
+	datastore_tests "github.com/hanzoai/datastore-go/v2/tests"
 	"github.com/stretchr/testify/require"
 )
 

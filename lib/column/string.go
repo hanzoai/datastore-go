@@ -10,7 +10,7 @@ import (
 
 	"github.com/ClickHouse/ch-go/proto"
 
-	"github.com/hanzoai/datastore-go/lib/binary"
+	"github.com/hanzoai/datastore-go/v2/lib/binary"
 )
 
 type String struct {

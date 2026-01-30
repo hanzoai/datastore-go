@@ -3,8 +3,8 @@ package tests
 import (
 	"time"
 
-	"github.com/hanzoai/datastore-go"
-	"github.com/hanzoai/datastore-go/lib/chcol"
+	"github.com/hanzoai/datastore-go/v2"
+	"github.com/hanzoai/datastore-go/v2/lib/chcol"
 )
 
 var JSONTestDate, _ = time.Parse(time.RFC3339, "2024-12-13T02:09:30.123Z")

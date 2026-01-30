@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	datastore_tests "github.com/hanzoai/datastore-go/tests"
+	datastore_tests "github.com/hanzoai/datastore-go/v2/tests"
 )
 
 const testSet string = "issues"

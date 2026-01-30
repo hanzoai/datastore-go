@@ -3,11 +3,11 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	datastore_tests "github.com/hanzoai/datastore-go/tests/std"
+	datastore_tests "github.com/hanzoai/datastore-go/v2/tests/std"
 	"log"
 	"reflect"
 
-	_ "github.com/hanzoai/datastore-go"
+	_ "github.com/hanzoai/datastore-go/v2"
 )
 
 type DatabaseFrame struct {

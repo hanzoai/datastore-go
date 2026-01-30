@@ -22,9 +22,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hanzoai/datastore-go"
-	"github.com/hanzoai/datastore-go/lib/driver"
-	"github.com/hanzoai/datastore-go/lib/proto"
+	"github.com/hanzoai/datastore-go/v2"
+	"github.com/hanzoai/datastore-go/v2/lib/driver"
+	"github.com/hanzoai/datastore-go/v2/lib/proto"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/go-units"
 	"github.com/google/uuid"

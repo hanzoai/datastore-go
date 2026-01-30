@@ -6,7 +6,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/hanzoai/datastore-go/lib/proto"
+	"github.com/hanzoai/datastore-go/v2/lib/proto"
 )
 
 const ClientName = "datastore-go"

@@ -3,7 +3,7 @@ package std
 import (
 	"database/sql"
 	"fmt"
-	"github.com/hanzoai/datastore-go"
+	"github.com/hanzoai/datastore-go/v2"
 )
 
 func ConnectAuth() error {

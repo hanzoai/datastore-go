@@ -1,6 +1,6 @@
 package std
 
-import "github.com/hanzoai/datastore-go"
+import "github.com/hanzoai/datastore-go/v2"
 
 func Exec() error {
 	conn, err := GetStdOpenDBConnection(datastore.Native, nil, nil, nil)

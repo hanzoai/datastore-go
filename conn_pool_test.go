@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hanzoai/datastore-go/lib/driver"
+	"github.com/hanzoai/datastore-go/v2/lib/driver"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

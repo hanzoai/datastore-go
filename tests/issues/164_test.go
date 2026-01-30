@@ -3,9 +3,9 @@ package issues
 import (
 	"context"
 	"database/sql"
-	"github.com/hanzoai/datastore-go"
-	datastore_tests "github.com/hanzoai/datastore-go/tests"
-	datastore_std_tests "github.com/hanzoai/datastore-go/tests/std"
+	"github.com/hanzoai/datastore-go/v2"
+	datastore_tests "github.com/hanzoai/datastore-go/v2/tests"
+	datastore_std_tests "github.com/hanzoai/datastore-go/v2/tests/std"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"strconv"

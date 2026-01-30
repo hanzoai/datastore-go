@@ -4,9 +4,9 @@ import (
 	"context"
 	"crypto/tls"
 	"encoding/json"
-	"github.com/hanzoai/datastore-go"
-	"github.com/hanzoai/datastore-go/lib/driver"
-	datastore_tests "github.com/hanzoai/datastore-go/tests"
+	"github.com/hanzoai/datastore-go/v2"
+	"github.com/hanzoai/datastore-go/v2/lib/driver"
+	datastore_tests "github.com/hanzoai/datastore-go/v2/tests"
 	"os"
 	"testing"
 )
