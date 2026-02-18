@@ -41,3 +41,5 @@ pipeline.auto.tfvars
 
 .env
 go.work
+
+CLAUDE.md
