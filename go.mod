@@ -1,6 +1,6 @@
 module github.com/hanzoai/datastore-go/v2
 
-go 1.26
+go 1.26.1
 
 toolchain go1.25.4
 
