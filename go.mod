@@ -2,8 +2,6 @@ module github.com/hanzoai/datastore-go/v2
 
 go 1.26.1
 
-toolchain go1.25.4
-
 require (
 	github.com/ClickHouse/ch-go v0.69.0
 	github.com/andybalholm/brotli v1.2.0
@@ -11,7 +9,7 @@ require (
 	github.com/docker/go-units v0.5.0
 	github.com/google/uuid v1.6.0
 	github.com/mkevac/debugcharts v0.0.0-20191222103121-ae1c48aa8615
-	github.com/paulmach/orb v0.12.0
+	github.com/paulmach/orb v0.13.0
 	github.com/shopspring/decimal v1.4.0
 	github.com/stretchr/testify v1.11.1
 	github.com/testcontainers/testcontainers-go v0.40.0
